@@ -1,0 +1,1773 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0; April 30, 2014">
+    <xs:attribute name="Type">
+        <xs:simpleType>
+            <xs:restriction base="xs:string"> </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:complexType name="XrefType">
+        <xs:annotation>
+            <xs:documentation>XRefs are used to represent references to data from external
+                databases. These are stored in the ClinVar database to represent objects like
+                GeneIDs in Gene or MIM numbers in OMIM, and are flexible enough to be used broadly.
+                The db is the database name used for the external reference (e.g. 'Gene' or 'OMIM')
+                and the ID is that database identifier (e.g. the GeneID or MIM number). The type is
+                optional and should be used if there are multiple types of identifiers from a
+                database. For example, from OMIM we may get both MIM numbers and identifiers for
+                allelic variants; those should be specified as the type for the XRef. Expect ID to
+                not be provided only if this is used for submitting a URL on it's own. XSD does not
+                permit choice for attributes so validation of these will need to be in another layer
+                (XSLT) </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="DB" type="xs:string" use="required"/>
+        <xs:attribute name="Type" type="xs:string" use="optional"/>
+        <xs:attribute name="ID" type="xs:string" use="optional"/>
+        <xs:attribute name="URL" type="xs:anyURI" use="optional"/>
+        <xs:attribute name="Source" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="SetElementType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="Type" type="xs:string" use="required"/>
+                <xs:attribute name="DB" type="xs:string" use="optional"/>
+                <xs:attribute name="ID" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="SetElementComplexType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="Type" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="1" name="Attribute" type="xs:string"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="PMID" type="xs:integer"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="URL" type="xs:anyURI"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="CitationText" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:attributeGroup name="CVIdentifiers">
+        <xs:annotation>
+            <xs:documentation>database ID will be captured as attributes when data is pulled from
+                the database. </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="ID" type="xs:positiveInteger" use="optional"/>
+    </xs:attributeGroup>
+    <xs:attributeGroup name="gtr_identifiers">
+        <xs:annotation>
+            <xs:documentation>database ID will be captured as attributes when data is pulled from
+                the database. May be extended (accessions,date,etc) when needed</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="id" type="xs:positiveInteger" use="optional"/>
+    </xs:attributeGroup>
+    <xs:complexType name="FileType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="filename" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="ContactType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="Email" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="Phone" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="Fax" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="Comment" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="URL" type="xs:anyURI"/>
+        </xs:sequence>
+        <xs:attributeGroup ref="gtr_identifiers"/>
+    </xs:complexType>
+    <xs:complexType name="DataSourceType">
+        <xs:attribute name="DataSource" type="xs:string" use="required"/>
+        <xs:attribute name="ID" type="xs:string" use="optional"/>
+        <xs:attribute name="SourceType" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="TextCitations">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="Description" type="xs:string"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="PMID" type="xs:integer"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="URL" type="xs:anyURI"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="CitationText" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TextCitationsList">
+        <xs:annotation>
+            <xs:documentation>For TextCitationsList there is not a required description field. There
+                will be an additional drop down list in the element that may be selected in place of
+                a description</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="Description" type="xs:string"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="PMID" type="xs:integer"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="URL" type="xs:anyURI"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="CitationText" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TextCitationsURL">
+        <xs:annotation>
+            <xs:documentation>TextCitationsURL allow only 1 URL, although it is not
+                required.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="Description" type="xs:string"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="PMID" type="xs:integer"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="URL" type="xs:anyURI"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="CitationText" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TextURL">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="Description" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="URL" type="xs:anyURI"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="URL">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="URL" type="xs:anyURI"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="GTROrgType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="Organization" type="OrganizationType">
+                <xs:annotation>
+                    <xs:documentation>Organization related data</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="Personnel" type="PersonnelType">
+                <xs:annotation>
+                    <xs:documentation>All staff members reported to GTR, must have at least 1 and a
+                        lab director is required.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="LabCertification" type="LabCertificationType">
+                <xs:annotation>
+                    <xs:documentation>       Zero or more per Lab. If there is a CLIA cert other
+                        elements are required in XML (documented in other types).       CLIA
+                        Certification Number and Expiration Date       State License Name, Number
+                        and Expiration Date       Other Certifications/Licenses Name, Number and
+                        Expiration Date      </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="TestCount" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>       explicit test count for this lab.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="DiseaseTesting">
+                <xs:annotation>
+                    <xs:documentation>      Summary of Tests for the lab. Summarizes the methods,
+                        services and if FDA reviewed per disease.     </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="Name" type="xs:string"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="TestAddService" type="xs:string"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="Method">
+                            <xs:annotation>
+                                <xs:documentation>Distinct list of TopCategory and Category for this
+                                    lab/disease combination. Could change this to a list of
+                                    Categories and infer top category</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="unbounded" minOccurs="1" name="TopCategory">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element maxOccurs="unbounded" minOccurs="1" name="Category">
+                                                  <xs:complexType>
+                                                  <xs:attribute name="Value" type="xs:string" use="required"/>
+                                                  <xs:attribute name="Code" type="xs:string" use="optional"/>
+                                                  </xs:complexType>
+                                                </xs:element>
+                                            </xs:sequence>
+                                            <xs:attribute name="Value" type="xs:string" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="TestAddService" type="xs:string"/>
+                    </xs:sequence>
+                    <xs:attribute name="CUI" type="xs:string"/>
+                    <xs:attribute name="EntrezUID" type="xs:int">
+                        <xs:annotation>
+                            <xs:documentation>Do we need this in the XML?</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="has_fda_approved" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation>always no for GeneTests data</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="test_count" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation>always 1 for GeneTests data</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="GeneTesting">
+                <xs:annotation>
+                    <xs:documentation>      Summary of Genes Tested for by the lab.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="GeneSymbol" type="xs:string"/>
+                    </xs:sequence>
+                    <xs:attribute name="GeneID" type="xs:int" use="required"/>
+                    <xs:attribute name="EntrezUID" type="xs:int">
+                        <xs:annotation>
+                            <xs:documentation>Do we need this in the XML?</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="test_count" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation>No information GeneTests data</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="ClinVarSubmission" type="SubmissionSummaryType"> </xs:element>
+        </xs:sequence>
+        <xs:attributeGroup ref="gtr_identifiers"/>
+        <xs:attribute name="source" type="xs:string"/>
+        <xs:attribute name="is_GTR" type="xs:boolean"/>
+        <xs:attribute name="is_ClinVar" type="xs:boolean"/>
+        <xs:attribute name="TestCount" type="xs:integer" use="optional"/>
+        <xs:attribute name="LastUpdate" type="xs:date" use="required"/>
+        <xs:attribute name="AnnualPastDue" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="OrganizationType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="ClinVarSourceName" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>If from clinvar,  Clinvar soure name</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="Name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Name of Laboratory</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="NameAcronym" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Name of Laboratory Acronyms</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="Institution" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Name of Institution. Can be same as Name of
+                        Laboratory</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="InstitutionAcronym" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Name of Institution Acronyms</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="Department" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Name of Department</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="MailingAddress" type="AddressType">
+                <xs:annotation>
+                    <xs:documentation>Facility Adress. Includes Fields:        Facility Address can
+                        be made public  (@Public)        Facility Address Line 1 (Line1)
+                        Facility Address Line 2 (Line2)        Facility City (City)        Facility
+                        State/Province (State)        Facility Postal Code (Postcode)
+                        Facility Country (Country)        Facility Address Other (Line3)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="StreetAddress" type="AddressType">
+                <xs:annotation>
+                    <xs:documentation>Not in GTR Fields Document. Included becuae Organizations may
+                        have different street and mailing addresses </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="2" minOccurs="0" name="LabContact">
+                <xs:annotation>
+                    <xs:documentation>Official (not personnel) contact for the Lab, should default
+                        to Public="true", do not ask if public or private.        Includes fields:
+                        Facility Phone number (Phone)        Facility Fax Number (Fax)
+                        Facility Email Address (Email)       </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ContactType">
+                            <xs:attribute default="true" name="Public" type="xs:boolean"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="URL" type="xs:anyURI">
+                <xs:annotation>
+                    <xs:documentation>Laboratory Main Website URL</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="LabServices">
+                <xs:annotation>
+                    <xs:documentation>       Laboratory Types of Service, list is in db.       If
+                        'Other' selected @OtherValue must be populated       Laboratory Services
+                        Order Code (@OrderCode)       Laboratory Services Comment (@Comment)
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="OrderCode" type="xs:string" use="optional"/>
+                            <xs:attribute name="Comment" type="xs:string" use="optional"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="LabAffiliations">
+                <xs:annotation>
+                    <xs:documentation>Laboratory Affiliations</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="LabAffiliation" type="xs:string"/>
+                        <xs:element maxOccurs="1" minOccurs="0" name="URL" type="xs:anyURI"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="StandardPrograms" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Laboratory Participation External Programs / Standardization
+                        Programs</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="DataExchangePrograms" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Laboratory Participation External Programs / Data Exchange
+                        Programs</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AddressType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="Line1" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="Line2" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="Line3" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="1" name="City" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="1" name="State">
+                <xs:annotation>
+                    <xs:documentation>List of states is in db.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attributeGroup ref="gtr_identifiers"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="PostCode" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="1" name="Country">
+                <xs:annotation>
+                    <xs:documentation>List of countries is in db. Needs to be on the
+                        list.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attributeGroup ref="gtr_identifiers"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attributeGroup ref="gtr_identifiers"/>
+        <xs:attribute name="Public" type="xs:boolean" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="PersonnelType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="Person" type="PersonType"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="PublicContact">
+                <xs:annotation>
+                    <xs:documentation>      Person Public Phone Number (Phone)       Person Public
+                        Fax Number (Fax)      Person Public Email Address (Email)      Person
+                        Contact Public Comment (Comment)     </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ContactType">
+                            <xs:attribute default="true" name="Public" type="xs:boolean"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="Title" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>       Person Title       Can't have an enumerated list here
+                        is we are going to allow users to select other and enter own title, will
+                        provide a list of suggested titles       Other values are included as the
+                        Title here. In public XML do not specify is a value is other.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="Institution" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>       Institution information for people entered as research
+                        personnel.       </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attributeGroup ref="gtr_identifiers"/>
+        <xs:attribute name="PrimaryContact" type="xs:boolean" use="required">
+            <xs:annotation>
+                <xs:documentation>Primary Laboratory Contact</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="IsDirector" type="xs:boolean" use="required">
+            <xs:annotation>
+                <xs:documentation>Laboratory Directory</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="DisplayWeb" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>Display person on GTR Website.     For the public XML used for the
+                    GTR website only personnel that can be displayed are included in the XML.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="PID" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>Person ID</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="PersonType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="DisplayName" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Concatenation of Person elements to be used for public
+                        disaply.      Includes first, middle and last name, degrees, credentials and
+                        title.     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="Name">
+                <xs:annotation>
+                    <xs:documentation>Person Name, includes First Name, Middle Initial and Last
+                        Name</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="First" type="xs:string"/>
+                        <xs:element maxOccurs="1" minOccurs="1" name="Last" type="xs:string"/>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Middle" type="xs:string"/>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Prefix" type="xs:string"/>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Suffix" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="Degree">
+                <xs:annotation>
+                    <xs:documentation>Person Academic Degree(s)</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="DegreeType">
+                            <xs:attribute name="Display" type="xs:boolean" use="required"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="Certification">
+                <xs:annotation>
+                    <xs:documentation>      Person Genetic Certifications:        Professional Board
+                        (Board)       Professional Board Specialty (Specialty)       Professional
+                        Board SubSpecialty (SubSpecialty)      Person Other Certifications (Board)
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="SubSpecialty" type="xs:string"> </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Specialty" type="xs:string"> </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="1" name="Board" type="xs:string"/>
+                        <xs:element maxOccurs="1" minOccurs="0" name="ExpirationDate" type="xs:date"/>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Number" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="Credential">
+                <xs:annotation>
+                    <xs:documentation>      Professional Credentials (Based on Person Genetic
+                        Certifcations)      Person Publicly Displayed Credentials
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="CredentialType">
+                            <xs:attribute name="Display" type="xs:boolean" use="required"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attributeGroup ref="gtr_identifiers"/>
+    </xs:complexType>
+    <xs:complexType name="CertificationType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="Qualifier" type="xs:string"> </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="Unit" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="ExpirationDate" type="xs:date"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="Number" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="LabCertificationType">
+        <xs:complexContent>
+            <xs:extension base="CertificationType">
+                <xs:sequence>
+                    <xs:element maxOccurs="1" minOccurs="1" name="Name" type="xs:string"/>
+                </xs:sequence>
+                <xs:attribute name="Type" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="DegreeType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="Name" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="Qualifier" type="xs:string"> </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CredentialType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="Name" type="xs:string"/>
+            <xs:element maxOccurs="1" minOccurs="0" name="Qualifier" type="xs:string"> </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="Unit" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="SubmissionSummaryType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="Gene" type="GeneSetType"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="Phenotype" type="PhenotypeSetType"/>
+        </xs:sequence>
+        <xs:attribute name="total" type="xs:int" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="GeneSetType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="GeneSymbol" type="xs:string"/>
+            <xs:element name="last_updated" type="xs:date"/>
+        </xs:sequence>
+        <xs:attribute name="GeneID" type="xs:int" use="required"/>
+        <xs:attribute name="gene_count" type="xs:int" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="PhenotypeSetType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="Name" type="xs:string"/>
+            <xs:element name="last_updated" type="xs:date"/>
+        </xs:sequence>
+        <xs:attribute name="CUI" type="xs:string" use="optional"/>
+        <xs:attribute name="phenotype_count" type="xs:int" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="ClinvarPublicSetType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="Title" type="xs:string"/>
+            <xs:element maxOccurs="2" minOccurs="1" name="DescrSet">
+                <xs:annotation>
+                    <xs:documentation>      The primary condition for the Test is Type = 'preferred'
+                        The lab preferred name for the condition is Type = 'lab preferred'
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="Type" type="xs:string" use="required"/>
+                            <xs:attribute name="CUI" type="xs:string" use="optional">
+                                <xs:annotation>
+                                    <xs:documentation>          CUI identifier for condition, used
+                                        to create links and discovery panel.
+                                    </xs:documentation>
+                                </xs:annotation>
+                            </xs:attribute>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="2" minOccurs="0" name="SynonymSet">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="Type" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="AcronymSet">
+                <xs:annotation>
+                    <xs:documentation>      Preferred acronym for primary condition
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="Type" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="ClinVarAssertion" type="MeasureTraitType"/>
+        </xs:sequence>
+        <xs:attributeGroup ref="CVIdentifiers">
+            <xs:annotation>
+                <xs:documentation>Retaining this as a placeholder for possible export of database
+                    identifiers from ClinVar.</xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="MeasureTraitType">
+        <xs:annotation>
+            <xs:documentation>    details of the condition - target assertion   </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="Title">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="Type" type="xs:string" use="optional"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="ClinVarAcc">
+                <xs:annotation>
+                    <xs:documentation>      ClinVar accession and version, auto assigned by clinvar.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="Acc" type="xs:string" use="required"/>
+                    <xs:attribute name="Version" type="xs:integer" use="required"/>
+                    <xs:attribute name="Type" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="Assertion">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+                    </xs:sequence>
+                    <xs:attribute name="Type" type="xs:string" use="required"/>
+                    <xs:attribute name="Method" type="xs:string" use="optional"/>
+                    <xs:attribute name="ID" type="xs:int" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="ClinicalSignificance">
+                <xs:annotation>
+                    <xs:documentation>Should conform to
+                        variation-ref.phenotype.clinical-significance</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="TextCitations">
+                            <xs:sequence>
+                                <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+                                <xs:element maxOccurs="unbounded" minOccurs="0" name="Comment" type="xs:string"/>
+                            </xs:sequence>
+                            <xs:attribute name="Method" type="xs:string" use="optional"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="TraitSet" type="TraitSetType"/>
+            <xs:element maxOccurs="1" minOccurs="1" name="MeasureSet" type="MeasureSetType"/>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="DescrSet">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="Text"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="ObservedIn">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+                    </xs:sequence>
+                    <xs:attribute name="Origin" type="xs:string" use="optional"/>
+                    <xs:attribute name="Ethnicity" type="xs:string" use="optional"/>
+                    <xs:attribute name="Number-of-families" type="xs:int" use="optional"/>
+                    <xs:attribute name="Number-of-affected" type="xs:int" use="optional"/>
+                    <xs:attribute name="Number-of-unaffected" type="xs:int" use="optional"/>
+                    <xs:attribute name="Tissue" type="xs:string" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+        </xs:sequence>
+        <xs:attribute name="DateCreated" type="xs:date"/>
+        <xs:attribute name="DateLastUpdated" type="xs:date"/>
+        <xs:attribute name="SubmissionDate" type="xs:date"/>
+        <xs:attributeGroup ref="CVIdentifiers"/>
+    </xs:complexType>
+    <xs:complexType name="MeasureSetType">
+        <xs:annotation>
+            <xs:documentation>    If variant there are multiple test targets for an assertion they
+                are grouped under a measure set   </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="Measure">
+                <xs:annotation>
+                    <xs:documentation>      details of the test target (gene, variant, analyte,
+                        protein, or location)     </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Name" type="SetElementType"> </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Symbol" type="SetElementType"> </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Description" type="SetElementType"> </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Attribute" type="SetElementType"> </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="AttributeComplexSet" type="SetElementComplexType"/>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Method" type="xs:string"> </xs:element>
+                        <xs:element maxOccurs="4" minOccurs="0" name="Location">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute name="Type" type="xs:string" use="required">
+                                            <xs:annotation>
+                                                <xs:documentation>need to make this a controlled
+                                                  list and include other attributes if type =
+                                                  sequence</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:attribute>
+                                        <xs:attribute name="Chr" use="optional"/>
+                                        <xs:attribute name="assembly" use="optional"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="FoundIn">
+                            <xs:annotation>
+                                <xs:documentation>         If variant, details of the gene the
+                                    variant is found in.         Most data is is automatically
+                                    provided        </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Name" type="SetElementType"/>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Symbol" type="SetElementType"> </xs:element>
+                                    <xs:element maxOccurs="4" minOccurs="0" name="Location">
+                                        <xs:complexType>
+                                            <xs:simpleContent>
+                                                <xs:extension base="xs:string">
+                                                  <xs:attribute name="Type" use="required">
+                                                  <xs:simpleType>
+                                                  <xs:restriction base="xs:string">
+                                                  <xs:enumeration value="Cytogenetic"/>
+                                                  <xs:enumeration value="Sequence"/>
+                                                  </xs:restriction>
+                                                  </xs:simpleType>
+                                                  </xs:attribute>
+                                                  <xs:attribute name="Chr" use="optional"/>
+                                                  <xs:attribute name="assembly" use="optional"/>
+                                                </xs:extension>
+                                            </xs:simpleContent>
+                                        </xs:complexType>
+                                    </xs:element>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Description" type="SetElementType"> </xs:element>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Attribute" type="SetElementType"> </xs:element>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="AttributeComplexSet" type="SetElementComplexType"/>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+                                </xs:sequence>
+                                <xs:attribute name="Type"/>
+                                <xs:attributeGroup ref="CVIdentifiers"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Affects">
+                            <xs:annotation>
+                                <xs:documentation>         If protein affected is known details
+                                    provided here        </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Name" type="SetElementType"/>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Symbol" type="SetElementType"/>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Description" type="SetElementType"/>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Attribute" type="SetElementType"/>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="AttributeComplexSet" type="SetElementComplexType"/>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+                                </xs:sequence>
+                                <xs:attribute name="Type"/>
+                                <xs:attributeGroup ref="CVIdentifiers"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+                    </xs:sequence>
+                    <xs:attributeGroup ref="CVIdentifiers"/>
+                    <xs:attribute name="Type"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attributeGroup ref="CVIdentifiers"/>
+        <xs:attribute name="SetID" type="xs:positiveInteger" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="TraitSetType">
+        <xs:annotation>
+            <xs:documentation>    If variant there are multiple conditions for a test target (or
+                target set) for an assertion they are grouped under a trait set
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="Trait">
+                <xs:annotation>
+                    <xs:documentation>      details of each condition.      many details are
+                        automatically provided     </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Name" type="SetElementType"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Symbol" type="SetElementType"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Description" type="SetElementType"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Attribute" type="SetElementType"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="AttributeComplexSet" type="SetElementComplexType"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+                    </xs:sequence>
+                    <xs:attributeGroup ref="CVIdentifiers"/>
+                    <xs:attribute name="Type"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attributeGroup ref="CVIdentifiers"/>
+        <xs:attribute name="SetID" type="xs:positiveInteger" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="GTRLabTestType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="ClinVarSet" type="ClinvarPublicSetType">
+                <xs:annotation>
+                    <xs:documentation>      Details of the indication/target for the test
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="TestName" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Laboratory Test Name</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="TestShortName" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Laboratory Test Short Name</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="ManufacturerTestName">
+                <xs:annotation>
+                    <xs:documentation>      Manufactuer Test Name      Includes the Test ID of the
+                        Test entry for the Manufaturers Test.     </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="TestID" type="xs:positiveInteger" use="optional"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="OtherName">
+                <xs:annotation>
+                    <xs:documentation>      Other Names      Other Names Type (@Type) synonym,
+                        Keyword, search Term     </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="Type" type="xs:string" use="required"> </xs:attribute>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="TestDevelopment" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>      Test Development     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="LabUniqueCode" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>       Laboratory Unique Code       required for bulk upload
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="TestService">
+                <xs:annotation>
+                    <xs:documentation>      Test Services      Test Service Order Code (@Order Code)
+                        Test Service Comment (@Comment)      </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="OrderCode" type="xs:string" use="optional"/>
+                            <xs:attribute name="Comment" type="xs:string" use="optional"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="TestAddService">
+                <xs:annotation>
+                    <xs:documentation>      Test Additional Services      Test Additional Service
+                        Order Code (@Order Code)      Test Additional Service Comment (@Comment)
+                        The difference between these and test services is that these are used for
+                        filters     </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="OrderCode" type="xs:string" use="optional"/>
+                            <xs:attribute name="Comment" type="xs:string" use="optional"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="Order" type="TextURL">
+                <xs:annotation>
+                    <xs:documentation>      How to Order     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="Specimen">
+                <xs:annotation>
+                    <xs:documentation>      Specimen Source     </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="SpecimenType" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>         Other Values are included as values here,
+                                    for public we do not specify values that are entered as other
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="URL" type="xs:anyURI"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="TestContact" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>       Test-specific Contact Person       This should be the
+                        person_id and person_id must be represented in the lab section
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="TestContactPolicy" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>      Test-specifc Contact Policy     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="InformedConsentReq" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>      Informed Consent Required     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="GeneticCounselingReqPre" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>      Genetic Counseling Required Pre-test
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="GeneticCounselingReqPost" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>      Genetic Counseling Required Post-test
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="TestStrategy" type="TextCitations">
+                <xs:annotation>
+                    <xs:documentation>      Testing Strategy     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="LabOrderCode" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>      Laboratory Test Order Code     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="TestCodes" type="URL">
+                <xs:annotation>
+                    <xs:documentation>      Test Codes       URL to labs website with information on
+                        test codes     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="LOINC" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>      LOINC codes     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="CPTCode" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>      CPT codes     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="TestURL" type="xs:anyURI">
+                <xs:annotation>
+                    <xs:documentation>      URL for the Test     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="Availability">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="TestPerformedList" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>         Performance site for Test components
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="TestPerformedText" type="xs:string"/>
+                        <xs:element maxOccurs="1" minOccurs="0" name="TestExternal">
+                            <xs:annotation>
+                                <xs:documentation>         If the entires test is performed
+                                    externally they must answer if they are authorized to enter the
+                                    test and if the external test location has reviewed
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:boolean">
+                                        <xs:attribute name="AuthorizedEnter" type="xs:boolean" use="optional"/>
+                                        <xs:attribute name="Reviewed" type="xs:boolean" use="optional"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="OrderableBy" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>      Test orderable by      If other is selected the value is
+                        included as an element value here, public xml does not specify which values
+                        may be entered as an 'Other' option.     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="TestResults">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="SampleNegReport" type="FileType">
+                            <xs:annotation>
+                                <xs:documentation>         Sample Negative Report         ID
+                                    supplied here is the File ID from the NCBI FileTrack Database
+                                    used to access the file from the public website
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="SamplePosReport" type="FileType">
+                            <xs:annotation>
+                                <xs:documentation>         Sample Positive Report         ID
+                                    supplied here is the File ID from the NCBI FileTrack Database
+                                    used to access the file from the public website
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="VUS">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="Interpretation" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>            What is the protocol for
+                                                interpreting a variation as a VUS
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="Software" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>            What Software is used to
+                                                interpret novel variations
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="ReportingPolicy" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>            WHAT IS THE LABORATORY’S
+                                                POLICY ON REPORTING NOVEL VARIATIONS?
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="RecruitFamily">
+                                        <xs:annotation>
+                                            <xs:documentation>             ARE FAMILY MEMBERS WHO
+                                                HAVE DEFINED CLINICAL STATUS RECRUITED TO ASSESS
+                                                SIGNIFICANCE OF VUS WITHOUT CHARGE?
+                                                Text comment is the element value and yes/no/decline
+                                                to answer is the Recruit attribute.
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                            <xs:simpleContent>
+                                                <xs:extension base="xs:string">
+                                                  <xs:attribute name="Recruit" use="optional"/>
+                                                </xs:extension>
+                                            </xs:simpleContent>
+                                        </xs:complexType>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="SampleVUSReport" type="FileType">
+                                        <xs:annotation>
+                                            <xs:documentation>            Sample VUS Report
+                                                ID supplied here is the File ID from the NCBI
+                                                FileTrack Database used to access the file from the
+                                                public website           </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="ReContact">
+                            <xs:annotation>
+                                <xs:documentation>          Will the Laboratory Re-contact the
+                                    Ordering Physician if Variant Interpretation Changes?
+                                    Text comment is the element value and yes/no/decline to answer
+                                    is the RecontactAnswer attribute.        </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute name="RecontactAnswer" use="optional"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Research">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="AfterTesting" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>             Is research allowed on
+                                                the sample after clinical testing is complete?
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="Indications">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="Purpose" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>         Purpose of the Test
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="1" name="TestType" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>         Clinical or Research Test
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Inheritance">
+                            <xs:annotation>
+                                <xs:documentation>         Mode of Inheritance
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="1" minOccurs="1" name="Value" type="xs:string"/>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Mechanism">
+                            <xs:annotation>
+                                <xs:documentation>         Disease Mechanism
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="1" minOccurs="1" name="Value" type="xs:string"/>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="XRef" type="XrefType"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="TargetPop" type="TextCitations">
+                            <xs:annotation>
+                                <xs:documentation>         Description of the Target Population
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="Method">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="TopCategory">
+                            <xs:annotation>
+                                <xs:documentation>         Higher Level Method Category
+                                    Field Value in @Value        </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="unbounded" minOccurs="1" name="Category">
+                                        <xs:annotation>
+                                            <xs:documentation>            Method Category
+                                                Field Value in @Value            @code is single
+                                                letter code for display of this field on public site
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element maxOccurs="unbounded" minOccurs="0" name="Methodology">
+                                                  <xs:annotation>
+                                                  <xs:documentation>               Test Methodology
+                                                  Field Value in @Value               Values
+                                                  submitted as other are also listed as Value here,
+                                                  there is no indication which values where from
+                                                  'other' option              </xs:documentation>
+                                                  </xs:annotation>
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element maxOccurs="unbounded" minOccurs="0" name="Instrument">
+                                                  <xs:annotation>
+                                                  <xs:documentation>                  Instrument(s)
+                                                  used during testing.                  Values
+                                                  submitted as other are also listed here, there is
+                                                  no indication which values where from 'other'
+                                                  option                 </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  </xs:sequence>
+                                                  <xs:attribute name="Value" type="xs:string" use="required"/>
+                                                  </xs:complexType>
+                                                </xs:element>
+                                            </xs:sequence>
+                                            <xs:attribute name="Value" type="xs:string" use="required"/>
+                                            <xs:attribute name="code" type="xs:string" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="Value" type="xs:string" use="required"> </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="MethodAdd">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Platform" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>         Platforms        </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Protocol" type="TextCitations">
+                            <xs:annotation>
+                                <xs:documentation>         Description of test procedure/protocol
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Confirmation" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>         Confirmation of test results
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Exons">
+                            <xs:annotation>
+                                <xs:documentation>         Exon(s) being tested.         These link
+                                    to the Gene informatoin using the GeneID to the Measure element
+                                    in the ClinVarSet by Measure/XRef where @DB = 'Gene'
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute name="qualifier" type="xs:string" use="optional"/>
+                                        <xs:attribute name="GeneID" type="xs:integer" use="optional"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="AnalyticalValidity" type="TextCitations">
+                <xs:annotation>
+                    <xs:documentation>      Analytical validity       Analytical Validity Citations
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="AssayLimitations" type="TextCitations">
+                <xs:annotation>
+                    <xs:documentation>      Assay Limitations     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="QualityControl">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Method" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>         Method used for proficiency testing.
+                                    Other values are reported here. There is no indication if a
+                                    value was submitted as an 'Other' option.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="PTProvider" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>         PT provider        </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="CAPTestList" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>         CAP Test List(need to add CAP Category
+                                    and Major CAP category fields to XSD)        </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="PTDescription" type="TextCitations">
+                            <xs:annotation>
+                                <xs:documentation>         Description of Profciency Testing Method
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="InternalValidation" type="TextCitations">
+                            <xs:annotation>
+                                <xs:documentation>         Internal Test Validation Method
+                                    Description        </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="ClinicalValidity" type="TextCitations">
+                            <xs:annotation>
+                                <xs:documentation>         Clinical Validity
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="PTPerformed" type="xs:boolean" use="optional">
+                        <xs:annotation>
+                            <xs:documentation>        Proficiency Testing Performed on this test
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="ClinicalUtility">
+                <xs:annotation>
+                    <xs:documentation>      Clinical Utility      Select from a list of values and
+                        can provide citations for each value.     </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="TextCitationsList">
+                            <xs:sequence>
+                                <xs:element maxOccurs="1" minOccurs="1" name="Type">
+                                    <xs:complexType>
+                                        <xs:simpleContent>
+                                            <xs:extension base="xs:string">
+                                                <xs:attribute name="OtherValue" type="xs:string" use="optional"/>
+                                            </xs:extension>
+                                        </xs:simpleContent>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="Regulations">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="FDARegulatoryClearance">
+                            <xs:annotation>
+                                <xs:documentation>         FDA Regulatory Clearnances of the test.
+                                    Presence of this elements indicate there has been FDA review.
+                                    (Has there been FDA review of the Test?)
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="1" minOccurs="1" name="Category" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>            FDA Cateogry Designation
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="ItemReviewed" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>            FDA Review of
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="Status" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>            FDA Regulatory Status
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="ApplicationNumber" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>            FDA Application #
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="ApprovalDocuments" type="URL">
+                                        <xs:annotation>
+                                            <xs:documentation>            FDA Approval Documents
+                                                Link can be provided based on Application #
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="ApprovalDocumentsFile" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>            FDA Approval Documents
+                                                Can upload file rather than providing link
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="TestCertification">
+                            <xs:annotation>
+                                <xs:documentation>         Test specific Certification/Licenses
+                                    Currently only NYSCLEP is an options        </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="Qualifier" type="xs:string"/>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="Unit"> </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="ExpirationDate" type="xs:date">
+                                        <xs:annotation>
+                                            <xs:documentation>            Test specific
+                                                certification/licenses Expiration date
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="Number" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>            Test specific
+                                                certification/licenses Approval #
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="Name" type="xs:string"/>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="CertStatus" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>             NYSCLEP certification
+                                                status             used for status primarily of
+                                                NYCLEP, will not keep controlled list here but in db
+                                                since it may change            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="TestComment" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>      Test Comment     </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attributeGroup ref="gtr_identifiers"/>
+        <xs:attribute name="GTRAccession">
+            <xs:annotation>
+                <xs:documentation>GTR Accession ID</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Version">
+            <xs:annotation>
+                <xs:documentation>Version of GTR Accession ID</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="GTRLabResearchTestType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" name="ClinVarSet" type="ClinvarPublicSetType">
+                <xs:annotation>
+                    <xs:documentation>      Details of the indication/target for the test
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="TestName" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Laboratory Test Name</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="TestShortName" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>LABORATORY TEST SHORT NAME field</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="Study">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="Purpose" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>PURPOSE OF THE TEST field. Values in
+                                    TestPurposeList or, for internal use, an integer id.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="StudyName" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>LABORATORY TEST STUDY NAME
+                                    field</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="StudyShortName" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>LABORATORY TEST STUDY SHORT NAME
+                                    field</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="ClinicalTrialsID" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>ClinicalTrials.gove ID field</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="IRBNumber" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>ClinicalTrials.gove ID field</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="1" name="TestType" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>CLINICAL OR RESEARCH TEST field. Values in
+                                    TestTypeList, for internal use, an integer
+                                    id.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="StudyType" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation> Type of study field</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="1" name="Description" type="TextCitations">
+                            <xs:annotation>
+                                <xs:documentation>Description of study.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Aims" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Study aims and hypotheses</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Protocol" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Study Protocol field. The file identifier on
+                                    FileTrack.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="ContactPolicy" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Research Contact Policy field</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="2" name="StudyPerson">
+                <xs:annotation>
+                    <xs:documentation>Research personnel fields. Must include at least        1.
+                        Person responsible for this study       2. Sudy contact
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:int">
+                            <xs:attribute name="Type" type="xs:string"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="TestURL" type="xs:anyURI">
+                <xs:annotation>
+                    <xs:documentation>URL FOR THE TEST field.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="TestComment" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Free text about this test. Please use only for information
+                        that cannot be represented more explicity.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="Method">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="TopCategory">
+                            <xs:annotation>
+                                <xs:documentation>         Higher Level Method Category
+                                    Field Value in @Value        </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="unbounded" minOccurs="1" name="Category">
+                                        <xs:annotation>
+                                            <xs:documentation>            Method Category
+                                                Field Value in @Value            @code is single
+                                                letter code for display of this field on public site
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element maxOccurs="unbounded" minOccurs="0" name="Methodology">
+                                                  <xs:annotation>
+                                                  <xs:documentation>               Test Methodology
+                                                  Field Value in @Value               Values
+                                                  submitted as other are also listed as Value here,
+                                                  there is no indication which values where from
+                                                  'other' option              </xs:documentation>
+                                                  </xs:annotation>
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element maxOccurs="unbounded" minOccurs="0" name="Instrument">
+                                                  <xs:annotation>
+                                                  <xs:documentation>                  Instrument(s)
+                                                  used during testing.                  Values
+                                                  submitted as other are also listed here, there is
+                                                  no indication which values where from 'other'
+                                                  option                 </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  </xs:sequence>
+                                                  <xs:attribute name="Value" type="xs:string" use="required"/>
+                                                  </xs:complexType>
+                                                </xs:element>
+                                            </xs:sequence>
+                                            <xs:attribute name="Value" type="xs:string" use="required"/>
+                                            <xs:attribute name="code" type="xs:string" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="Value" type="xs:string" use="required"> </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="0" name="MethodAdd">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Platform" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>         Platforms        </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Protocol" type="TextCitations">
+                            <xs:annotation>
+                                <xs:documentation>         Description of test procedure/protocol
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Confirmation" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>         Confirmation of test results
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Exons">
+                            <xs:annotation>
+                                <xs:documentation>         Exon(s) being tested.         These link
+                                    to the Gene informatoin using the GeneID to the Measure element
+                                    in the ClinVarSet by Measure/XRef where @DB = 'Gene'
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute name="qualifier" type="xs:string" use="optional"/>
+                                        <xs:attribute name="GeneID" type="xs:integer" use="optional"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="1" minOccurs="1" name="Participation">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="ConsentForm" type="FileType">
+                            <xs:annotation>
+                                <xs:documentation>Participant consent form field. File identifier on
+                                    FielTrack.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="Eligibility" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Eligibility criteria field</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="0" name="RecruitmentSites" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Recruitment sites field, a single text field
+                                    captures all data.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="RecruitmentStatus" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>Recruitment status field.
+                                Yes/No/Unknown.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attributeGroup ref="gtr_identifiers"/>
+        <xs:attribute name="GTRAccession">
+            <xs:annotation>
+                <xs:documentation>GTR Accession ID</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Version">
+            <xs:annotation>
+                <xs:documentation>Version of GTR Accession ID</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:element name="GTRPublicData" type="GTRPublicDataType"/>
+    <xs:complexType name="GTRPublicDataType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="GTRLabData">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="1" name="GTRLab" type="GTROrgType"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="GTRLabTest">
+                            <xs:annotation>
+                                <xs:documentation>         This XML should represent a single
+                                    clinical test in GTR.         </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="GTRLabTestType">
+                                        <xs:attributeGroup ref="gtr_identifiers"/>
+                                        <xs:attribute name="LastUpdate" type="xs:date" use="required"/>
+                                        <xs:attribute name="LastTouched" type="xs:date" use="required">
+                                            <xs:annotation>
+                                                <xs:documentation>             Date Last Touched
+                                                </xs:documentation>
+                                            </xs:annotation>
+                                        </xs:attribute>
+                                        <xs:attribute name="source" type="xs:string" use="optional"/>
+                                    </xs:extension>
+                                </xs:complexContent>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="GTRLabResearchTest">
+                            <xs:annotation>
+                                <xs:documentation>This XML should represent a single research test
+                                    in GTR. </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="GTRLabResearchTestType">
+                                        <xs:attributeGroup ref="gtr_identifiers"/>
+                                        <xs:attribute name="LastUpdate" type="xs:date" use="required"/>
+                                        <xs:attribute name="LastTouched" type="xs:date" use="required">
+                                            <xs:annotation>
+                                                <xs:documentation>             Date Last Touched
+                                                </xs:documentation>
+                                            </xs:annotation>
+                                        </xs:attribute>
+                                        <xs:attribute name="source" type="xs:string" use="optional"/>
+                                    </xs:extension>
+                                </xs:complexContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Version" type="xs:string" use="required"/>
+    </xs:complexType>
+</xs:schema>

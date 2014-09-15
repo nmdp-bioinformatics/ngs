@@ -1,0 +1,128 @@
+##fileformat=VCFv4.1
+##FILTER=<ID=GATKStandardFS,Description="FS > 200.0">
+##FILTER=<ID=GATKStandardHaplotypeScore,Description="HaplotypeScore > 13.0">
+##FILTER=<ID=GATKStandardMQ,Description="MQ < 40.0">
+##FILTER=<ID=GATKStandardMQRankSum,Description="MQRankSum < -12.5">
+##FILTER=<ID=GATKStandardQD,Description="QD < 2.0">
+##FILTER=<ID=GATKStandardReadPosRankSum,Description="ReadPosRankSum < -20.0">
+##FILTER=<ID=LowQual,Description="Low quality">
+##FORMAT=<ID=AD,Number=.,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes, for each ALT allele, in the same order as listed">
+##INFO=<ID=AF,Number=A,Type=Float,Description="Allele Frequency, for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=BaseQRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt Vs. Ref base qualities">
+##INFO=<ID=DB,Number=0,Type=Flag,Description="dbSNP Membership">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth; some reads may have been filtered">
+##INFO=<ID=DS,Number=0,Type=Flag,Description="Were any of the samples downsampled?">
+##INFO=<ID=Dels,Number=1,Type=Float,Description="Fraction of Reads Containing Spanning Deletions">
+##INFO=<ID=FS,Number=1,Type=Float,Description="Phred-scaled p-value using Fisher's exact test to detect strand bias">
+##INFO=<ID=GC,Number=1,Type=Integer,Description="GC content around the variant (see docs for window size details)">
+##INFO=<ID=HRun,Number=1,Type=Integer,Description="Largest Contiguous Homopolymer Run of Variant Allele In Either Direction">
+##INFO=<ID=HaplotypeScore,Number=1,Type=Float,Description="Consistency of the site with at most two segregating haplotypes">
+##INFO=<ID=InbreedingCoeff,Number=1,Type=Float,Description="Inbreeding coefficient as estimated from the genotype likelihoods per-sample when compared against the Hardy-Weinberg expectation">
+##INFO=<ID=MLEAC,Number=A,Type=Integer,Description="Maximum likelihood expectation (MLE) for the allele counts (not necessarily the same as the AC), for each ALT allele, in the same order as listed">
+##INFO=<ID=MLEAF,Number=A,Type=Float,Description="Maximum likelihood expectation (MLE) for the allele frequency (not necessarily the same as the AF), for each ALT allele, in the same order as listed">
+##INFO=<ID=MQ,Number=1,Type=Float,Description="RMS Mapping Quality">
+##INFO=<ID=MQ0,Number=1,Type=Integer,Description="Total Mapping Quality Zero Reads">
+##INFO=<ID=MQRankSum,Number=1,Type=Float,Description="Z-score From Wilcoxon rank sum test of Alt vs. Ref read mapping qualities">
+##INFO=<ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth">
+##INFO=<ID=RPA,Number=.,Type=Integer,Description="Number of times tandem repeat unit is repeated, for each allele (including reference)">
+##INFO=<ID=RU,Number=1,Type=String,Description="Tandem repeat unit (bases)">
+##INFO=<ID=ReadPosRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt vs. Ref read position bias">
+##INFO=<ID=STR,Number=0,Type=Flag,Description="Variant is a short tandem repeat">
+##contig=<ID=1,length=249250621>
+##contig=<ID=2,length=243199373>
+##contig=<ID=3,length=198022430>
+##contig=<ID=4,length=191154276>
+##contig=<ID=5,length=180915260>
+##contig=<ID=6,length=171115067>
+##contig=<ID=7,length=159138663>
+##contig=<ID=8,length=146364022>
+##contig=<ID=9,length=141213431>
+##contig=<ID=10,length=135534747>
+##contig=<ID=11,length=135006516>
+##contig=<ID=12,length=133851895>
+##contig=<ID=13,length=115169878>
+##contig=<ID=14,length=107349540>
+##contig=<ID=15,length=102531392>
+##contig=<ID=16,length=90354753>
+##contig=<ID=17,length=81195210>
+##contig=<ID=18,length=78077248>
+##contig=<ID=19,length=59128983>
+##contig=<ID=20,length=63025520>
+##contig=<ID=21,length=48129895>
+##contig=<ID=22,length=51304566>
+##contig=<ID=X,length=155270560>
+##contig=<ID=Y,length=59373566>
+##contig=<ID=MT,length=16569>
+##contig=<ID=GL000207.1,length=4262>
+##contig=<ID=GL000226.1,length=15008>
+##contig=<ID=GL000229.1,length=19913>
+##contig=<ID=GL000231.1,length=27386>
+##contig=<ID=GL000210.1,length=27682>
+##contig=<ID=GL000239.1,length=33824>
+##contig=<ID=GL000235.1,length=34474>
+##contig=<ID=GL000201.1,length=36148>
+##contig=<ID=GL000247.1,length=36422>
+##contig=<ID=GL000245.1,length=36651>
+##contig=<ID=GL000197.1,length=37175>
+##contig=<ID=GL000203.1,length=37498>
+##contig=<ID=GL000246.1,length=38154>
+##contig=<ID=GL000249.1,length=38502>
+##contig=<ID=GL000196.1,length=38914>
+##contig=<ID=GL000248.1,length=39786>
+##contig=<ID=GL000244.1,length=39929>
+##contig=<ID=GL000238.1,length=39939>
+##contig=<ID=GL000202.1,length=40103>
+##contig=<ID=GL000234.1,length=40531>
+##contig=<ID=GL000232.1,length=40652>
+##contig=<ID=GL000206.1,length=41001>
+##contig=<ID=GL000240.1,length=41933>
+##contig=<ID=GL000236.1,length=41934>
+##contig=<ID=GL000241.1,length=42152>
+##contig=<ID=GL000243.1,length=43341>
+##contig=<ID=GL000242.1,length=43523>
+##contig=<ID=GL000230.1,length=43691>
+##contig=<ID=GL000237.1,length=45867>
+##contig=<ID=GL000233.1,length=45941>
+##contig=<ID=GL000204.1,length=81310>
+##contig=<ID=GL000198.1,length=90085>
+##contig=<ID=GL000208.1,length=92689>
+##contig=<ID=GL000191.1,length=106433>
+##contig=<ID=GL000227.1,length=128374>
+##contig=<ID=GL000228.1,length=129120>
+##contig=<ID=GL000214.1,length=137718>
+##contig=<ID=GL000221.1,length=155397>
+##contig=<ID=GL000209.1,length=159169>
+##contig=<ID=GL000218.1,length=161147>
+##contig=<ID=GL000220.1,length=161802>
+##contig=<ID=GL000213.1,length=164239>
+##contig=<ID=GL000211.1,length=166566>
+##contig=<ID=GL000199.1,length=169874>
+##contig=<ID=GL000217.1,length=172149>
+##contig=<ID=GL000216.1,length=172294>
+##contig=<ID=GL000215.1,length=172545>
+##contig=<ID=GL000205.1,length=174588>
+##contig=<ID=GL000219.1,length=179198>
+##contig=<ID=GL000224.1,length=179693>
+##contig=<ID=GL000223.1,length=180455>
+##contig=<ID=GL000195.1,length=182896>
+##contig=<ID=GL000212.1,length=186858>
+##contig=<ID=GL000222.1,length=186861>
+##contig=<ID=GL000200.1,length=187035>
+##contig=<ID=GL000193.1,length=189789>
+##contig=<ID=GL000194.1,length=191469>
+##contig=<ID=GL000225.1,length=211173>
+##contig=<ID=GL000192.1,length=547496>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Sample1
+1	16342237	rs1739840	A	G	3180.76	PASS	AC=1;AF=0.500;AN=2;BaseQRankSum=6.420;DB;DP=250;Dels=0.00;FS=8.623;GC=65.84;HRun=1;HaplotypeScore=10.6067;MLEAC=1;MLEAF=0.500;MQ=60.00;MQ0=0;MQRankSum=0.173;QD=12.72;ReadPosRankSum=-0.256;EFF=SYNONYMOUS_CODING(LOW|SILENT|acT/acC|c.575A>G|245|HSPB7|protein_coding|CODING|ENST00000375718|4|1)	GT:AD:DP:GQ:PL	0/1:129,120:243:99:3209,0,2837
+1	26385003	rs2275950	T	C	3169.77	PASS	AC=1;AF=0.500;AN=2;BaseQRankSum=13.114;DB;DP=250;Dels=0.00;FS=0.474;GC=52.87;HRun=1;HaplotypeScore=7.6909;MLEAC=1;MLEAF=0.500;MQ=60.00;MQ0=0;MQRankSum=1.068;QD=12.68;ReadPosRankSum=-0.218;EFF=NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Aaa/Gaa|p.Lys237Glu|353|TRIM63|protein_coding|CODING|ENST00000374272|5|1)	GT:AD:DP:GQ:PL	0/1:134,116:238:99:3198,0,2696
+1	154842330	.	TTGCTGCTGC	T	2.14748360973E9	PASS	AC=1;AF=0.500;AN=2;BaseQRankSum=3.983;DP=250;FS=23.683;GC=65.34;HRun=0;MLEAC=1;MLEAF=0.500;MQ=57.65;MQ0=0;MQRankSum=3.383;QD=28.40;RPA=8,5;RU=TGC;ReadPosRankSum=2.151;STR;EFF=CODON_CHANGE_PLUS_CODON_DELETION(MODERATE||cagcagcagcaa/caa|p.X34Gln|731|KCNN3|protein_coding|CODING|ENST00000271915|1|1)	GT:AD:DP:GQ:PL	0/1:105,97:241:99:9003,0,10887
+1	236882303	rs1341864	T	C	7734.77	PASS	AC=2;AF=1.00;AN=2;DB;DP=250;Dels=0.00;FS=0.000;GC=49.13;HRun=0;HaplotypeScore=9.2897;MLEAC=2;MLEAF=1.00;MQ=60.00;MQ0=0;QD=30.94;EFF=SYNONYMOUS_CODING(LOW|SILENT|atT/atC|c.350T>C|894|ACTN2|protein_coding|CODING|ENST00000366578|3|1)	GT:AD:DP:GQ:PL	1/1:1,248:248:99:7763,704,0
+2	179447848	rs4894029	T	C	3086.77	PASS	AC=1;AF=0.500;AN=2;BaseQRankSum=5.819;DB;DP=250;Dels=0.00;FS=0.972;GC=39.65;HRun=1;HaplotypeScore=9.9439;MLEAC=1;MLEAF=0.500;MQ=59.90;MQ0=0;MQRankSum=1.885;QD=12.35;ReadPosRankSum=1.166;EFF=EXON(MODIFIER|||||TTN-AS1|antisense|NON_CODING|ENST00000419746|9|1),SYNONYMOUS_CODING(LOW|SILENT|acA/acG|c.65681T>C|35991|TTN|protein_coding|CODING|ENST00000589042|313|1)	GT:AD:DP:GQ:PL	0/1:128,122:244:99:3115,0,2838
+6	44275011	rs324136	T	C	7727.77	GATKStandardHaplotypeScore	AC=2;AF=1.00;AN=2;BaseQRankSum=2.768;DB;DP=250;Dels=0.00;FS=2.125;GC=62.09;HRun=0;HaplotypeScore=15.7940;MLEAC=2;MLEAF=1.00;MQ=60.00;MQ0=0;MQRankSum=0.305;QD=30.91;ReadPosRankSum=0.801;EFF=INTRAGENIC(MODIFIER|||||TMEM151B||CODING|||1),NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Atc/Gtc|p.Ile339Val|985|AARS2|protein_coding|CODING|ENST00000244571|6|1)	GT:AD:DP:GQ:PL	1/1:3,247:247:99:7756,716,0
+6	7542148	rs66469215	C	CA	3817.73	PASS	AC=1;AF=0.500;AN=2;BaseQRankSum=-0.267;DB;DP=250;FS=1.078;GC=72.32;HRun=0;MLEAC=1;MLEAF=0.500;MQ=60.00;MQ0=0;MQRankSum=-0.307;QD=15.27;RPA=1,2;RU=A;ReadPosRankSum=-0.040;STR;EFF=FRAME_SHIFT(HIGH||-/A|p.X1X|2871|DSP|protein_coding|CODING|ENST00000379802|1|1),UPSTREAM(MODIFIER|||||RP3-512B11.3|antisense|NON_CODING|ENST00000561592||1)	GT:AD:DP:GQ:PL	0/1:127,101:250:99:3855,0,5247

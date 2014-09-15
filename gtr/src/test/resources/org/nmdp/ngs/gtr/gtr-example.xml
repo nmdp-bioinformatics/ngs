@@ -1,0 +1,2039 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GTRPublicData Version="1.0">
+  <!--
+	Generated: Wed Aug  6 10:56:39 2014 
+-->
+  <GTRLabData>
+    <GTRLab id="239772" source="GTR" is_GTR="true" is_ClinVar="false" TestCount="1090" AnnualPastDue="false" LastUpdate="2014-07-09">
+      <Organization>
+        <Name>PreventionGenetics</Name>
+        <NameAcronym>Clinical DNA Testing and DNA Banking</NameAcronym>
+        <Institution>PreventionGenetics</Institution>
+        <MailingAddress Public="true">
+          <Line1>3800 S Business Park Ave</Line1>
+          <City>Marshfield</City>
+          <State>Wisconsin</State>
+          <PostCode>54449</PostCode>
+          <Country>United States</Country>
+        </MailingAddress>
+        <LabContact Public="true">
+          <Email>clinicaltesting@preventiongenetics.com</Email>
+          <Phone>715-387-0484</Phone>
+          <Fax>715-384-3661</Fax>
+        </LabContact>
+        <URL>https://www.preventiongenetics.com/</URL>
+        <LabServices>Custom Prenatal Testing</LabServices>
+        <LabServices>Custom Sequence Analysis</LabServices>
+        <LabServices>Data Storage and Backup</LabServices>
+        <LabServices>Genetic counseling</LabServices>
+        <LabServices>Insurance billing</LabServices>
+        <LabServices>Result interpretation</LabServices>
+        <LabServices OrderCode="100,200,300">Clinical Testing/Confirmation of Mutations Identified Previously</LabServices>
+        <LabServices OrderCode="100,200,300">Confirmation of research findings</LabServices>
+        <LabServices OrderCode="100,200,300">Custom mutation-specific/Carrier testing</LabServices>
+        <LabServices OrderCode="100,200,300">Mutation Confirmation</LabServices>
+        <LabServices OrderCode="500">DNA Banking</LabServices>
+        <LabServices OrderCode="600">Custom Deletion/Duplication Testing</LabServices>
+        <LabServices OrderCode="600">Custom microarray analysis</LabServices>
+        <LabServices OrderCode="800">Maternal cell contamination study (MCC)</LabServices>
+        <StandardPrograms>Locus-specific Databases</StandardPrograms>
+        <DataExchangePrograms>ClinVar</DataExchangePrograms>
+        <DataExchangePrograms>Locus-specific Databases</DataExchangePrograms>
+      </Organization>
+      <Personnel id="1742" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Khemissa Bejaoui, PhD, Lab Director</DisplayName>
+          <Name>
+            <First>Khemissa</First>
+            <Last>Bejaoui</Last>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+        </Person>
+        <PublicContact Public="true">
+          <Email>khemissa@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ext 119</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1782" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Bethany Buckley, PhD, Lab Director</DisplayName>
+          <Name>
+            <First>Bethany</First>
+            <Last>Buckley</Last>
+            <Middle>Ann</Middle>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+        </Person>
+        <PublicContact Public="true">
+          <Email>beth.buckley@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ext 174</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1745" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Margaret Chen, PhD, MS, ABMG, FACMG, Diplomate of the American Board of Medical Genetics, Lab Director</DisplayName>
+          <Name>
+            <First>Margaret</First>
+            <Last>Chen</Last>
+            <Middle>Ann</Middle>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+          <Degree Display="true">
+            <Name>MS</Name>
+          </Degree>
+          <Certification>
+            <Specialty>Clinical Molecular Genetics</Specialty>
+            <Board>American Board of Medical Genetics</Board>
+          </Certification>
+          <Credential Display="true">
+            <Name>ABMG</Name>
+          </Credential>
+          <Credential Display="true">
+            <Name>FACMG</Name>
+          </Credential>
+          <Credential Display="true">
+            <Name>Diplomate of the American Board of Medical Genetics</Name>
+          </Credential>
+        </Person>
+        <PublicContact Public="true">
+          <Email>margaret.chen@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ext 143</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1750" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Wuyan Chen, PhD, Lab Director</DisplayName>
+          <Name>
+            <First>Wuyan</First>
+            <Last>Chen</Last>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+        </Person>
+        <PublicContact Public="true">
+          <Email>wuyan.chen@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ext 142</Phone>
+          <Fax>715-207-6567</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1744" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Michael Chicka, PhD, Lab Director</DisplayName>
+          <Name>
+            <First>Michael</First>
+            <Last>Chicka</Last>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+        </Person>
+        <PublicContact Public="true">
+          <Email>michael.chicka@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ext 141</Phone>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1747" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Juan Dong, PhD, ABMG, FACMG, Diplomate of the American Board of Medical Genetics, Lab Director</DisplayName>
+          <Name>
+            <First>Juan</First>
+            <Last>Dong</Last>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+          <Certification>
+            <Specialty>Clinical Molecular Genetics</Specialty>
+            <Board>American Board of Medical Genetics</Board>
+          </Certification>
+          <Credential Display="true">
+            <Name>ABMG</Name>
+          </Credential>
+          <Credential Display="true">
+            <Name>FACMG</Name>
+          </Credential>
+          <Credential Display="true">
+            <Name>Diplomate of the American Board of Medical Genetics</Name>
+          </Credential>
+        </Person>
+        <PublicContact Public="true">
+          <Email>juan.dong@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ext 153</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="2073" PrimaryContact="true" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Luke Drury, PhD, Lab Director</DisplayName>
+          <Name>
+            <First>Luke</First>
+            <Last>Drury</Last>
+            <Middle>J.</Middle>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+        </Person>
+        <PublicContact Public="true">
+          <Email>luke.drury@preventiongenetics.com</Email>
+          <Phone>715-387-0484 Ext 177</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1741" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Bruce Krawisz, MD, Lab Director</DisplayName>
+          <Name>
+            <First>Bruce</First>
+            <Last>Krawisz</Last>
+            <Middle>R</Middle>
+          </Name>
+          <Degree Display="true">
+            <Name>MD</Name>
+          </Degree>
+        </Person>
+        <PublicContact Public="true">
+          <Email>bruce.krawisz@preventiongenetics.com</Email>
+          <Phone>715-387-0484</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1746" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Anthony Krentz, PhD, Lab Director</DisplayName>
+          <Name>
+            <First>Anthony</First>
+            <Last>Krentz</Last>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+        </Person>
+        <PublicContact Public="true">
+          <Email>anthony.krentz@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ext 147</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1748" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Jie Liu, PhD, Lab Director</DisplayName>
+          <Name>
+            <First>Jie</First>
+            <Last>Liu</Last>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+        </Person>
+        <PublicContact Public="true">
+          <Email>jie.liu@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ext 154</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1749" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Jerry Machado, PhD, ABMG, Diplomate of the American Board of Medical Genetics, Lab Director</DisplayName>
+          <Name>
+            <First>Jerry</First>
+            <Last>Machado</Last>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+          <Certification>
+            <Specialty>Clinical Molecular Genetics</Specialty>
+            <Board>American Board of Medical Genetics</Board>
+          </Certification>
+          <Credential Display="true">
+            <Name>ABMG</Name>
+          </Credential>
+          <Credential Display="true">
+            <Name>Diplomate of the American Board of Medical Genetics</Name>
+          </Credential>
+        </Person>
+        <PublicContact Public="true">
+          <Email>jerry.machado@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ext 156</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1808" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Madhulatha Pantrangi, PhD, Lab Director</DisplayName>
+          <Name>
+            <First>Madhulatha</First>
+            <Last>Pantrangi</Last>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+        </Person>
+        <PublicContact Public="true">
+          <Email>madhu.pantrangi@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ex 168</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="2053" PrimaryContact="true" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Srirangan Sampath, PhD, ABMG, FACMG, Diplomate of the American Board of Medical Genetics, Lab Director</DisplayName>
+          <Name>
+            <First>Srirangan</First>
+            <Last>Sampath</Last>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+          <Certification>
+            <Specialty>Clinical Cytogenetics</Specialty>
+            <Board>American Board of Medical Genetics</Board>
+          </Certification>
+          <Credential Display="true">
+            <Name>ABMG</Name>
+          </Credential>
+          <Credential Display="true">
+            <Name>FACMG</Name>
+          </Credential>
+          <Credential Display="true">
+            <Name>Diplomate of the American Board of Medical Genetics</Name>
+          </Credential>
+        </Person>
+        <PublicContact Public="true">
+          <Email>sri.sampath@preventiongenetics.com</Email>
+          <Phone>: 715-387-0484  Ext:182</Phone>
+          <Fax>715-207-6602</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="2497" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Rhea Vallente, PhD, Lab Director</DisplayName>
+          <Name>
+            <First>Rhea</First>
+            <Last>Vallente</Last>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+        </Person>
+        <PublicContact Public="true">
+          <Email>rhea.vallente@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ext 184</Phone>
+          <Fax>Fax: 715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1740" PrimaryContact="true" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>James Weber, PhD, Lab Director</DisplayName>
+          <Name>
+            <First>James</First>
+            <Last>Weber</Last>
+            <Middle>L</Middle>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+        </Person>
+        <PublicContact Public="true">
+          <Email>jim.weber@preventiongenetics.com</Email>
+          <Phone>715-387-0484</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <Personnel id="1739" PrimaryContact="false" IsDirector="true" DisplayWeb="public">
+        <Person>
+          <DisplayName>Thomas Winder, PhD, ABMG, FACMG, Diplomate of the American Board of Medical Genetics, Lab Director</DisplayName>
+          <Name>
+            <First>Thomas</First>
+            <Last>Winder</Last>
+            <Middle>L</Middle>
+          </Name>
+          <Degree Display="true">
+            <Name>PhD</Name>
+          </Degree>
+          <Certification>
+            <Specialty>Clinical Molecular Genetics</Specialty>
+            <Board>American Board of Medical Genetics</Board>
+          </Certification>
+          <Credential Display="true">
+            <Name>ABMG</Name>
+          </Credential>
+          <Credential Display="true">
+            <Name>FACMG</Name>
+          </Credential>
+          <Credential Display="true">
+            <Name>Diplomate of the American Board of Medical Genetics</Name>
+          </Credential>
+        </Person>
+        <PublicContact Public="true">
+          <Email>tom.winder@preventiongenetics.com</Email>
+          <Phone>715-387-0484 ext 118</Phone>
+          <Fax>715-384-3661</Fax>
+        </PublicContact>
+        <Title>Lab Director</Title>
+      </Personnel>
+      <LabCertification Type="State License">
+        <ExpirationDate>2014-06-30</ExpirationDate>
+        <Number>1303</Number>
+        <Name>MD - Maryland Department of Health and Mental Hygiene DHMH</Name>
+      </LabCertification>
+      <LabCertification Type="State License">
+        <ExpirationDate>2014-08-13</ExpirationDate>
+        <Number>COS 00800313</Number>
+        <Name>CA - California Department of Public Health CDPH</Name>
+      </LabCertification>
+      <LabCertification Type="Certification">
+        <ExpirationDate>2014-12-20</ExpirationDate>
+        <Number>7185561, AU ID: 1407125</Number>
+        <Name>CAP</Name>
+      </LabCertification>
+      <LabCertification Type="Certification">
+        <ExpirationDate>2015-09-03</ExpirationDate>
+        <Number>52D2065132</Number>
+        <Name>CLIA</Name>
+      </LabCertification>
+      <LabCertification Type="State License">
+        <ExpirationDate>2015-12-30</ExpirationDate>
+        <Number>LCO00694</Number>
+        <Name>RI - State of Rhode Island Department of Health RIDOH</Name>
+      </LabCertification>
+      <LabCertification Type="State License">
+        <ExpirationDate>2016-04-23</ExpirationDate>
+        <Number>80002641</Number>
+        <Name>FL - Florida Agency for Health Care Administration AHCA</Name>
+      </LabCertification>
+    </GTRLab>
+    <GTRLabTest LastUpdate="2014-06-06" LastTouched="2014-07-16" source="GTR" id="505696" GTRAccession="GTR000505696" Version="5">
+      <ClinVarSet ID="60123">
+        <DescrSet Type="Preferred" CUI="C1969092">Nephronophthisis 7</DescrSet>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="43993">
+          <TraitSet ID="3241">
+            <Trait ID="3446" Type="Disease">
+              <Name Type="Preferred">Infantile nephronophthisis</Name>
+              <Symbol Type="Preferred">NPHP2</Symbol>
+              <Symbol Type="Alternate">NPH2</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="602088"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1865872"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="23412">
+            <Measure ID="3950" Type="Gene">
+              <Name Type="Preferred">inversin</Name>
+              <Name Type="Alternate">NPHP2</Name>
+              <Symbol Type="Preferred">INVS</Symbol>
+              <Location Type="Cytogenetic" Chr="9" assembly="GRCh38">9q31.1</Location>
+              <Location Type="Sequence" Chr="9" assembly="GRCh38">100099184-100301625</Location>
+              <XRef ID="27130" DB="Gene"/>
+              <XRef Type="MIM" ID="243305" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2014-03-07" DateLastUpdated="2014-03-07" ID="211868">
+          <TraitSet ID="13242">
+            <Trait ID="18621" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis type 6</Name>
+              <Name Type="Alternate">Nephronophthisis 6</Name>
+              <Symbol Type="Preferred">NPHP6</Symbol>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C2959563"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="64638">
+            <Measure ID="65417" Type="Gene">
+              <Name Type="Preferred">ankyrin repeat and sterile alpha motif domain containing 6</Name>
+              <Name Type="Alternate">ANKRD14</Name>
+              <Name Type="Alternate">SAMD6</Name>
+              <Symbol Type="Preferred">ANKS6</Symbol>
+              <Location Type="Sequence" Chr="9" assembly="GRCh38">98732008-98796511</Location>
+              <Location Type="Cytogenetic" Chr="9" assembly="GRCh38">9q22.33</Location>
+              <XRef ID="203286" DB="Gene"/>
+              <XRef Type="MIM" ID="615370" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2013-10-22" DateLastUpdated="2013-10-22" ID="152982">
+          <TraitSet ID="569">
+            <Trait ID="5621" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 7</Name>
+              <Symbol Type="Preferred">NPHP7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="611498"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1969092"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22684">
+            <Measure ID="5537" Type="Gene">
+              <Name Type="Preferred">RPGRIP1-like</Name>
+              <Symbol Type="Preferred">RPGRIP1L</Symbol>
+              <Location Type="Cytogenetic" Chr="16" assembly="GRCh38">16q12.2</Location>
+              <Location Type="Sequence" Chr="16" assembly="GRCh38">53599905-53703858</Location>
+              <XRef ID="23322" DB="Gene"/>
+              <XRef Type="MIM" ID="610937" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2013-10-22" DateLastUpdated="2013-10-22" ID="152981">
+          <TraitSet ID="12065">
+            <Trait ID="4385" Type="Disease">
+              <Name Type="Preferred">Senior-Loken syndrome 4</Name>
+              <Symbol Type="Preferred">SLSN4</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="606996"/>
+              <XRef DB="Genetics Home Reference" ID="senior-loken-syndrome"/>
+              <XRef DB="Orphanet" ID="3156"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1846979"/>
+            </Trait>
+            <Trait ID="5621" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 7</Name>
+              <Symbol Type="Preferred">NPHP7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="611498"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1969092"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="23581">
+            <Measure ID="3604" Type="Gene">
+              <Name Type="Preferred">nephronophthisis 4</Name>
+              <Symbol Type="Preferred">NPHP4</Symbol>
+              <Location Type="Cytogenetic" Chr="1" assembly="GRCh38">1p36.31</Location>
+              <Location Type="Sequence" Chr="1" assembly="GRCh38">5862809-5992557</Location>
+              <XRef ID="261734" DB="Gene"/>
+              <XRef Type="MIM" ID="607215" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2013-10-22" DateLastUpdated="2013-10-22" ID="152980">
+          <TraitSet ID="12064">
+            <Trait ID="3715" Type="Disease">
+              <Name Type="Preferred">Senior-Loken syndrome 1</Name>
+              <Name Type="Alternate">Juvenile nephronophthisis with Leber amaurosis</Name>
+              <Name Type="Alternate">Loken-Senior syndrome</Name>
+              <Name Type="Alternate">Renal dysplasia retinal aplasia</Name>
+              <Name Type="Alternate">Renal-retinal syndrome</Name>
+              <Symbol Type="Preferred">SLSN1</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="266900"/>
+              <XRef DB="Genetics Home Reference" ID="senior-loken-syndrome"/>
+              <XRef DB="Orphanet" ID="3156"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0403553"/>
+            </Trait>
+            <Trait ID="5621" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 7</Name>
+              <Symbol Type="Preferred">NPHP7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="611498"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1969092"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22972">
+            <Measure ID="8482" Type="Gene">
+              <Name Type="Preferred">nephronophthisis 1 (juvenile)</Name>
+              <Name Type="Alternate">NPH1</Name>
+              <Symbol Type="Preferred">NPHP1</Symbol>
+              <Location Type="Sequence" Chr="2" assembly="GRCh38">110123335-110205061</Location>
+              <Location Type="Cytogenetic" Chr="2" assembly="GRCh38">2q13</Location>
+              <XRef ID="4867" DB="Gene"/>
+              <XRef Type="MIM" ID="607100" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2013-10-18" DateLastUpdated="2013-10-18" ID="147066">
+          <TraitSet ID="12029">
+            <Trait ID="5621" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 7</Name>
+              <Symbol Type="Preferred">NPHP7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="611498"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1969092"/>
+            </Trait>
+            <Trait ID="16083" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 12</Name>
+              <Symbol Type="Preferred">NPHP12</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="613820"/>
+              <XRef DB="GeneReviews" ID="NBK1325"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C3151186"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="26242">
+            <Measure ID="12660" Type="Gene">
+              <Name Type="Preferred">tetratricopeptide repeat domain 21B</Name>
+              <Symbol Type="Preferred">TTC21B</Symbol>
+              <Location Type="Sequence" Chr="2" assembly="GRCh38">165873361-165953837</Location>
+              <Location Type="Cytogenetic" Chr="2" assembly="GRCh38">2q24.3</Location>
+              <XRef ID="79809" DB="Gene"/>
+              <XRef Type="MIM" ID="612014" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2013-10-18" DateLastUpdated="2013-10-18" ID="147065">
+          <TraitSet ID="12028">
+            <Trait ID="5621" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 7</Name>
+              <Symbol Type="Preferred">NPHP7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="611498"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1969092"/>
+            </Trait>
+            <Trait ID="9715" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 11</Name>
+              <Symbol Type="Preferred">NPHP11</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="613550"/>
+              <XRef DB="Orphanet" ID="84081"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C3150796"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22620">
+            <Measure ID="6716" Type="Gene">
+              <Name Type="Preferred">transmembrane protein 67</Name>
+              <Name Type="Alternate">MKS3</Name>
+              <Symbol Type="Preferred">TMEM67</Symbol>
+              <Location Type="Cytogenetic" Chr="8" assembly="GRCh38">8q22.1</Location>
+              <Location Type="Sequence" Chr="8" assembly="GRCh38">93754843-93819233</Location>
+              <XRef ID="91147" DB="Gene"/>
+              <XRef Type="MIM" ID="609884" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2013-10-18" DateLastUpdated="2013-10-18" ID="147064">
+          <TraitSet ID="12027">
+            <Trait ID="5621" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 7</Name>
+              <Symbol Type="Preferred">NPHP7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="611498"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1969092"/>
+            </Trait>
+            <Trait ID="17402" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 14</Name>
+              <Symbol Type="Preferred">NPHP14</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="614844"/>
+              <XRef DB="Orphanet" ID="2318"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="CN158702"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="37366">
+            <Measure ID="9881" Type="Gene">
+              <Name Type="Preferred">zinc finger protein 423</Name>
+              <Symbol Type="Preferred">ZNF423</Symbol>
+              <Location Type="Sequence" Chr="16" assembly="GRCh38">49490603-49857918</Location>
+              <Location Type="Cytogenetic" Chr="16" assembly="GRCh38">16q12.1</Location>
+              <XRef ID="23090" DB="Gene"/>
+              <XRef Type="MIM" ID="604557" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2013-10-18" DateLastUpdated="2013-10-18" ID="147063">
+          <TraitSet ID="12026">
+            <Trait ID="5621" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 7</Name>
+              <Symbol Type="Preferred">NPHP7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="611498"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1969092"/>
+            </Trait>
+            <Trait ID="17403" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 15</Name>
+              <Symbol Type="Preferred">NPHP15</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="614845"/>
+              <XRef DB="Orphanet" ID="3156"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="CN158703"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="37299">
+            <Measure ID="45843" Type="Gene">
+              <Name Type="Preferred">centrosomal protein 164kDa</Name>
+              <Symbol Type="Preferred">CEP164</Symbol>
+              <Location Type="Sequence" Chr="11" assembly="GRCh38">117321777-117413265</Location>
+              <Location Type="Cytogenetic" Chr="11" assembly="GRCh38">11q23.3</Location>
+              <XRef ID="22897" DB="Gene"/>
+              <XRef Type="MIM" ID="614848" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2013-10-18" DateLastUpdated="2013-10-18" ID="147062">
+          <TraitSet ID="12025">
+            <Trait ID="3445" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 1</Name>
+              <Symbol Type="Preferred">NPHP1</Symbol>
+              <Symbol Type="Alternate">NPH1</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="256100"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1855681"/>
+            </Trait>
+            <Trait ID="5621" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 7</Name>
+              <Symbol Type="Preferred">NPHP7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="611498"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1969092"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22972">
+            <Measure ID="8482" Type="Gene">
+              <Name Type="Preferred">nephronophthisis 1 (juvenile)</Name>
+              <Name Type="Alternate">NPH1</Name>
+              <Symbol Type="Preferred">NPHP1</Symbol>
+              <Location Type="Sequence" Chr="2" assembly="GRCh38">110123335-110205061</Location>
+              <Location Type="Cytogenetic" Chr="2" assembly="GRCh38">2q13</Location>
+              <XRef ID="4867" DB="Gene"/>
+              <XRef Type="MIM" ID="607100" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2013-10-18" DateLastUpdated="2013-10-18" ID="147058">
+          <TraitSet ID="12021">
+            <Trait ID="3716" Type="Disease">
+              <Name Type="Preferred">Senior-Loken syndrome 6</Name>
+              <Symbol Type="Preferred">SLSN6</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="610189"/>
+              <XRef DB="Genetics Home Reference" ID="senior-loken-syndrome"/>
+              <XRef DB="Orphanet" ID="3156"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1857779"/>
+            </Trait>
+            <Trait ID="5621" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 7</Name>
+              <Symbol Type="Preferred">NPHP7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="611498"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1969092"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22618">
+            <Measure ID="2029" Type="Gene">
+              <Name Type="Preferred">centrosomal protein 290kDa</Name>
+              <Symbol Type="Preferred">CEP290</Symbol>
+              <Location Type="Sequence" Chr="12" assembly="GRCh38">88049012-88142215</Location>
+              <Location Type="Cytogenetic" Chr="12" assembly="GRCh38">12q21.32</Location>
+              <XRef ID="80184" DB="Gene"/>
+              <XRef Type="MIM" ID="610142" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2012-05-06" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="48949">
+          <TraitSet ID="29">
+            <Trait ID="9600" Type="Disease">
+              <Name Type="Preferred">Senior-Loken syndrome 7</Name>
+              <Symbol Type="Preferred">SLSN7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="613615"/>
+              <XRef DB="Genetics Home Reference" ID="senior-loken-syndrome"/>
+              <XRef DB="Orphanet" ID="3156"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C3150877"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="29492">
+            <Measure ID="33629" Type="Gene">
+              <Name Type="Preferred">serologically defined colon cancer antigen 8</Name>
+              <Symbol Type="Preferred">SDCCAG8</Symbol>
+              <Location Type="Sequence" Chr="1" assembly="GRCh38">243255433-243500090</Location>
+              <Location Type="Cytogenetic" Chr="1" assembly="GRCh38">1q43-44</Location>
+              <XRef ID="10806" DB="Gene"/>
+              <XRef Type="MIM" ID="613524" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-12-21" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="47792">
+          <TraitSet ID="7649">
+            <Trait ID="16690" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 13</Name>
+              <Symbol Type="Preferred">NPHP13</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="614377"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C3280612"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="26387">
+            <Measure ID="12928" Type="Gene">
+              <Name Type="Preferred">WD repeat domain 19</Name>
+              <Symbol Type="Preferred">WDR19</Symbol>
+              <Location Type="Cytogenetic" Chr="4" assembly="GRCh38">4p14</Location>
+              <Location Type="Sequence" Chr="4" assembly="GRCh38">39182403-39285809</Location>
+              <XRef ID="57728" DB="Gene"/>
+              <XRef Type="MIM" ID="608151" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-12-11" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="47559">
+          <TraitSet ID="389">
+            <Trait ID="9716" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 9</Name>
+              <Symbol Type="Preferred">NPHP9</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="613824"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C3151188"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="26243">
+            <Measure ID="3639" Type="Gene">
+              <Name Type="Preferred">NIMA-related kinase 8</Name>
+              <Symbol Type="Preferred">NEK8</Symbol>
+              <Location Type="Sequence" Chr="17" assembly="GRCh38">28728813-28742765</Location>
+              <Location Type="Cytogenetic" Chr="17" assembly="GRCh38">17q11.2</Location>
+              <XRef ID="284086" DB="Gene"/>
+              <XRef Type="MIM" ID="609799" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="44851">
+          <TraitSet ID="569">
+            <Trait ID="5621" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 7</Name>
+              <Symbol Type="Preferred">NPHP7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="611498"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1969092"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="23900">
+            <Measure ID="10889" Type="Gene">
+              <Name Type="Preferred">GLIS family zinc finger 2</Name>
+              <Symbol Type="Preferred">GLIS2</Symbol>
+              <Location Type="Sequence" Chr="16" assembly="GRCh38">4316223-4339596</Location>
+              <Location Type="Cytogenetic" Chr="16" assembly="GRCh38">16p13.3</Location>
+              <XRef ID="84662" DB="Gene"/>
+              <XRef Type="MIM" ID="608539" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="44583">
+          <TraitSet ID="468">
+            <Trait ID="4386" Type="Disease">
+              <Name Type="Preferred">Senior-Loken syndrome 5</Name>
+              <Symbol Type="Preferred">SLSN5</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="609254"/>
+              <XRef DB="Orphanet" ID="3156"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1836517"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="23737">
+            <Measure ID="3952" Type="Gene">
+              <Name Type="Preferred">IQ motif containing B1</Name>
+              <Symbol Type="Preferred">IQCB1</Symbol>
+              <Location Type="Cytogenetic" Chr="3" assembly="GRCh38">3q13.33</Location>
+              <Location Type="Sequence" Chr="3" assembly="GRCh38">121769762-121835078</Location>
+              <XRef ID="9657" DB="Gene"/>
+              <XRef Type="MIM" ID="609237" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="44294">
+          <TraitSet ID="870">
+            <Trait ID="3029" Type="Disease">
+              <Name Type="Preferred">Nephronophthisis 4</Name>
+              <Name Type="Alternate">NEPHRONOPHTHISIS 4, JUVENILE</Name>
+              <Symbol Type="Preferred">NPHP4</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="606966"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1847013"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="23581">
+            <Measure ID="3604" Type="Gene">
+              <Name Type="Preferred">nephronophthisis 4</Name>
+              <Symbol Type="Preferred">NPHP4</Symbol>
+              <Location Type="Cytogenetic" Chr="1" assembly="GRCh38">1p36.31</Location>
+              <Location Type="Sequence" Chr="1" assembly="GRCh38">5862809-5992557</Location>
+              <XRef ID="261734" DB="Gene"/>
+              <XRef Type="MIM" ID="607215" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="44136">
+          <TraitSet ID="676">
+            <Trait ID="5620" Type="Disease">
+              <Name Type="Preferred">Adolescent nephronophthisis</Name>
+              <Symbol Type="Preferred">NPHP3</Symbol>
+              <Symbol Type="Alternate">NPH3</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="604387"/>
+              <XRef DB="Orphanet" ID="655"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C1858392"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22606">
+            <Measure ID="4830" Type="Gene">
+              <Name Type="Preferred">nephronophthisis 3 (adolescent)</Name>
+              <Symbol Type="Preferred">NPHP3</Symbol>
+              <Location Type="Cytogenetic" Chr="3" assembly="GRCh38">3q22.1</Location>
+              <Location Type="Sequence" Chr="3" assembly="GRCh38">132680608-132722458</Location>
+              <XRef ID="27031" DB="Gene"/>
+              <XRef Type="MIM" ID="608002" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+      </ClinVarSet>
+      <TestName>Nephronophthisis and Senior-Loken Syndrome NextGen Sequencing Panel</TestName>
+      <TestDevelopment>Test developed by laboratory (no manufacturer test name)</TestDevelopment>
+      <TestService OrderCode="1058">Clinical Testing/Confirmation of Mutations Identified Previously</TestService>
+      <TestService OrderCode="600">Custom Deletion/Duplication Testing</TestService>
+      <Order>
+        <Description>Please visit Lab web site for detail http://www.preventiongenetics.com</Description>
+        <URL>http://preventiongenetics.com/clinical-dna-testing/requisition-forms/</URL>
+      </Order>
+      <Specimen>
+        <SpecimenType>Amniocytes</SpecimenType>
+        <SpecimenType>Amniotic fluid</SpecimenType>
+        <SpecimenType>Bone marrow</SpecimenType>
+        <SpecimenType>Buccal swab</SpecimenType>
+        <SpecimenType>Cell culture</SpecimenType>
+        <SpecimenType>Cell-free DNA</SpecimenType>
+        <SpecimenType>Chorionic villi</SpecimenType>
+        <SpecimenType>Cord blood</SpecimenType>
+        <SpecimenType>Fetal blood</SpecimenType>
+        <SpecimenType>Fibroblasts</SpecimenType>
+        <SpecimenType>Fresh tissue</SpecimenType>
+        <SpecimenType>Frozen tissue</SpecimenType>
+        <SpecimenType>Isolated DNA</SpecimenType>
+        <SpecimenType>Peripheral (whole) blood</SpecimenType>
+        <SpecimenType>Product of conception (POC)</SpecimenType>
+        <SpecimenType>Saliva</SpecimenType>
+        <SpecimenType>Skin</SpecimenType>
+        <SpecimenType>Sputum</SpecimenType>
+        <SpecimenType>White blood cell prep</SpecimenType>
+        <URL>http://preventiongenetics.com/files/1713/8599/0947/Specimen_Requirements.pdf</URL>
+      </Specimen>
+      <TestContact>1746</TestContact>
+      <TestContactPolicy>Laboratory can only accept contact from health care providers. Patients/families are encouraged to discuss genetic testing options with their health care provider.</TestContactPolicy>
+      <InformedConsentReq>No</InformedConsentReq>
+      <GeneticCounselingReqPre>No</GeneticCounselingReqPre>
+      <GeneticCounselingReqPost>No</GeneticCounselingReqPost>
+      <LabOrderCode>1058</LabOrderCode>
+      <TestCodes>
+        <URL>http://preventiongenetics.com/clinical-dna-testing/test/nephronophthisis-and-seniorloken-syndrome-nextgen-sequencing-panel/1735/</URL>
+      </TestCodes>
+      <TestURL>http://preventiongenetics.com/clinical-dna-testing/test/nephronophthisis-and-seniorloken-syndrome-nextgen-sequencing-panel/1735/</TestURL>
+      <Availability>
+        <TestPerformedList>Entire test performed in-house</TestPerformedList>
+      </Availability>
+      <OrderableBy>Genetic Counselor</OrderableBy>
+      <OrderableBy>Health Care Provider</OrderableBy>
+      <OrderableBy>Licensed Physician</OrderableBy>
+      <TestResults>
+        <SampleNegReport>Not provided</SampleNegReport>
+        <SamplePosReport>Not provided</SamplePosReport>
+        <VUS>
+          <Interpretation>The PreventionGenetics protocol for interpreting sequence variants has been carefully developed over a period of 10 years.  We are conservative in our interpretations.  We do not label a variant as pathogenic or benign without conclusive evidence.  Although we use a variety of software to assist us in interpretation, we rely primarily on evidence published in the literature, on control allele frequencies (especially from the 1000Genomes and Exon Sequencing Project), and on genetic evidence.  Programs that predict pathogenicity or splicing are given much less weight.</Interpretation>
+          <Software>GeneSplicer, Human Splicing Finder, MaxEntScan, Mutation Taster, NNSPLICE, PolyPhen 2, SIFT and Splice Site Finder.</Software>
+          <ReportingPolicy>Sequence variants found in our patients are contributed to ClinVar.  Anonymous patient sequence data will also be shared with researchers for preparation of peer-reviewed publications.</ReportingPolicy>
+          <RecruitFamily Recruit="Yes">Please visit our website for detail at http://preventiongenetics.com/clinical-dna-testing/requisition-forms/ for Targeted variant test.</RecruitFamily>
+        </VUS>
+        <ReContact RecontactAnswer="Yes">Please visit our website for detail http://preventiongenetics.com/</ReContact>
+      </TestResults>
+      <Indications>
+        <Purpose>Diagnosis</Purpose>
+        <Purpose>Mutation Confirmation</Purpose>
+        <Purpose>Pre-symptomatic</Purpose>
+        <Purpose>Risk Assessment</Purpose>
+        <Purpose>Screening</Purpose>
+        <TestType>Clinical</TestType>
+        <TargetPop>
+          <Description>This test is for patients with Nephronophthisis (NPH) or Senior-Loken Syndrome (SLS).</Description>
+        </TargetPop>
+      </Indications>
+      <Method>
+        <TopCategory Value="Molecular Genetics">
+          <Category Value="Deletion/duplication analysis" code="D">
+            <Methodology Value="Comparative Genomic Hybridization"/>
+          </Category>
+          <Category Value="Sequence analysis of the entire coding region" code="C">
+            <Methodology Value="Next-Generation (NGS)/Massively parallel sequencing (MPS)">
+              <Instrument>Illumina MiSeq</Instrument>
+            </Methodology>
+          </Category>
+        </TopCategory>
+      </Method>
+      <MethodAdd>
+        <Protocol>
+          <Description>We use a combination of Next Generation Sequencing (NGS) and Sanger sequencing technologies to cover the full coding regions of the genes listed, plus ~20 bases of non-coding DNA flanking each exon.  For NGS, patient DNA corresponding to these regions is captured using an optimized set of DNA hybridization probes designed by NimbleGen (Roche NimbleGen, Inc., Madison, WI, USA).  Captured DNA is sequenced using Illumina’s Reversible Dye Terminator (RDT) platform (Illumina, San Diego, CA, USA).  Regions with insufficient coverage by NGS are covered by Sanger sequencing.  All pathogenic, rare, undocumented and suspect NGS variant calls are confirmed by Sanger sequencing.&#13;
+&#13;
+Patient DNA sequence is aligned to the genomic reference sequence for each gene. ALL differences from the reference sequences (sequence variants) are reported in four tables:&#13;
+(1) Variants Documented or Expected to be Pathogenic&#13;
+(2) Variants Suspected to be Pathogenic or of Unknown Significance&#13;
+(3) Variants Suspected to be Benign&#13;
+(4) Common Variants Unlikely to be a Primary Cause of Disease.&#13;
+Human Genome Variation Society (HGVS) recommendations are used to describe variants (http://www.hgvs.org).&#13;
+&#13;
+As required, DNA is extracted from the patient specimen is using an ArchivePure DNA Blood Kit (5 PRIME, Inc. Gaithersburg, MD, USA).  For Sanger sequencing, Polymerase Chain Reaction (PCR) is used to amplify targeted regions.  After purification of the PCR products, cycle sequencing is carried out using the ABI Big Dye Terminator v.3.0 kit.  PCR products are resolved by electrophoresis on an ABI 3730xl capillary sequencer.  In nearly all cases, cycle sequencing is performed separately in both the forward and reverse directions.</Description>
+        </Protocol>
+        <Confirmation>Different Method</Confirmation>
+      </MethodAdd>
+      <AnalyticalValidity>
+        <Description>As of October 2012, 0.84 mb of sequence (83 genes, 1557 exons) generated in our lab was compared between Sanger and NextGen methodologies. We detected no differences between the two methods. The comparison involved 1438 total sequence variants (differences from the reference sequences). Of these, 1261 were nucleotide substitutions and 177 were insertions or deletions (100.00% accuracy). PreventionGenetics’ high density gene-centric custom designed aCGH enables the detection of relatively small deletion and amplification mutations (down to ~300 bp) within a single exon of a given gene or deletion and amplification mutations encompassing the entire gene. PreventionGenetics has established and verified this test’s accuracy and precision.</Description>
+      </AnalyticalValidity>
+      <QualityControl PTPerformed="true">
+        <Method>Intra-Laboratory</Method>
+      </QualityControl>
+      <Regulations>
+        <FDARegulatoryClearance>
+          <Category>FDA exercises enforcement discretion</Category>
+        </FDARegulatoryClearance>
+      </Regulations>
+    </GTRLabTest>
+    <GTRLabTest LastUpdate="2014-06-06" LastTouched="2014-07-16" source="GTR" id="505663" GTRAccession="GTR000505663" Version="3">
+      <ClinVarSet ID="60090">
+        <DescrSet Type="Preferred" CUI="C0752166">Bardet-Biedl syndrome</DescrSet>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42784">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22614">
+            <Measure ID="603" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 2</Name>
+              <Name Type="Alternate">BBS</Name>
+              <Symbol Type="Preferred">BBS2</Symbol>
+              <Location Type="Sequence" Chr="16" assembly="GRCh38">56470388-56520095</Location>
+              <Location Type="Cytogenetic" Chr="16" assembly="GRCh38">16q13</Location>
+              <XRef ID="583" DB="Gene"/>
+              <XRef Type="MIM" ID="606151" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-09-27" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="47156">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="25923">
+            <Measure ID="33665" Type="Gene">
+              <Name Type="Preferred">WD repeat containing planar cell polarity effector</Name>
+              <Name Type="Alternate">C2orf86</Name>
+              <Symbol Type="Preferred">WDPCP</Symbol>
+              <Location Type="Cytogenetic" Chr="2" assembly="GRCh38">2p15</Location>
+              <Location Type="Sequence" Chr="2" assembly="GRCh38">63121382-63588732</Location>
+              <XRef ID="51057" DB="Gene"/>
+              <XRef Type="MIM" ID="613580" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42798">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22628">
+            <Measure ID="11518" Type="Gene">
+              <Name Type="Preferred">McKusick-Kaufman syndrome</Name>
+              <Name Type="Alternate">BBS6</Name>
+              <Symbol Type="Preferred">MKKS</Symbol>
+              <Location Type="Sequence" Chr="20" assembly="GRCh38">10404779-10434238</Location>
+              <Location Type="Cytogenetic" Chr="20" assembly="GRCh38">20p12.2</Location>
+              <XRef ID="8195" DB="Gene"/>
+              <XRef Type="MIM" ID="604896" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42797">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22627">
+            <Measure ID="10068" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 7</Name>
+              <Symbol Type="Preferred">BBS7</Symbol>
+              <Location Type="Sequence" Chr="4" assembly="GRCh38">121824328-121870496</Location>
+              <Location Type="Cytogenetic" Chr="4" assembly="GRCh38">4q27</Location>
+              <XRef ID="55212" DB="Gene"/>
+              <XRef Type="MIM" ID="607590" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42796">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22626">
+            <Measure ID="10067" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 5</Name>
+              <Symbol Type="Preferred">BBS5</Symbol>
+              <Location Type="Cytogenetic" Chr="2" assembly="GRCh38">2q31.1</Location>
+              <Location Type="Sequence" Chr="2" assembly="GRCh38">169479495-169506654</Location>
+              <XRef ID="129880" DB="Gene"/>
+              <XRef Type="MIM" ID="603650" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42795">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22625">
+            <Measure ID="10066" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 12</Name>
+              <Name Type="Alternate">C4orf24</Name>
+              <Symbol Type="Preferred">BBS12</Symbol>
+              <Location Type="Sequence" Chr="4" assembly="GRCh38">122732701-122744942</Location>
+              <Location Type="Cytogenetic" Chr="4" assembly="GRCh38">4q27</Location>
+              <XRef ID="166379" DB="Gene"/>
+              <XRef Type="MIM" ID="610683" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42794">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22624">
+            <Measure ID="9528" Type="Gene">
+              <Name Type="Preferred">tetratricopeptide repeat domain 8</Name>
+              <Symbol Type="Preferred">TTC8</Symbol>
+              <Location Type="Sequence" Chr="14" assembly="GRCh38">88824152-88877995</Location>
+              <Location Type="Cytogenetic" Chr="14" assembly="GRCh38">14q31.3</Location>
+              <XRef ID="123016" DB="Gene"/>
+              <XRef Type="MIM" ID="608132" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42793">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22623">
+            <Measure ID="8389" Type="Gene">
+              <Name Type="Preferred">Meckel syndrome, type 1</Name>
+              <Name Type="Alternate">MKS</Name>
+              <Symbol Type="Preferred">MKS1</Symbol>
+              <Location Type="Sequence" Chr="17" assembly="GRCh38">58205435-58219604</Location>
+              <Location Type="Cytogenetic" Chr="17" assembly="GRCh38">17q22</Location>
+              <XRef ID="54903" DB="Gene"/>
+              <XRef Type="MIM" ID="609883" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42792">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22622">
+            <Measure ID="7840" Type="Gene">
+              <Name Type="Preferred">ADP-ribosylation factor-like 6</Name>
+              <Name Type="Alternate">BBS3</Name>
+              <Symbol Type="Preferred">ARL6</Symbol>
+              <Location Type="Cytogenetic" Chr="3" assembly="GRCh38">3q11.2</Location>
+              <Location Type="Sequence" Chr="3" assembly="GRCh38">97764520-97801241</Location>
+              <XRef ID="84100" DB="Gene"/>
+              <XRef Type="MIM" ID="608845" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42791">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22621">
+            <Measure ID="6736" Type="Gene">
+              <Name Type="Preferred">tripartite motif containing 32</Name>
+              <Name Type="Alternate">LGMD2H</Name>
+              <Symbol Type="Preferred">TRIM32</Symbol>
+              <Location Type="Cytogenetic" Chr="9" assembly="GRCh38">9q33.1</Location>
+              <Location Type="Sequence" Chr="9" assembly="GRCh38">116687301-116701299</Location>
+              <XRef ID="22954" DB="Gene"/>
+              <XRef Type="MIM" ID="602290" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42790">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22620">
+            <Measure ID="6716" Type="Gene">
+              <Name Type="Preferred">transmembrane protein 67</Name>
+              <Name Type="Alternate">MKS3</Name>
+              <Symbol Type="Preferred">TMEM67</Symbol>
+              <Location Type="Cytogenetic" Chr="8" assembly="GRCh38">8q22.1</Location>
+              <Location Type="Sequence" Chr="8" assembly="GRCh38">93754843-93819233</Location>
+              <XRef ID="91147" DB="Gene"/>
+              <XRef Type="MIM" ID="609884" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42789">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22619">
+            <Measure ID="5157" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 9</Name>
+              <Symbol Type="Preferred">BBS9</Symbol>
+              <Location Type="Sequence" Chr="7" assembly="GRCh38">33129243-33606067</Location>
+              <Location Type="Cytogenetic" Chr="7" assembly="GRCh38">7p14.3</Location>
+              <XRef ID="27241" DB="Gene"/>
+              <XRef Type="MIM" ID="607968" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42788">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22618">
+            <Measure ID="2029" Type="Gene">
+              <Name Type="Preferred">centrosomal protein 290kDa</Name>
+              <Symbol Type="Preferred">CEP290</Symbol>
+              <Location Type="Sequence" Chr="12" assembly="GRCh38">88049012-88142215</Location>
+              <Location Type="Cytogenetic" Chr="12" assembly="GRCh38">12q21.32</Location>
+              <XRef ID="80184" DB="Gene"/>
+              <XRef Type="MIM" ID="610142" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42787">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22617">
+            <Measure ID="1073" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 10</Name>
+              <Name Type="Alternate">C12orf58</Name>
+              <Symbol Type="Preferred">BBS10</Symbol>
+              <Location Type="Sequence" Chr="12" assembly="GRCh38">76344485-76348905</Location>
+              <Location Type="Cytogenetic" Chr="12" assembly="GRCh38">12q21.2</Location>
+              <XRef ID="79738" DB="Gene"/>
+              <XRef Type="MIM" ID="610148" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42786">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22616">
+            <Measure ID="947" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 4</Name>
+              <Symbol Type="Preferred">BBS4</Symbol>
+              <Location Type="Sequence" Chr="15" assembly="GRCh38">72686178-72738475</Location>
+              <Location Type="Cytogenetic" Chr="15" assembly="GRCh38">15q24.1</Location>
+              <XRef ID="585" DB="Gene"/>
+              <XRef Type="MIM" ID="600374" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42785">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22615">
+            <Measure ID="946" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 1</Name>
+              <Symbol Type="Preferred">BBS1</Symbol>
+              <Location Type="Cytogenetic" Chr="11" assembly="GRCh38">11q13.2</Location>
+              <Location Type="Sequence" Chr="11" assembly="GRCh38">66510647-66533612</Location>
+              <XRef ID="582" DB="Gene"/>
+              <XRef Type="MIM" ID="209901" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+      </ClinVarSet>
+      <TestName>Bardet-Biedl Syndrome NextGen Sequencing Panel</TestName>
+      <TestDevelopment>Test developed by laboratory (no manufacturer test name)</TestDevelopment>
+      <TestService OrderCode="1053">Clinical Testing/Confirmation of Mutations Identified Previously</TestService>
+      <TestService OrderCode="600">Custom Deletion/Duplication Testing</TestService>
+      <Order>
+        <Description>Please visit Lab web site for detail http://www.preventiongenetics.com</Description>
+        <URL>http://preventiongenetics.com/clinical-dna-testing/requisition-forms/</URL>
+      </Order>
+      <Specimen>
+        <SpecimenType>Amniocytes</SpecimenType>
+        <SpecimenType>Amniotic fluid</SpecimenType>
+        <SpecimenType>Bone marrow</SpecimenType>
+        <SpecimenType>Buccal swab</SpecimenType>
+        <SpecimenType>Cell culture</SpecimenType>
+        <SpecimenType>Cell-free DNA</SpecimenType>
+        <SpecimenType>Chorionic villi</SpecimenType>
+        <SpecimenType>Cord blood</SpecimenType>
+        <SpecimenType>Fetal blood</SpecimenType>
+        <SpecimenType>Fibroblasts</SpecimenType>
+        <SpecimenType>Fresh tissue</SpecimenType>
+        <SpecimenType>Frozen tissue</SpecimenType>
+        <SpecimenType>Isolated DNA</SpecimenType>
+        <SpecimenType>Peripheral (whole) blood</SpecimenType>
+        <SpecimenType>Product of conception (POC)</SpecimenType>
+        <SpecimenType>Saliva</SpecimenType>
+        <SpecimenType>Skin</SpecimenType>
+        <SpecimenType>Sputum</SpecimenType>
+        <SpecimenType>White blood cell prep</SpecimenType>
+        <URL>http://preventiongenetics.com/files/1713/8599/0947/Specimen_Requirements.pdf</URL>
+      </Specimen>
+      <TestContact>1746</TestContact>
+      <TestContactPolicy>Laboratory can only accept contact from health care providers. Patients/families are encouraged to discuss genetic testing options with their health care provider.</TestContactPolicy>
+      <InformedConsentReq>No</InformedConsentReq>
+      <GeneticCounselingReqPre>No</GeneticCounselingReqPre>
+      <GeneticCounselingReqPost>No</GeneticCounselingReqPost>
+      <LabOrderCode>1053</LabOrderCode>
+      <TestCodes>
+        <URL>http://preventiongenetics.com/clinical-dna-testing/test/bardetbiedl-syndrome-nextgen-sequencing-panel/1732/</URL>
+      </TestCodes>
+      <TestURL>http://preventiongenetics.com/clinical-dna-testing/test/bardetbiedl-syndrome-nextgen-sequencing-panel/1732/</TestURL>
+      <Availability>
+        <TestPerformedList>Entire test performed in-house</TestPerformedList>
+      </Availability>
+      <OrderableBy>Genetic Counselor</OrderableBy>
+      <OrderableBy>Health Care Provider</OrderableBy>
+      <OrderableBy>Licensed Physician</OrderableBy>
+      <TestResults>
+        <SampleNegReport>Not provided</SampleNegReport>
+        <SamplePosReport>Not provided</SamplePosReport>
+        <VUS>
+          <Interpretation>The PreventionGenetics protocol for interpreting sequence variants has been carefully developed over a period of 10 years.  We are conservative in our interpretations.  We do not label a variant as pathogenic or benign without conclusive evidence.  Although we use a variety of software to assist us in interpretation, we rely primarily on evidence published in the literature, on control allele frequencies (especially from the 1000Genomes and Exon Sequencing Project), and on genetic evidence.  Programs that predict pathogenicity or splicing are given much less weight.</Interpretation>
+          <Software>GeneSplicer, Human Splicing Finder, MaxEntScan, Mutation Taster, NNSPLICE, PolyPhen 2, SIFT and Splice Site Finder.</Software>
+          <ReportingPolicy>Sequence variants found in our patients are contributed to ClinVar.  Anonymous patient sequence data will also be shared with researchers for preparation of peer-reviewed publications.</ReportingPolicy>
+          <RecruitFamily Recruit="Yes">Please visit our website for detail at http://preventiongenetics.com/clinical-dna-testing/requisition-forms/ for Targeted variant test.</RecruitFamily>
+        </VUS>
+        <ReContact RecontactAnswer="Yes">Please visit our website for detail http://preventiongenetics.com/</ReContact>
+      </TestResults>
+      <Indications>
+        <Purpose>Diagnosis</Purpose>
+        <Purpose>Mutation Confirmation</Purpose>
+        <Purpose>Pre-symptomatic</Purpose>
+        <Purpose>Risk Assessment</Purpose>
+        <Purpose>Screening</Purpose>
+        <TestType>Clinical</TestType>
+        <TargetPop>
+          <Description>This test is for patients with symptoms of Bardet-Biedl Syndrome (BBS).</Description>
+        </TargetPop>
+      </Indications>
+      <Method>
+        <TopCategory Value="Molecular Genetics">
+          <Category Value="Deletion/duplication analysis" code="D">
+            <Methodology Value="Comparative Genomic Hybridization"/>
+          </Category>
+          <Category Value="Sequence analysis of the entire coding region" code="C">
+            <Methodology Value="Next-Generation (NGS)/Massively parallel sequencing (MPS)">
+              <Instrument>Illumina MiSeq</Instrument>
+            </Methodology>
+          </Category>
+        </TopCategory>
+      </Method>
+      <MethodAdd>
+        <Protocol>
+          <Description>We use a combination of Next Generation Sequencing (NGS) and Sanger sequencing technologies to cover the full coding regions of the genes listed, plus ~20 bases of non-coding DNA flanking each exon.  For NGS, patient DNA corresponding to these regions is captured using an optimized set of DNA hybridization probes designed by NimbleGen (Roche NimbleGen, Inc., Madison, WI, USA).  Captured DNA is sequenced using Illumina’s Reversible Dye Terminator (RDT) platform (Illumina, San Diego, CA, USA).  Regions with insufficient coverage by NGS are covered by Sanger sequencing.  All pathogenic, rare, undocumented and suspect NGS variant calls are confirmed by Sanger sequencing.&#13;
+&#13;
+Patient DNA sequence is aligned to the genomic reference sequence for each gene. ALL differences from the reference sequences (sequence variants) are reported in four tables:&#13;
+(1) Variants Documented or Expected to be Pathogenic&#13;
+(2) Variants Suspected to be Pathogenic or of Unknown Significance&#13;
+(3) Variants Suspected to be Benign&#13;
+(4) Common Variants Unlikely to be a Primary Cause of Disease.&#13;
+Human Genome Variation Society (HGVS) recommendations are used to describe variants (http://www.hgvs.org).&#13;
+&#13;
+As required, DNA is extracted from the patient specimen is using an ArchivePure DNA Blood Kit (5 PRIME, Inc. Gaithersburg, MD, USA).  For Sanger sequencing, Polymerase Chain Reaction (PCR) is used to amplify targeted regions.  After purification of the PCR products, cycle sequencing is carried out using the ABI Big Dye Terminator v.3.0 kit.  PCR products are resolved by electrophoresis on an ABI 3730xl capillary sequencer.  In nearly all cases, cycle sequencing is performed separately in both the forward and reverse directions.</Description>
+        </Protocol>
+        <Confirmation>different method</Confirmation>
+      </MethodAdd>
+      <AnalyticalValidity>
+        <Description>As of October 2012, 0.84 mb of sequence (83 genes, 1557 exons) generated in our lab was compared between Sanger and NextGen methodologies. We detected no differences between the two methods. The comparison involved 1438 total sequence variants (differences from the reference sequences). Of these, 1261 were nucleotide substitutions and 177 were insertions or deletions (100.00% accuracy). PreventionGenetics’ high density gene-centric custom designed aCGH enables the detection of relatively small deletion and amplification mutations (down to ~300 bp) within a single exon of a given gene or deletion and amplification mutations encompassing the entire gene. PreventionGenetics has established and verified this test’s accuracy and precision.</Description>
+      </AnalyticalValidity>
+      <QualityControl PTPerformed="true">
+        <Method>Intra-Laboratory</Method>
+      </QualityControl>
+      <Regulations>
+        <FDARegulatoryClearance>
+          <Category>FDA exercises enforcement discretion</Category>
+        </FDARegulatoryClearance>
+      </Regulations>
+    </GTRLabTest>
+    <GTRLabTest LastUpdate="2014-06-06" LastTouched="2014-07-16" source="GTR" id="505664" GTRAccession="GTR000505664" Version="1">
+      <ClinVarSet ID="60091">
+        <DescrSet Type="Preferred" CUI="C3150877">Senior-Loken syndrome 7</DescrSet>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42784">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22614">
+            <Measure ID="603" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 2</Name>
+              <Name Type="Alternate">BBS</Name>
+              <Symbol Type="Preferred">BBS2</Symbol>
+              <Location Type="Sequence" Chr="16" assembly="GRCh38">56470388-56520095</Location>
+              <Location Type="Cytogenetic" Chr="16" assembly="GRCh38">16q13</Location>
+              <XRef ID="583" DB="Gene"/>
+              <XRef Type="MIM" ID="606151" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2012-05-06" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="48949">
+          <TraitSet ID="29">
+            <Trait ID="9600" Type="Disease">
+              <Name Type="Preferred">Senior-Loken syndrome 7</Name>
+              <Symbol Type="Preferred">SLSN7</Symbol>
+              <XRef DB="OMIM" Type="MIM" ID="613615"/>
+              <XRef DB="Genetics Home Reference" ID="senior-loken-syndrome"/>
+              <XRef DB="Orphanet" ID="3156"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C3150877"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="29492">
+            <Measure ID="33629" Type="Gene">
+              <Name Type="Preferred">serologically defined colon cancer antigen 8</Name>
+              <Symbol Type="Preferred">SDCCAG8</Symbol>
+              <Location Type="Sequence" Chr="1" assembly="GRCh38">243255433-243500090</Location>
+              <Location Type="Cytogenetic" Chr="1" assembly="GRCh38">1q43-44</Location>
+              <XRef ID="10806" DB="Gene"/>
+              <XRef Type="MIM" ID="613524" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42798">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22628">
+            <Measure ID="11518" Type="Gene">
+              <Name Type="Preferred">McKusick-Kaufman syndrome</Name>
+              <Name Type="Alternate">BBS6</Name>
+              <Symbol Type="Preferred">MKKS</Symbol>
+              <Location Type="Sequence" Chr="20" assembly="GRCh38">10404779-10434238</Location>
+              <Location Type="Cytogenetic" Chr="20" assembly="GRCh38">20p12.2</Location>
+              <XRef ID="8195" DB="Gene"/>
+              <XRef Type="MIM" ID="604896" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42797">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22627">
+            <Measure ID="10068" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 7</Name>
+              <Symbol Type="Preferred">BBS7</Symbol>
+              <Location Type="Sequence" Chr="4" assembly="GRCh38">121824328-121870496</Location>
+              <Location Type="Cytogenetic" Chr="4" assembly="GRCh38">4q27</Location>
+              <XRef ID="55212" DB="Gene"/>
+              <XRef Type="MIM" ID="607590" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42796">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22626">
+            <Measure ID="10067" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 5</Name>
+              <Symbol Type="Preferred">BBS5</Symbol>
+              <Location Type="Cytogenetic" Chr="2" assembly="GRCh38">2q31.1</Location>
+              <Location Type="Sequence" Chr="2" assembly="GRCh38">169479495-169506654</Location>
+              <XRef ID="129880" DB="Gene"/>
+              <XRef Type="MIM" ID="603650" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42795">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22625">
+            <Measure ID="10066" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 12</Name>
+              <Name Type="Alternate">C4orf24</Name>
+              <Symbol Type="Preferred">BBS12</Symbol>
+              <Location Type="Sequence" Chr="4" assembly="GRCh38">122732701-122744942</Location>
+              <Location Type="Cytogenetic" Chr="4" assembly="GRCh38">4q27</Location>
+              <XRef ID="166379" DB="Gene"/>
+              <XRef Type="MIM" ID="610683" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42794">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22624">
+            <Measure ID="9528" Type="Gene">
+              <Name Type="Preferred">tetratricopeptide repeat domain 8</Name>
+              <Symbol Type="Preferred">TTC8</Symbol>
+              <Location Type="Sequence" Chr="14" assembly="GRCh38">88824152-88877995</Location>
+              <Location Type="Cytogenetic" Chr="14" assembly="GRCh38">14q31.3</Location>
+              <XRef ID="123016" DB="Gene"/>
+              <XRef Type="MIM" ID="608132" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42792">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22622">
+            <Measure ID="7840" Type="Gene">
+              <Name Type="Preferred">ADP-ribosylation factor-like 6</Name>
+              <Name Type="Alternate">BBS3</Name>
+              <Symbol Type="Preferred">ARL6</Symbol>
+              <Location Type="Cytogenetic" Chr="3" assembly="GRCh38">3q11.2</Location>
+              <Location Type="Sequence" Chr="3" assembly="GRCh38">97764520-97801241</Location>
+              <XRef ID="84100" DB="Gene"/>
+              <XRef Type="MIM" ID="608845" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42791">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22621">
+            <Measure ID="6736" Type="Gene">
+              <Name Type="Preferred">tripartite motif containing 32</Name>
+              <Name Type="Alternate">LGMD2H</Name>
+              <Symbol Type="Preferred">TRIM32</Symbol>
+              <Location Type="Cytogenetic" Chr="9" assembly="GRCh38">9q33.1</Location>
+              <Location Type="Sequence" Chr="9" assembly="GRCh38">116687301-116701299</Location>
+              <XRef ID="22954" DB="Gene"/>
+              <XRef Type="MIM" ID="602290" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42789">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22619">
+            <Measure ID="5157" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 9</Name>
+              <Symbol Type="Preferred">BBS9</Symbol>
+              <Location Type="Sequence" Chr="7" assembly="GRCh38">33129243-33606067</Location>
+              <Location Type="Cytogenetic" Chr="7" assembly="GRCh38">7p14.3</Location>
+              <XRef ID="27241" DB="Gene"/>
+              <XRef Type="MIM" ID="607968" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42787">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22617">
+            <Measure ID="1073" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 10</Name>
+              <Name Type="Alternate">C12orf58</Name>
+              <Symbol Type="Preferred">BBS10</Symbol>
+              <Location Type="Sequence" Chr="12" assembly="GRCh38">76344485-76348905</Location>
+              <Location Type="Cytogenetic" Chr="12" assembly="GRCh38">12q21.2</Location>
+              <XRef ID="79738" DB="Gene"/>
+              <XRef Type="MIM" ID="610148" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42786">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22616">
+            <Measure ID="947" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 4</Name>
+              <Symbol Type="Preferred">BBS4</Symbol>
+              <Location Type="Sequence" Chr="15" assembly="GRCh38">72686178-72738475</Location>
+              <Location Type="Cytogenetic" Chr="15" assembly="GRCh38">15q24.1</Location>
+              <XRef ID="585" DB="Gene"/>
+              <XRef Type="MIM" ID="600374" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+        <ClinVarAssertion DateCreated="2011-06-17" DateLastUpdated="2013-03-14" SubmissionDate="2011-02-22" ID="42785">
+          <TraitSet ID="6293">
+            <Trait ID="376" Type="Disease">
+              <Name Type="Preferred">Bardet-Biedl syndrome</Name>
+              <Symbol Type="Preferred">BBS</Symbol>
+              <Symbol Type="Alternate">LMBBS</Symbol>
+              <Symbol Type="Alternate">LMS</Symbol>
+              <XRef DB="GeneReviews" ID="NBK1363"/>
+              <XRef DB="OMIM" Type="MIM" ID="209900"/>
+              <XRef DB="OMIM" Type="MIM" ID="603650"/>
+              <XRef DB="OMIM" Type="MIM" ID="608845"/>
+              <XRef DB="OMIM" Type="MIM" ID="610683"/>
+              <XRef DB="Orphanet" ID="110"/>
+              <XRef DB="Bioconcepts" Type="CUI" ID="C0752166"/>
+            </Trait>
+          </TraitSet>
+          <MeasureSet ID="22615">
+            <Measure ID="946" Type="Gene">
+              <Name Type="Preferred">Bardet-Biedl syndrome 1</Name>
+              <Symbol Type="Preferred">BBS1</Symbol>
+              <Location Type="Cytogenetic" Chr="11" assembly="GRCh38">11q13.2</Location>
+              <Location Type="Sequence" Chr="11" assembly="GRCh38">66510647-66533612</Location>
+              <XRef ID="582" DB="Gene"/>
+              <XRef Type="MIM" ID="209901" DB="OMIM"/>
+            </Measure>
+          </MeasureSet>
+          <ObservedIn Origin="germline"/>
+        </ClinVarAssertion>
+      </ClinVarSet>
+      <TestName>Bardet-Biedl Syndrome Sanger Sequencing Panel</TestName>
+      <TestDevelopment>Test developed by laboratory (no manufacturer test name)</TestDevelopment>
+      <TestService OrderCode="251">Clinical Testing/Confirmation of Mutations Identified Previously</TestService>
+      <TestService OrderCode="600">Custom Deletion/Duplication Testing</TestService>
+      <Order>
+        <Description>Please visit Lab web site for detail http://www.preventiongenetics.com</Description>
+        <URL>http://preventiongenetics.com/clinical-dna-testing/requisition-forms/</URL>
+      </Order>
+      <Specimen>
+        <SpecimenType>Amniocytes</SpecimenType>
+        <SpecimenType>Amniotic fluid</SpecimenType>
+        <SpecimenType>Bone marrow</SpecimenType>
+        <SpecimenType>Buccal swab</SpecimenType>
+        <SpecimenType>Cell culture</SpecimenType>
+        <SpecimenType>Cell-free DNA</SpecimenType>
+        <SpecimenType>Chorionic villi</SpecimenType>
+        <SpecimenType>Cord blood</SpecimenType>
+        <SpecimenType>Fetal blood</SpecimenType>
+        <SpecimenType>Fibroblasts</SpecimenType>
+        <SpecimenType>Fresh tissue</SpecimenType>
+        <SpecimenType>Frozen tissue</SpecimenType>
+        <SpecimenType>Isolated DNA</SpecimenType>
+        <SpecimenType>Peripheral (whole) blood</SpecimenType>
+        <SpecimenType>Product of conception (POC)</SpecimenType>
+        <SpecimenType>Saliva</SpecimenType>
+        <SpecimenType>Skin</SpecimenType>
+        <SpecimenType>Sputum</SpecimenType>
+        <SpecimenType>White blood cell prep</SpecimenType>
+        <URL>http://preventiongenetics.com/files/1713/8599/0947/Specimen_Requirements.pdf</URL>
+      </Specimen>
+      <TestContact>1746</TestContact>
+      <TestContactPolicy>Laboratory can only accept contact from health care providers. Patients/families are encouraged to discuss genetic testing options with their health care provider.</TestContactPolicy>
+      <InformedConsentReq>No</InformedConsentReq>
+      <GeneticCounselingReqPre>No</GeneticCounselingReqPre>
+      <GeneticCounselingReqPost>No</GeneticCounselingReqPost>
+      <LabOrderCode>251</LabOrderCode>
+      <TestCodes>
+        <URL>http://preventiongenetics.com/clinical-dna-testing/test/bardetbiedl-syndrome-sequencing-panel/509/</URL>
+      </TestCodes>
+      <TestURL>http://preventiongenetics.com/clinical-dna-testing/test/bardetbiedl-syndrome-sequencing-panel/509/</TestURL>
+      <Availability>
+        <TestPerformedList>Entire test performed in-house</TestPerformedList>
+      </Availability>
+      <OrderableBy>Genetic Counselor</OrderableBy>
+      <OrderableBy>Health Care Provider</OrderableBy>
+      <OrderableBy>Licensed Physician</OrderableBy>
+      <TestResults>
+        <SampleNegReport>Not provided</SampleNegReport>
+        <SamplePosReport>Not provided</SamplePosReport>
+        <VUS>
+          <Interpretation>The PreventionGenetics protocol for interpreting sequence variants has been carefully developed over a period of 10 years.  We are conservative in our interpretations.  We do not label a variant as pathogenic or benign without conclusive evidence.  Although we use a variety of software to assist us in interpretation, we rely primarily on evidence published in the literature, on control allele frequencies (especially from the 1000Genomes and Exon Sequencing Project), and on genetic evidence.  Programs that predict pathogenicity or splicing are given much less weight.</Interpretation>
+          <Software>GeneSplicer, Human Splicing Finder, MaxEntScan, Mutation Taster, NNSPLICE, PolyPhen 2, SIFT and Splice Site Finder.</Software>
+          <ReportingPolicy>Sequence variants found in our patients are contributed to ClinVar.  Anonymous patient sequence data will also be shared with researchers for preparation of peer-reviewed publications.</ReportingPolicy>
+          <RecruitFamily Recruit="Yes">Please visit our website for detail at http://preventiongenetics.com/clinical-dna-testing/requisition-forms/ for Targeted variant test.</RecruitFamily>
+        </VUS>
+        <ReContact RecontactAnswer="Yes">Please visit our website for detail http://preventiongenetics.com/</ReContact>
+      </TestResults>
+      <Indications>
+        <Purpose>Diagnosis</Purpose>
+        <Purpose>Mutation Confirmation</Purpose>
+        <Purpose>Pre-symptomatic</Purpose>
+        <Purpose>Risk Assessment</Purpose>
+        <Purpose>Screening</Purpose>
+        <TestType>Clinical</TestType>
+        <TargetPop>
+          <Description>Candidates for this test are patients with symptoms consistent with BBS.</Description>
+        </TargetPop>
+      </Indications>
+      <Method>
+        <TopCategory Value="Molecular Genetics">
+          <Category Value="Deletion/duplication analysis" code="D">
+            <Methodology Value="Comparative Genomic Hybridization"/>
+          </Category>
+          <Category Value="Sequence analysis of the entire coding region" code="C">
+            <Methodology Value="Bi-directional Sanger Sequence Analysis">
+              <Instrument>Applied Biosystems 3730 capillary sequencing instrument</Instrument>
+            </Methodology>
+          </Category>
+        </TopCategory>
+      </Method>
+      <AnalyticalValidity>
+        <Description>As of July 2013, we compared 7.3 megabases of Sanger DNA sequence generated at PreventionGenetics to NextGen sequence generated in other labs. We detected only 4 errors in our Sanger sequences, and these were all due to allele dropout during PCR (&gt;99% accuracy). For Proficiency Testing, both external and internal, in the 9.5 years of our lab operation we have Sanger sequenced roughly 2,000 PCR amplicons (~ 1 megabase). No errors have been identified (100.00% accuracy). PreventionGenetics’ high density gene-centric custom designed aCGH enables the detection of relatively small deletion and amplification mutations (down to ~300 bp) within a single exon of a given gene or deletion and amplification mutations encompassing the entire gene. PreventionGenetics has established and verified this test’s accuracy and precision.</Description>
+      </AnalyticalValidity>
+      <QualityControl PTPerformed="true">
+        <Method>Intra-Laboratory</Method>
+      </QualityControl>
+      <Regulations/>
+    </GTRLabTest>
+  </GTRLabData>
+</GTRPublicData>

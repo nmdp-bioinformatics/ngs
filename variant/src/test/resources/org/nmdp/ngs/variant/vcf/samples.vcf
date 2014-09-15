@@ -1,0 +1,14 @@
+##fileformat=VCFv4.1
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=DPADJ,Number=1,Type=String,Description="Read Depth of adjacency">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
+##INFO=<ID=MATEID,Number=.,Type=String,Description="ID of mate breakends">
+##INFO=<ID=EVENT,Number=1,Type=String,Description="ID of event associated to breakend">
+##SAMPLE=<ID=Blood,Genomes=Germline,Mixture=1.,Description="Patient germline genome">
+##SAMPLE=<ID=TissueSample,Genomes=Germline;Tumor,Mixture=.3;.7,Description="Patient germline genome;Patient tumor genome">
+#CHROM	POS	ID	REF	ALT	QUAL	FILT	INFO	FORMAT	Blood	TissueSample
+2	321681	bnd_W	G	G]2:421681]	6	PASS	SVTYPE=BND;MATEID=bnd_U;EVENT=INV0	GT:DPADJ	0:32	0|1:9|21
+2	321682	bnd_V	T	[2:421682[T	6	PASS	SVTYPE=BND;MATEID=bnd_X;EVENT=INV0	GT:DPADJ	0:29	0|1:11|25
+13	421681	bnd_U	A	A]2:321681]	6	PASS	SVTYPE=BND;MATEID=bnd_W;EVENT=INV0	GT:DPADJ	0:34	0|1:10|23
+13	421682	bnd_X	C	[2:321682[C	6	PASS	SVTYPE=BND;MATEID=bnd_V;EVENT=INV0	GT:DPADJ	0:31	0|1:8|20
+	

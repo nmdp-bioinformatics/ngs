@@ -1,0 +1,685 @@
+options {
+	static=false;
+	DEBUG_PARSER=false;
+	IGNORE_CASE=true;
+  LOOKAHEAD=2;  
+}
+
+PARSER_BEGIN(FeatureParser)
+/*
+
+    ngs-feature  Features.
+    Copyright (c) 2014 National Marrow Donor Program (NMDP)
+
+    This library is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation; either version 3 of the License, or (at
+    your option) any later version.
+
+    This library is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; with out even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+    License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library;  if not, write to the Free Software Foundation,
+    Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
+
+    > http://www.gnu.org/licenses/lgpl.html
+
+*/
+package org.nmdp.ngs.feature.parser;
+
+import java.io.StringReader;
+
+import java.math.BigInteger;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.NoSuchElementException;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+
+import org.biojava.bio.Annotation;
+import org.biojava.bio.SimpleAnnotation;
+
+import org.biojava.bio.program.gff.SimpleGFFRecord;
+
+import org.biojava.bio.seq.DNATools;
+import org.biojava.bio.seq.Sequence;
+import org.biojava.bio.seq.StrandedFeature;
+
+import org.biojava.bio.symbol.AlphabetManager;
+import org.biojava.bio.symbol.FiniteAlphabet;
+import org.biojava.bio.symbol.IllegalSymbolException;
+import org.biojava.bio.symbol.RangeLocation;
+
+import org.nmdp.ngs.feature.Locus;
+import org.nmdp.ngs.feature.Sample;
+import org.nmdp.ngs.feature.VcfFile;
+import org.nmdp.ngs.feature.VcfFileException;
+
+import org.nmdp.ngs.variant.vcf.VcfRecord;
+
+/**
+ * Feature parser.
+ */
+public final class FeatureParser {
+
+    public static SimpleGFFRecord parseOneRecord(final String fields) throws ParseException {
+        FeatureParser featureParser = new FeatureParser(new StringReader(fields));
+        return featureParser.parse();
+    }
+
+    public static Double parseNumber(final String field) throws ParseException {
+        return (new FeatureParser(new StringReader(field))).parseNumber();
+    }
+
+    public static Double parseNumberField(final String field) throws ParseException {
+        return (new FeatureParser(new StringReader(field))).parseNumberField();
+    }
+
+    public static List<Double> parseNumbers(final String fields) throws ParseException {
+        return (new FeatureParser(new StringReader(fields))).parseNumbers();
+    }
+
+    public static SimpleAnnotation parseAnnotations(final String fields) throws ParseException {
+        return (new FeatureParser(new StringReader(fields))).parseAnnotations();
+    }
+
+    public static BigInteger parseLocation(final String field) throws ParseException {
+        return (new FeatureParser(new StringReader(field))).parseLocation();
+    }
+
+    public static RangeLocation parseRangeLocation(final String field) throws ParseException {
+        return (new FeatureParser(new StringReader(field))).parseRangeLocation();
+    }
+
+    public static Locus parseLocus(final String field) throws ParseException {
+        return (new FeatureParser(new StringReader(field))).parseLocus();
+    }
+
+    public static VcfRecord parseVcfRecord(final String field, final long lineNumber) throws ParseException {
+        return (new FeatureParser(new StringReader(field))).parseVcfRecord(lineNumber);
+    }
+
+    public static List<Sample> parseVcfSamples(final String field, final VcfFile.Header header) throws ParseException {
+        return (new FeatureParser(new StringReader(field))).parseVcfSamples(header);
+    }
+
+    public static String parseVcfVersion(final String field) throws ParseException {
+        return (new FeatureParser(new StringReader(field))).parseVcfVersion();
+    }
+
+    public static VcfFile.Header parseVcfHeader(final String field) throws ParseException {
+        return (new FeatureParser(new StringReader(field))).parseVcfHeader();
+    }
+
+    public static VcfFile.Metadata parseVcfMetadata(final String field) throws ParseException {
+        return (new FeatureParser(new StringReader(field.replace(",", ";")))).parseVcfMetadata();
+    }
+  
+    public static Sequence parseDnaSequence(final String field) throws ParseException {
+        return parseDnaSequence(field, "");
+    }
+
+    public static Sequence parseDnaSequence(final String field, final String name) throws ParseException {
+        return (new FeatureParser(new StringReader(field))).parseDna(name);
+    }
+
+    public static String parseDnas(final String fields) throws ParseException {
+        // stub
+        return null;
+    }
+
+    public static String parseSequence(final String field) throws ParseException {
+        // stub
+        return null;
+    }
+
+    public static String parseSequence(final String field, final String uri, final String name, final Annotation annotation) throws ParseException {
+        // stub
+        return null;
+    }
+
+    public static String parseSequences(final String field) throws ParseException {
+        // stub
+        return null;
+    }
+
+    public static StrandedFeature.Strand parseGffStrand(final String field) throws ParseException {
+        FeatureParser featureParser = new FeatureParser(new StringReader(field));
+        return featureParser.parseGffStrand();
+    }
+}
+
+PARSER_END(FeatureParser)
+
+<IN_LITERAL> SKIP:
+{
+  < ~["\n", "\r"] >
+}
+
+<IN_LITERAL> SKIP:
+{
+  < ( "\n" | "\r" ) > : DEFAULT
+}
+
+TOKEN : {
+  < TAB: "\t" >
+}
+
+TOKEN:
+{
+  < #DIGIT:["0"-"9"] >
+| < #UPPER: ["A"-"Z"] >
+| < #LOWER: ["a"-"z"] >
+| < #LETTER: <UPPER> | <LOWER> >
+| < #NUCLEOTIDE : ( "A" | "a" | "C" | "c" | "G" | "g" | "T" | "t" | "N" ) >
+| < PLUS_SIGN : "+" >
+| < MINUS_SIGN : "-" >
+| < EQUALS : "=" >
+| < COMMA : "," >
+| < COLON : ":" >
+| < SEMICOLON : ";" >
+| < DOT : "." >
+| < HAT : "^" >
+| < DOLLAR_SIGN : "$" >
+| < STAR : "*" >
+| < BAR : "|" >
+| < SLASH : "/" >
+| < HASH : "#" >
+| < OPENANGLE : "<" >
+| < CLOSEANGLE : ">" >
+}
+
+TOKEN : {
+  < INTEGER : ( "-" )? ( <DIGIT> )+ >
+| < LOCATION: ("-")? ( ( <DIGIT> )+ | ( ( <DIGIT> ){1,2} ( <COMMA> ( <DIGIT> ){3} )* ) ) >
+| < DOUBLEHASH: ( <HASH> ){2} >
+| < REAL : <INTEGER> <DOT> ( <DIGIT> )+ >
+}
+
+TOKEN: {
+  < DNA : <NUCLEOTIDE> ( <NUCLEOTIDE> )* >
+| < IDENTIFIER : <LETTER> ( <NONDELIMITER> )* >
+| < NONDELIMITER : ~[",", ";", "=", ":", "\t"] >
+}
+
+// | < SCIENTIFIC: <REAL> ( "E" | "e" ) ( "-" )? ( <DIGIT> )+ >
+
+public SimpleGFFRecord parse() : {
+  String sequenceName;
+  String source;
+  String feature;
+  BigInteger start;
+  BigInteger end;
+  //Double score;
+  StrandedFeature.Strand strand;
+  Integer frame;
+  String comment;
+  Map<String, Object> attributes;
+}
+{
+  (
+    //sequenceName = "" <TAB>
+    //source = "" <TAB>
+    //feature = "" <TAB>
+    start = parseInteger() <TAB>
+    end = parseInteger() <TAB>
+    //score = 0 <TAB>
+    strand = parseGffStrand()
+    <EOF>
+  )
+  {
+    return new SimpleGFFRecord("", "", "", start.intValue(), end.intValue(), 0, strand, 0, "", null);
+  }
+}
+
+private String parseString() : {
+  Token token;
+  //System.out.println("INSIDE parseString()");
+  String string;
+}
+{
+  ( token = <DOT> | token = <DNA> | token = <IDENTIFIER> ) {
+    return token.image;
+  }
+}
+
+private String parseStringSkip(long ns) : {
+  Token token;
+  //System.out.println("parseStringSkip(" + ns + ")");
+  String string;
+}
+{
+  ( token = <IDENTIFIER> ) {
+    return token.image;
+  }
+}
+
+private List<String> parseStrings() : {
+  String string;
+  List<String> strings = new ArrayList<String>();
+}
+{
+  ( string = parseString() {
+    strings.add(string);
+  } ( <COMMA> string = parseString() {
+    strings.add(string);
+  } )* )? {
+    return strings;
+  }
+}
+
+private BigInteger parseInteger() : {
+  Token token;
+}
+{
+  token = <INTEGER> {
+    return new BigInteger(token.image);
+  }
+}
+
+public Double parseNumber() : {
+  Token token;
+}
+{
+  (token = <INTEGER> | token = <REAL> ) {
+    return new Double(token.image);
+  }
+}
+
+private Double parseNumberField() : {
+  Double number;
+}
+{
+  number = parseNumber() <EOF> {
+    return number;
+  }
+}
+
+private List<Double> parseNumbers() : {
+  Double number;
+  List<Double> numbers = new ArrayList<Double>();
+}
+{
+  ( number = parseNumber() {
+    numbers.add(number);
+  } ( <COMMA> number = parseNumber() {
+    numbers.add(number);
+  } )* )? {
+    return numbers;
+  }
+}
+
+private Object parseObject() : {
+  Object object;
+}
+{
+  ( object = parseNumber() | object = parseString() | object = parseDna("") ) {
+    return object;
+  }
+}
+
+private List<Object> parseObjects() : {
+  Object object;
+  List<Object> objects = new ArrayList<Object>();
+}
+{
+  object = parseObject() {
+    objects.add(object);
+  } ( <COMMA> object = parseObject() {
+    objects.add(object);
+  } )* {
+    return objects;
+  }
+}
+
+private SimpleAnnotation parseAnnotations() : {
+  String key;
+  List<Object> values = new ArrayList<Object>();
+  Map<String, List<Object>> map = new TreeMap<String, List<Object>>();
+}
+{
+  ( key = parseString() ( <EQUALS> values = parseObjects() )? {
+    map.put(key, values);
+    //System.out.println("map.put(" + key + ", " + values + ")");
+  } ( <SEMICOLON> key = parseString() {
+    values = new ArrayList<Object>();
+  } ( <EQUALS> values = parseObjects() )? {
+    map.put(key, values);
+    //System.out.println("map.put(" + key + ", " + values + ")");
+  } )* ) {
+    return new SimpleAnnotation(map);
+  }
+}
+
+private BigInteger parseLocation() : {
+  Token token;
+  BigInteger location;
+}
+{
+  location = parseInteger() {
+    return location;
+  } | token = <LOCATION> {
+    return new BigInteger(token.image.replace(",", ""));
+  }
+}
+
+private RangeLocation parseRangeLocation() : {
+  BigInteger lower = null , upper = null;
+  char sign = '?';
+}
+{
+  ( lower = parseLocation() ( ( <TAB> |  <DOT> <DOT> )? upper = parseLocation() {
+    // System.out.println("tab or .. : lower = " + lower + " upper = " + upper + " negated = " + upper.negate());
+    if (lower.compareTo(BigInteger.ZERO) == 1 && upper.compareTo(BigInteger.ZERO) == -1) {
+      upper = upper.negate();
+    }
+  } | <PLUS_SIGN> upper = parseLocation() {
+      //System.out.println("plus : lower = " + lower);
+      //System.out.println("     : upper = " + upper);
+      upper = BigInteger.ONE.add(lower.add(upper));
+      //System.out.println("plus : lower = " + lower + " upper = " + upper);
+  } ) ) {
+
+    if (upper == null) {
+      throw new ParseException("cannot parse upper coordinate");
+    }
+
+    try {
+      // System.out.println("new RangeLocation(" + lower.intValue() + ", " + upper.intValue() + ")");
+      return new RangeLocation(lower.intValue(), upper.intValue());
+    }
+    catch (IndexOutOfBoundsException exception) {
+      throw new ParseException(exception.getMessage());
+    }
+  }
+}
+
+private Locus parseLocus() : {
+  String contig;
+  BigInteger integer;
+  RangeLocation range;
+}
+{
+  ( ( contig = parseString()
+  | integer = parseInteger() {
+    contig = integer.toString();
+  } )
+  <COLON> range = parseRangeLocation() ) {
+    return new Locus(contig, range);
+  }
+}
+
+private List<Object> parseVcfGenotypes() : {
+  BigInteger index;
+  List<Object> indexes = new ArrayList<Object>();
+}
+{
+  ( index = parseInteger() {
+    indexes.add(index);
+  } ( ( <BAR> | <SLASH> ) index = parseInteger() {
+    indexes.add(index);
+  } )* ) {
+    return indexes;
+  }
+}
+
+private List<String> parseVcfFormat() : {
+  String tag;
+  List<String> tags = new ArrayList<String>();
+}
+{
+  ( tag = parseString() {
+    tags.add(tag);
+  } ( <COLON> tag = parseString() {
+    tags.add(tag);
+  } )* ) {
+    return tags;
+  }
+}
+
+private List<Sample> parseVcfSamples(VcfFile.Header header) : {
+  int formatIndex;
+  int sampleIndex;
+  String tag;
+  List<String> tags;
+  List<Object> genotypes;
+  List<Object> values = new ArrayList<Object>();
+  Map<String, List<Object>> map = new TreeMap<String, List<Object>>();
+  Sample sample;
+  List<Sample> samples = new ArrayList<Sample>();
+}
+{
+  ( tags = parseVcfFormat() {
+    sampleIndex = 0;
+    //System.out.println("tags = " + tags);
+
+    try {
+      tag = tags.get(0);
+      
+      if(!tag.equals("GT")) {
+        throw new ParseException("genotype field 'GT' must be first in format");
+      }
+    } catch(IndexOutOfBoundsException exception) {
+      throw new ParseException("missing required genotype field 'GT' in format");
+    }
+  
+  }
+  ( <TAB> genotypes = parseVcfGenotypes() { 
+    // System.out.println("genotypes = " + genotypes);
+    formatIndex = 0;
+    
+    map.put(tags.get(formatIndex), genotypes);
+    
+  }
+  ( <COLON> values = parseObjects() {
+
+    try {
+      map.put(tags.get(++formatIndex), values);
+    } catch(IndexOutOfBoundsException exception) {
+      throw new ParseException("format field index out of bounds");
+    }
+
+  } )* {
+
+    try {
+      sample = new Sample(header.names.get(sampleIndex++), new SimpleAnnotation(map));
+      samples.add(sample);
+    } catch(IndexOutOfBoundsException exception) {
+      throw new ParseException("not enough names for observed samples");
+    }
+    
+    map.clear();
+  } )* ) {
+    return samples;
+  }
+}
+
+private VcfRecord parseVcfRecord(long lineNumber) : {
+  String contig;
+  BigInteger position;
+  Double quality;
+  List<String> identifiers = new ArrayList<String>();
+  Sequence ref;
+  String filter;
+  List<String> filters = new ArrayList<String>();
+  List<Sequence> alternates = new ArrayList<Sequence>();
+  String uri;
+  String name;
+  SimpleAnnotation annotation;
+}
+{
+  ( contig = parseString() {
+      //System.out.println("contig = " + contig);
+    }
+    <TAB> position = parseInteger() {
+      //System.out.println("range = " + range);
+    }
+    <TAB> identifiers = parseStrings() {
+      //System.out.println("identifers = " + identifiers);
+    }
+    <TAB> ref = parseDna("") {
+      //System.out.println("reference = " + reference.seqString());
+    }
+    <TAB> alternates = parseDnas() {
+      //System.out.println("alternates = " + alternates);
+    }
+    <TAB> quality = parseNumber() {
+      //System.out.println("quality = " + quality);
+    }
+    <TAB> filter = parseString() {
+      filters.add(filter);
+      //System.out.println("filter = " + filter);
+    } ( <SEMICOLON> filter = parseString() {
+      filters.add(filter);
+    } )* <TAB> {
+      //System.out.println("START ANNOTATION STRING");2
+    } annotation = parseAnnotations() ) {
+
+      List<String> alts = new ArrayList<String>();
+      for(Sequence alternate : alternates) {
+        alts.add(alternate.seqString());
+      }
+
+      // todo:  this needs more thinkin'
+      ListMultimap<String, String> info = ArrayListMultimap.create();
+      // ...and untyped map coming from annotation is ugly
+      for (Object e : annotation.asMap().entrySet()) {
+          Map.Entry entry = (Map.Entry) e;
+          String key = (String) entry.getKey();
+          List<Object> values = (List<Object>) entry.getValue();
+          for (Object value : values) {
+              info.put(key, value == null ? "null" : value.toString());
+          }
+      }
+
+      return VcfRecord.builder()
+          .withLineNumber(lineNumber)
+          .withChrom(contig)
+          .withPos(position.longValue())
+          .withId(identifiers.toArray(new String[identifiers.size()]))
+          .withRef(ref.seqString())
+          .withAlt(alts.toArray(new String[alts.size()]))
+          .withQual(quality)
+          .withFilter(filters.toArray(new String[filters.size()]))
+          .withInfo(info)
+          .build();
+  }
+}
+
+private String parseVcfVersion() : {
+  SimpleAnnotation annotation;
+}
+{
+  ( <DOUBLEHASH>
+    annotation = parseAnnotations() ) {
+    try {
+      return (String) annotation.getProperty("fileformat");
+    } catch(NoSuchElementException exception) {
+      throw new ParseException("expected \"fileformat\"");
+    }
+  }
+}
+
+private VcfFile.Metadata parseVcfMetadata() : {
+  String name, description;
+  SimpleAnnotation annotation;
+}
+{
+  ( <DOUBLEHASH>
+    name = parseString()
+    <EQUALS>
+    ( description = parseString() {
+      return new VcfFile.Metadata(name, description);
+    }
+    | ( <OPENANGLE> annotation = parseAnnotations() ) ) ) {
+      if(name.equals(VcfFile.INFO)) {
+        try {
+          return new VcfFile.Info(annotation);
+        } catch(VcfFileException exception) {
+          throw new ParseException(exception.getMessage());
+        }
+      }
+      else if(name.equals(VcfFile.FILTER)) {
+        try {
+          return new VcfFile.Filter(annotation);
+        } catch(VcfFileException exception) {
+          throw new ParseException(exception.getMessage());
+        }
+      }
+      else if(name.equals(VcfFile.FORMAT)) {
+        try {
+          return new VcfFile.Format(annotation);
+        } catch(VcfFileException exception) {
+          throw new ParseException(exception.getMessage());
+        }
+      }
+   }
+}
+
+private VcfFile.Header parseVcfHeader() : {
+  String field;
+  List<String> fields = new ArrayList<String>();
+}
+{
+  ( <HASH> field = parseString() {
+    fields.add(field);
+  }
+  ( <TAB> field = parseString() {
+    fields.add(field);
+  } )* ) {
+    try {
+      return new VcfFile.Header(fields.subList(9, fields.size()));
+    } catch (IndexOutOfBoundsException exception) {
+      throw new ParseException("header is improperly formed");
+    }
+  }
+}
+
+private Sequence parseDna(String name) : {
+  Token token;
+}
+{
+  token = <DNA> {
+    try {
+      //System.out.println("parseDna() : " + token.image);
+      return DNATools.createDNASequence(token.image, name);
+    }
+    catch(IllegalSymbolException exception) {
+      throw new ParseException(exception.getMessage());
+    }
+  }
+}
+
+private List<Sequence> parseDnas() : {
+  Sequence sequence;
+  List<Sequence> sequences = new ArrayList<Sequence>();
+}
+{
+  sequence = parseDna("") {
+    sequences.add(sequence);
+  } ( <COMMA> sequence = parseDna("") {
+    sequences.add(sequence);
+  } )* {
+    return sequences;
+  }
+}
+
+public StrandedFeature.Strand parseGffStrand() : {
+  Token token;
+}
+{
+  ( token = <MINUS_SIGN> ) {
+    return StrandedFeature.NEGATIVE;
+  } | ( token = <PLUS_SIGN> ) {
+    return StrandedFeature.POSITIVE;
+  } | ( token = <DOT> ) {
+    return StrandedFeature.UNKNOWN;
+  }
+}
