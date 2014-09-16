@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RUN_SET>
+<!--<RUN accession="DRR003782" center_name="NIG" alias="DRR003782" run_center="NIG" run_date="2013-01-09T15:00:00Z" total_spots="30482" total_bases="6797578" size="3996227" load_done="true" published="2014-05-14 12:40:27" is_public="true" cluster_name="public" static_data_available="1">-->
+<RUN accession="DRR003782" center_name="NIG" alias="DRR003782" run_center="NIG" run_date="2013-01-09T15:00:00Z">
+<IDENTIFIERS>
+<PRIMARY_ID>DRR003782</PRIMARY_ID>
+<SUBMITTER_ID namespace="NIG">DRR003782</SUBMITTER_ID>
+</IDENTIFIERS>
+<EXPERIMENT_REF accession="DRX003080" refcenter="NIG" refname="DRX003080">
+<IDENTIFIERS>
+<PRIMARY_ID>DRX003080</PRIMARY_ID>
+<SUBMITTER_ID namespace="NIG">DRX003080</SUBMITTER_ID>
+</IDENTIFIERS>
+</EXPERIMENT_REF>
+<!--
+<Pool>
+<Member member_name="" accession="DRS003163" sample_name="DRS003163" sample_title="MADULA" spots="30482" bases="6797578"></Member>
+</Pool>
+<QualityCount>
+<Quality value="2" count="18578"></Quality>
+<Quality value="6" count="22310"></Quality>
+<Quality value="7" count="9060"></Quality>
+<Quality value="8" count="16290"></Quality>
+<Quality value="9" count="60565"></Quality>
+<Quality value="10" count="4714"></Quality>
+<Quality value="11" count="7375"></Quality>
+<Quality value="12" count="8266"></Quality>
+<Quality value="13" count="21746"></Quality>
+<Quality value="14" count="7203"></Quality>
+<Quality value="15" count="27610"></Quality>
+<Quality value="16" count="10668"></Quality>
+<Quality value="17" count="6935"></Quality>
+<Quality value="18" count="2352"></Quality>
+<Quality value="19" count="10979"></Quality>
+<Quality value="20" count="10511"></Quality>
+<Quality value="21" count="9657"></Quality>
+<Quality value="22" count="4433"></Quality>
+<Quality value="23" count="40691"></Quality>
+<Quality value="24" count="8896"></Quality>
+<Quality value="25" count="68323"></Quality>
+<Quality value="26" count="17183"></Quality>
+<Quality value="27" count="22835"></Quality>
+<Quality value="28" count="16805"></Quality>
+<Quality value="29" count="22552"></Quality>
+<Quality value="30" count="216203"></Quality>
+<Quality value="31" count="18530"></Quality>
+<Quality value="32" count="139775"></Quality>
+<Quality value="33" count="114702"></Quality>
+<Quality value="34" count="280037"></Quality>
+<Quality value="35" count="281318"></Quality>
+<Quality value="36" count="670350"></Quality>
+<Quality value="37" count="399076"></Quality>
+<Quality value="38" count="2092345"></Quality>
+<Quality value="39" count="1074996"></Quality>
+<Quality value="40" count="1053709"></Quality>
+</QualityCount>
+<Statistics nreads="1" nspots="30482">
+<Read index="0" count="30482" average="223.00" stdev="59.98"></Read>
+</Statistics>
+<Bases cs_native="false" count="6797578">
+<Base value="A" count="1792159"></Base>
+<Base value="C" count="1602114"></Base>
+<Base value="G" count="1645471"></Base>
+<Base value="T" count="1739256"></Base>
+<Base value="N" count="18578"></Base>
+</Bases>
+-->
+</RUN>
+<!--<RUN accession="DRR003818" center_name="NIG" alias="DRR003818" run_center="NIG" run_date="2013-01-09T15:00:00Z" total_spots="30482" total_bases="6788408" size="4780983" load_done="true" published="2014-05-14 12:40:27" is_public="true" cluster_name="public" static_data_available="1">-->
+<RUN accession="DRR003818" center_name="NIG" alias="DRR003818" run_center="NIG" run_date="2013-01-09T15:00:00Z">
+<IDENTIFIERS>
+<PRIMARY_ID>DRR003818</PRIMARY_ID>
+<SUBMITTER_ID namespace="NIG">DRR003818</SUBMITTER_ID>
+</IDENTIFIERS>
+<EXPERIMENT_REF accession="DRX003080" refcenter="NIG" refname="DRX003080">
+<IDENTIFIERS>
+<PRIMARY_ID>DRX003080</PRIMARY_ID>
+<SUBMITTER_ID namespace="NIG">DRX003080</SUBMITTER_ID>
+</IDENTIFIERS>
+</EXPERIMENT_REF>
+<!--
+<Pool>
+<Member member_name="" accession="DRS003163" sample_name="DRS003163" sample_title="MADULA" spots="30482" bases="6788408"></Member>
+</Pool>
+<QualityCount>
+<Quality value="2" count="497"></Quality>
+<Quality value="6" count="58273"></Quality>
+<Quality value="7" count="57777"></Quality>
+<Quality value="8" count="35310"></Quality>
+<Quality value="9" count="152422"></Quality>
+<Quality value="10" count="19503"></Quality>
+<Quality value="11" count="19012"></Quality>
+<Quality value="12" count="32213"></Quality>
+<Quality value="13" count="53853"></Quality>
+<Quality value="14" count="28852"></Quality>
+<Quality value="15" count="60920"></Quality>
+<Quality value="16" count="23681"></Quality>
+<Quality value="17" count="16384"></Quality>
+<Quality value="18" count="5481"></Quality>
+<Quality value="19" count="22183"></Quality>
+<Quality value="20" count="23741"></Quality>
+<Quality value="21" count="35441"></Quality>
+<Quality value="22" count="8564"></Quality>
+<Quality value="23" count="80680"></Quality>
+<Quality value="24" count="20613"></Quality>
+<Quality value="25" count="150920"></Quality>
+<Quality value="26" count="44225"></Quality>
+<Quality value="27" count="41447"></Quality>
+<Quality value="28" count="44637"></Quality>
+<Quality value="29" count="39245"></Quality>
+<Quality value="30" count="324530"></Quality>
+<Quality value="31" count="44033"></Quality>
+<Quality value="32" count="206154"></Quality>
+<Quality value="33" count="147802"></Quality>
+<Quality value="34" count="421194"></Quality>
+<Quality value="35" count="346686"></Quality>
+<Quality value="36" count="850579"></Quality>
+<Quality value="37" count="598888"></Quality>
+<Quality value="38" count="1057220"></Quality>
+<Quality value="39" count="1064037"></Quality>
+<Quality value="40" count="651411"></Quality>
+</QualityCount>
+<Statistics nreads="1" nspots="30482">
+<Read index="0" count="30482" average="222.70" stdev="60.29"></Read>
+</Statistics>
+<Bases cs_native="false" count="6788408">
+<Base value="A" count="1738495"></Base>
+<Base value="C" count="1647642"></Base>
+<Base value="G" count="1617769"></Base>
+<Base value="T" count="1784005"></Base>
+<Base value="N" count="497"></Base>
+</Bases>
+-->
+</RUN>
+</RUN_SET>

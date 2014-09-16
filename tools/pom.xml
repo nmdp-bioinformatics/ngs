@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    ngs-tools  Next generation sequencing (NGS/HTS) command line tools.
+    Copyright (c) 2014 National Marrow Donor Program (NMDP)
+
+    This library is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation; either version 3 of the License, or (at
+    your option) any later version.
+
+    This library is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; with out even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+    License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library;  if not, write to the Free Software Foundation,
+    Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
+
+    > http://www.gnu.org/licenses/lgpl.html
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>jar</packaging>
+  <parent>
+    <groupId>org.nmdp.ngs</groupId>
+    <artifactId>ngs-multimodule</artifactId>
+    <version>1.4-SNAPSHOT</version>
+  </parent>
+  <artifactId>ngs-tools</artifactId>
+  <name>ngs-tools</name>
+  <description>Next generation sequencing (NGS/HTS) command line tools.</description>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.nmdp.ngs</groupId>
+        <artifactId>ngs-align</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.nmdp.ngs</groupId>
+        <artifactId>ngs-reads</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.nmdp.ngs</groupId>
+        <artifactId>ngs-variant</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.biojava</groupId>
+      <artifactId>alignment</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.biojava</groupId>
+      <artifactId>core</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.biojava</groupId>
+      <artifactId>sequencing</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.dishevelled</groupId>
+      <artifactId>dsh-commandline</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.dishevelled</groupId>
+      <artifactId>dsh-compress</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nmdp.ngs</groupId>
+      <artifactId>ngs-align</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nmdp.ngs</groupId>
+      <artifactId>ngs-reads</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nmdp.ngs</groupId>
+      <artifactId>ngs-variant</artifactId>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>appassembler-maven-plugin</artifactId>
+        <configuration>
+          <repositoryLayout>flat</repositoryLayout>
+          <repositoryName>lib</repositoryName>
+          <installArtifacts>false</installArtifacts>
+          <programs>
+            <program>
+              <id>ngs-downsample-fastq</id>
+              <mainClass>org.nmdp.ngs.tools.DownsampleFastq</mainClass>
+            </program>
+            <program>
+              <id>ngs-downsample-interleaved-fastq</id>
+              <mainClass>org.nmdp.ngs.tools.DownsampleInterleavedFastq</mainClass>
+            </program>
+            <program>
+              <id>ngs-evaluate-scaffolds</id>
+              <mainClass>org.nmdp.ngs.tools.EvaluateScaffolds</mainClass>
+            </program>
+            <program>
+              <id>ngs-generate-paired-end-reads</id>
+              <mainClass>org.nmdp.ngs.tools.GeneratePairedEndReads</mainClass>
+            </program>
+            <program>
+              <id>ngs-generate-reads</id>
+              <mainClass>org.nmdp.ngs.tools.GenerateReads</mainClass>
+            </program>
+            <program>
+              <id>ngs-fasta-to-fastq</id>
+              <mainClass>org.nmdp.ngs.tools.FastaToFastq</mainClass>
+            </program>
+            <program>
+              <id>ngs-fastq-to-fasta</id>
+              <mainClass>org.nmdp.ngs.tools.FastqToFasta</mainClass>
+            </program>
+            <program>
+              <id>ngs-fastq-description</id>
+              <mainClass>org.nmdp.ngs.tools.FastqDescription</mainClass>
+            </program>
+            <program>
+              <id>ngs-fastq-to-ssake</id>
+              <mainClass>org.nmdp.ngs.tools.FastqToSsake</mainClass>
+            </program>
+            <program>
+              <id>ngs-filter-vcf</id>
+              <mainClass>org.nmdp.ngs.tools.FilterVcf</mainClass>
+            </program>
+            <program>
+              <id>ngs-hsp-to-bed</id>
+              <mainClass>org.nmdp.ngs.tools.HspToBed</mainClass>
+            </program>
+            <program>
+              <id>ngs-interleave-fastq</id>
+              <mainClass>org.nmdp.ngs.tools.InterleaveFastq</mainClass>
+            </program>
+            <program>
+              <id>ngs-interleave-fastq3</id>
+              <mainClass>org.nmdp.ngs.tools.InterleaveFastq3</mainClass>
+            </program>
+            <program>
+              <id>ngs-liftover-bed</id>
+              <mainClass>org.nmdp.ngs.tools.LiftoverBed</mainClass>
+            </program>
+            <program>
+              <id>ngs-masked-to-bed</id>
+              <mainClass>org.nmdp.ngs.tools.MaskedToBed</mainClass>
+            </program>
+            <program>
+              <id>ngs-merge-fastq</id>
+              <mainClass>org.nmdp.ngs.tools.MergeFastq</mainClass>
+            </program>
+            <program>
+              <id>ngs-validate-interleaved-fastq</id>
+              <mainClass>org.nmdp.ngs.tools.ValidateInterleavedFastq</mainClass>
+            </program>
+          </programs>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>assemble</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>assembly</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

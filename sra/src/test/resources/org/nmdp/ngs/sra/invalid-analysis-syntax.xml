@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ANALYSIS>
+<TITLE>Title</TITLE>
+<DESCRIPTION>Description</DESCRIPTION>
+<ANALYSIS_TYPE><REFERENCE_ALIGNMENT/></ANALYSIS_TYPE>
+<FILES><FILE filename="filename" filetype="other" checksum_method="MD5" checksum="0"/></FILES>
+<!-- missing end element ANALYSIS -->
