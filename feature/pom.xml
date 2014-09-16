@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.nmdp.ngs</groupId>
     <artifactId>ngs-multimodule</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.4-rc1</version>
   </parent>
   <artifactId>ngs-feature</artifactId>
   <name>ngs-feature</name>
