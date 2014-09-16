@@ -36,6 +36,11 @@
   <description>Next generation sequencing (NGS/HTS) multi-module build.</description>
   <url>https://github.com/nmdp-bioinformatics/ngs</url>
   <inceptionYear>2014</inceptionYear>
+  <scm>
+    <connection>scm:git:git@github.com:nmdp-bioinformatics/ngs.git</connection>
+    <developerConnection>scm:git:git@github.com:nmdp-bioinformatics/ngs.git</developerConnection>
+    <url>git@github.com:nmdp-bioinformatics/ngs.git</url>
+  </scm>
   <licenses>
     <license>
       <name>GNU Lesser General Public License (LGPL)</name>
@@ -43,6 +48,16 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <developers>
+    <developer>
+      <id>ckennedy-nmdp</id>
+      <name>Caleb Kennedy</name>
+    </developer>
+    <developer>
+      <id>mheuer-nmdp</id>
+      <name>Michael Heuer (NMDP)</name>
+    </developer>
+  </developers>
 
   <modules>
     <module>align</module>
@@ -152,7 +167,7 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.1</version>
           <configuration>
-m            <source>${maven.compile.source}</source>
+            <source>${maven.compile.source}</source>
             <target>${maven.compile.target}</target>
           </configuration>
         </plugin>
