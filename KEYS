@@ -11,8 +11,6 @@ Developers:
 pub   4096R/811C7664 2012-03-27
 uid                  Michael Heuer (NMDP CODE SIGNING KEY) <mheuer@nmdp.org>
 sig 3        811C7664 2012-03-27  Michael Heuer (NMDP CODE SIGNING KEY) <mheuer@nmdp.org>
-sub   4096R/11D31F5C 2012-03-27
-sig          811C7664 2012-03-27  Michael Heuer (NMDP CODE SIGNING KEY) <mheuer@nmdp.org>
 
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG/MacGPG2 v2.0.18 (Darwin)
