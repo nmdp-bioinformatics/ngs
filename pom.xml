@@ -69,6 +69,7 @@
     <module>align</module>
     <module>feature</module>
     <module>gtr</module>
+    <module>hml</module>
     <module>range</module>
     <module>reads</module>
     <module>sra</module>

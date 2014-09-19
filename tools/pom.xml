@@ -41,6 +41,11 @@
       </dependency>
       <dependency>
         <groupId>org.nmdp.ngs</groupId>
+        <artifactId>ngs-hml</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.nmdp.ngs</groupId>
         <artifactId>ngs-reads</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -95,6 +100,11 @@
     <dependency>
       <groupId>org.nmdp.ngs</groupId>
       <artifactId>ngs-align</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nmdp.ngs</groupId>
+      <artifactId>ngs-hml</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -181,6 +191,10 @@
             <program>
               <id>ngs-merge-fastq</id>
               <mainClass>org.nmdp.ngs.tools.MergeFastq</mainClass>
+            </program>
+            <program>
+              <id>ngs-validate-hml</id>
+              <mainClass>org.nmdp.ngs.tools.ValidateHml</mainClass>
             </program>
             <program>
               <id>ngs-validate-interleaved-fastq</id>
