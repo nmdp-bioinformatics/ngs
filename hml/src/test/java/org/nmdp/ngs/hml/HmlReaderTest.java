@@ -98,6 +98,11 @@ public final class HmlReaderTest {
         validate(read(createInputStream("hml-example.xml")));
     }
 
+    @Test
+    public void testReadHmlGlResourceExampleInputStream() throws Exception {
+        validate(read(createInputStream("hml-gl-resource-example.xml")));
+    }
+
     private static void validate(final Hml data) {
         assertNotNull(data);
     }

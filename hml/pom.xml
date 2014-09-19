@@ -65,9 +65,13 @@
             <configuration>
               <xsdOptions>
                 <xsdOption>
-                  <xsd>${basedir}/src/main/xsd/hml-0.9.4.xsd</xsd>
-                  <bindingFile>${basedir}/src/main/xsd/hml-0.9.4.xjb</bindingFile>
-                  <packagename>org.nmdp.ngs.hml.jaxb</packagename>
+                  <xsd>src/main/xsd/hml-0.9.4.xsd</xsd>
+                  <bindingFile>src/main/xsd/hml-0.9.4.xjb</bindingFile>
+                  <extension>true</extension>
+                </xsdOption>
+                <xsdOption>
+                  <xsd>src/main/xsd/gl-resource.xsd</xsd>
+                  <bindingFile>src/main/xsd/gl-resource.xjb</bindingFile>
                   <extension>true</extension>
                 </xsdOption>
               </xsdOptions>

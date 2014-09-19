@@ -42,13 +42,13 @@
 
 <!--
 
-    todo:  these are causing trouble with JAXB
+  this will be removed in version 0.9.5
 
   <xs:import namespace="https://gl.immunogenomics.org/gl-resource-xlink" 
              schemaLocation="http://gl.immunogenomics.org/gl-resource-xlink.xsd"/>
+-->
   <xs:import namespace="https://gl.immunogenomics.org/gl-resource" 
              schemaLocation="http://gl.immunogenomics.org/gl-resource.xsd"/>
--->
 
   <xs:element name="hml" id="hml" nillable="false">
     <xs:annotation><xs:documentation>
@@ -347,10 +347,9 @@
         <xs:any namespace="https://gl.immunogenomics.org/gl-resource" minOccurs="1" maxOccurs="1" />
 <!--
 
-    todo:  including both of these causes trouble with JAXB
+  this will be removed in version 0.9.5
 
         <xs:any namespace="https://gl.immunogenomics.org/gl-resource-xlink" minOccurs="1" maxOccurs="1" />
-
 -->
       </xs:choice>
     </xs:complexType>

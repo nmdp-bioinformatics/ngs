@@ -41,11 +41,14 @@
   version="0.9.4">
 
 <!--
+
+  this will be removed in version 0.9.5
+
   <xs:import namespace="https://gl.immunogenomics.org/gl-resource-xlink" 
              schemaLocation="http://gl.immunogenomics.org/gl-resource-xlink.xsd"/>
+-->
   <xs:import namespace="https://gl.immunogenomics.org/gl-resource" 
              schemaLocation="http://gl.immunogenomics.org/gl-resource.xsd"/>
--->
 
   <xs:element name="hml" id="hml" nillable="false">
     <xs:annotation><xs:documentation>
@@ -342,7 +345,12 @@
       </xs:documentation></xs:annotation>
       <xs:choice minOccurs="1" maxOccurs="1">
         <xs:any namespace="https://gl.immunogenomics.org/gl-resource" minOccurs="1" maxOccurs="1" />
-<!--        <xs:any namespace="https://gl.immunogenomics.org/gl-resource-xlink" minOccurs="1" maxOccurs="1" /> -->
+<!--
+
+  this will be removed in version 0.9.5
+
+        <xs:any namespace="https://gl.immunogenomics.org/gl-resource-xlink" minOccurs="1" maxOccurs="1" />
+-->
       </xs:choice>
     </xs:complexType>
   </xs:element>
