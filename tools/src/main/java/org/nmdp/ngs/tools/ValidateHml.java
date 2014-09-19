@@ -26,6 +26,7 @@ import static org.dishevelled.compress.Readers.reader;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 
 import org.dishevelled.commandline.ArgumentList;
 import org.dishevelled.commandline.CommandLine;
