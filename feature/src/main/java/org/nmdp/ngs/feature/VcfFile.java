@@ -275,7 +275,7 @@ public final class VcfFile {
         }
 
         bytes += stream.read(buffer);
-        String line = new String(buffer);
+        String line = new String(buffer, "UTF8");
         //System.out.println("bytes = " + bytes + " line = " + line);
 
         while(line.startsWith("#")) {
