@@ -21,7 +21,9 @@
 
 */
 package org.nmdp.ngs.feature;
-
+/**
+ * AlleleException class for wrapping exceptions thrown by calling methods
+ */
 public final class AlleleException extends LocusException {
     public AlleleException(final String message) {
         super(message);
