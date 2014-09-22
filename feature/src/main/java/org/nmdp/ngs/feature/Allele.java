@@ -37,123 +37,170 @@ import org.biojava.bio.symbol.SymbolList;
 
 import org.biojava.utils.ChangeVetoException;
 /**
- * Allele class for extending assembly-specific genomic coordinates (Locus
- * objects) with sequence data.
+ * Allele class for extending assembly-specific genomic coordinates (Locus objects) with sequence data.
  */
 public final class Allele extends Locus {
     /**
      * Name of the allele.
      */
     String name;
-
+    /**
+     * Enumeration of possible lesion types.
+     */
     public enum Lesion {
+        /**
+         * Unknown or undetermined.
+         */
         UNKNOWN,
+        /**
+         * Matches the specified reference sequence at the corresponding genomic location.
+         */
         MATCH,
+        /**
+         * A single basepair mismatch with respect to the reference sequence.
+         */
         SUBSTITUTION,
+        /**
+         * One or more gaps in the sequence with respect to the reference.
+         */
         INSERTION,
+        /**
+         * One or more gaps in the reference with respect to the sequence.
+         */
         DELETION
     }
-
+    /**
+     * Sequence of acceptable characters (alphabet) at the corresponding genomic location.
+     */
     public final SymbolList sequence;
+    /**
+     * Lesion represented by the sequence with respect to a specified reference sequence. The reference sequence is assigned with proper Allele object instantiation using a Builder.
+     */
     public final Lesion lesion;
-
-    //System.out.println("new Allele(" + contig + ", " + range + ", " + quality + ", " + filters + ", " + identifiers + ", " + alternate + ", " + annotation + ")");    
-    /*
-      Allele.Lesion lesion = Allele.Lesion.UNKNOWN;
-
-      if (alternate.seqString().length() > ref.length()) {
-        lesion = Allele.Lesion.INSERTION;
-      }
-      else if(alternate.seqString().length() < ref.length()) {
-        lesion = Allele.Lesion.DELETION;
-      }
-      else if(alternate.seqString().equals(reference)) {
-        lesion = Allele.Lesion.MATCH;
-      }
-      else {
-        lesion = Allele.Lesion.SUBSTITUTION;
-      }
-      
-      try {
-        Allele allele = new Allele(contig, range, quality, filters, identifiers, alternate);
-        alleles.add(allele.equivalent(reference));
-      }
-      catch(AlleleException exception) {
-        throw new ParseException(exception.getMessage());
-      }
-    }
-
-    return alleles;
-    */
-
+    /**
+     * Construct a new allele.
+     * @param name of the allele
+     * @param contig assembly (may include information about the source reference)
+     * @param min or lower genomic coordinate
+     * @param max or upper genomic coordinate
+     * @param sequence of the allele
+     * @param lesion or named difference with respect to the reference
+     */
     Allele(final String name, final String contig, final int min, final int max, final SymbolList sequence, final Lesion lesion) {
         super(contig, min, max);
         this.name = name;
         this.sequence = sequence; 
         this.lesion = lesion;
     }
-
+    /**
+     * 
+     * @return allele name 
+     */
     public String getName() {
         return name;
     }
-
+    /**
+     * 
+     * @param name assignment 
+     */
     public void setName(final String name) {
         this.name = name;
     }
-    
+    /**
+     * 
+     * @return new parameterized Allele object
+     */
     public static Builder builder() {
         return new Builder();
     }
-    
+    /**
+     * Builder class for Allele.
+     */
     public static final class Builder {
         private String name, contig, reference;
         private int min, max;
         private SymbolList sequence;
         private Lesion lesion;
-
+        /**
+         * Construct a new allele with unassigned members.
+         */
         private Builder() {
             // empty
         }
-
+        /**
+         * 
+         * @param name assignment
+         * @return this builder with assigned name
+         */
         public Builder withName(final String name) {
             this.name = name;
             return this;
         }
-
+        /**
+         * 
+         * @param contig assignment
+         * @return this builder with assigned contig
+         */
         public Builder withContig(final String contig) {
             this.contig = contig;
             return this;
         }
-
+        /**
+         * 
+         * @param min assignment
+         * @return this builder with assigned min
+         */
         public Builder withMin(final int min) {
             this.min = min;
             return this;
         }
-      
+        /**
+         * 
+         * @param max assignment
+         * @return this builder with assigned max
+         */
         public Builder withMax(final int max) {
             this.max = max;
             return this;
         }
-      
+        /**
+         * 
+         * @param sequence assignment
+         * @return this builder with assigned sequence
+         */
         public Builder withSequence(final SymbolList sequence) {
             this.sequence = sequence;
             return this;
         }
-
+        /**
+         * 
+         * @param lesion assignment
+         * @return this builder with assigned lesion
+         */
         public Builder withLesion(final Lesion lesion) {
             this.lesion = lesion;
             return this;
         }
-
+        /**
+         * 
+         * @param reference assignment (a URI is nice, but not strictly enforced)
+         * @return this builder with assigned reference
+         */
         public Builder withReference(final String reference) {
             this.reference = reference;
             return this;
         }
-
+        /**
+         * 
+         * @return reference identifier
+         */
         public String getReference() {
             return reference;
         }
-
+        /**
+         * 
+         * @return builder with Allele members set to default values
+         */
         public Builder reset() {
             this.name = "";
             this.contig = "";
@@ -164,7 +211,11 @@ public final class Allele extends Locus {
             this.lesion = Lesion.UNKNOWN;
             return this;
         }
-
+        /**
+         * 
+         * @return new Allele parameterized using with methods
+         * @throws AlleleException if Allele cannot be built because the assigned sequence contains illegal symbols (eg non-nucleic acid)
+         */
         public Allele build() throws AlleleException {
 
             if (sequence == null || sequence == SymbolList.EMPTY_LIST) {
@@ -190,7 +241,11 @@ public final class Allele extends Locus {
             return new Allele(name, contig, min, max, sequence, lesion);
         }
     }
-    
+    /**
+     * Define allele equivalence as the same genomic location (contig, min, and max) as well as the same lesion and sequence.
+     * @param right allele
+     * @return true if this is equal to right, false otherwise
+     */
     @Override
     public boolean equals(final Object right) {
         if (!super.equals(right)) {
@@ -200,12 +255,22 @@ public final class Allele extends Locus {
         Allele allele = (Allele) right;
         return allele.lesion == this.lesion && allele.sequence.equals(this.sequence);
     }
-    
+    /**
+     * 
+     * @return allele hash code
+     */
     @Override
     public int hashCode() {
       return super.hashCode() + Objects.hashCode(name, lesion) + sequence.hashCode();
     }
-
+    /**
+     * A method to simulate double crossover between Allele objects whereby the sequence from one allele is joined to the other within a specific region of overlap.
+     * @param right allele
+     * @return a new crossed-over allele. This implementation treats the original alleles as immutable thus favoring programmatic convenience over genetic reality.
+     * @throws IllegalSymbolException 
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalAlphabetException 
+     */
     public Allele doubleCrossover(final Allele right) throws IllegalSymbolException, IndexOutOfBoundsException, IllegalAlphabetException {
         if (this.overlaps(right)) {
             //System.out.println("this range" + this.toString() + " sequence = " + this.sequence.seqString() + "sequence length = " + sequence.length());
@@ -244,7 +309,16 @@ public final class Allele extends Locus {
         }
         return new Allele(this.name, this.contig, this.getMin(), this.getMax(), this.sequence, Lesion.UNKNOWN);
     }
-    
+    /**
+     * A method to simulate merging of two alleles strictly, meaning the sequence in the overlapping regions must be equal.
+     * @param right allele
+     * @param minimumOverlap for the merge to occur
+     * @return new merged allele.
+     * @throws IllegalSymbolException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalAlphabetException
+     * @throws AlleleException 
+     */
     public Allele merge(final Allele right, final long minimumOverlap) throws IllegalSymbolException, IndexOutOfBoundsException, IllegalAlphabetException, AlleleException {
       
         Allele.Builder builder = Allele.builder();
@@ -291,7 +365,14 @@ public final class Allele extends Locus {
         }
         return builder.reset().build(); 
     }
-    
+    /**
+     * A method to simulate hard clipping (removal) of leftmost sequence, for example synthesized sequence representing molecular barcodes or target capture probes (primers)
+     * @param pattern sequence (will be strictly matched, no regular expressions)
+     * @return new Allele with clipped sequence
+     * @throws IllegalAlphabetException
+     * @throws AlleleException
+     * @throws IllegalSymbolException 
+     */
     public Allele leftHardClip(final String pattern) throws IllegalAlphabetException, AlleleException, IllegalSymbolException {
         int min = this.getMin();
 
@@ -309,7 +390,14 @@ public final class Allele extends Locus {
             .withLesion(this.lesion)
             .build();
     }
-
+    /**
+     * A method to simulate hard clipping (removal) of rightmost sequence, for example synthesized sequence representing molecular barcodes or target capture probes (primers)
+     * @param pattern sequence (will be strictly matched, no regular expressions)
+     * @return new Allele with clipped sequence
+     * @throws IllegalAlphabetException
+     * @throws AlleleException
+     * @throws IllegalSymbolException 
+     */
     public Allele rightHardClip(final String pattern) throws IllegalSymbolException, IndexOutOfBoundsException, IllegalAlphabetException, AlleleException {
         int max = this.getMax();
 
