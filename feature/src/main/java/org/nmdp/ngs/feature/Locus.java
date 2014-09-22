@@ -26,6 +26,8 @@ import org.biojava.bio.seq.Sequence;
 
 import org.biojava.bio.symbol.RangeLocation;
 
+import com.google.common.base.Objects;
+
 /**
  * Locus.
  */
@@ -156,6 +158,11 @@ public class Locus extends RangeLocation {
 
         Locus locus = (Locus) right;
         return this.contig.equals(locus.contig);
+    }
+    
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(this.getMin(), this.getMax(), contig);
     }
   
     @Override

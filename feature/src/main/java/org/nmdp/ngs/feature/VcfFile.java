@@ -81,7 +81,7 @@ public final class VcfFile {
                 bytes += stream.read(buffer);
                 return FeatureParser.parseVcfRecord(Arrays.toString(buffer), lineNumber);
             }
-            catch (Exception exception) {
+            catch (IOException | ParseException exception) {
                 return null;
             }
         }

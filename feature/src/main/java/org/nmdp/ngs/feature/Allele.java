@@ -22,22 +22,12 @@
 */
 package org.nmdp.ngs.feature;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.google.common.base.Joiner;
-
-import org.biojava.bio.Annotation;
+import com.google.common.base.Objects;
 
 import org.biojava.bio.seq.DNATools;
-import org.biojava.bio.seq.Sequence;
-
-import org.biojava.bio.seq.impl.SimpleGappedSequence;
-import org.biojava.bio.seq.impl.SimpleSequence;
 
 import org.biojava.bio.symbol.Edit;
 import org.biojava.bio.symbol.IllegalAlphabetException;
@@ -46,9 +36,14 @@ import org.biojava.bio.symbol.RangeLocation;
 import org.biojava.bio.symbol.SymbolList;
 
 import org.biojava.utils.ChangeVetoException;
-
+/**
+ * Allele class for extending assembly-specific genomic coordinates (Locus
+ * objects) with sequence data.
+ */
 public final class Allele extends Locus {
-  
+    /**
+     * Name of the allele.
+     */
     String name;
 
     public enum Lesion {
@@ -204,6 +199,11 @@ public final class Allele extends Locus {
 
         Allele allele = (Allele) right;
         return allele.lesion == this.lesion && allele.sequence.equals(this.sequence);
+    }
+    
+    @Override
+    public int hashCode() {
+      return super.hashCode() + Objects.hashCode(name, lesion) + sequence.hashCode();
     }
 
     public Allele doubleCrossover(final Allele right) throws IllegalSymbolException, IndexOutOfBoundsException, IllegalAlphabetException {
