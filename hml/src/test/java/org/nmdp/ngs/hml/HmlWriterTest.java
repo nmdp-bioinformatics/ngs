@@ -49,7 +49,7 @@ public final class HmlWriterTest {
     @Before
     public void setUp() {
         data = new Hml();
-        data.setVersion("0.9.4");
+        data.setVersion("0.9.5");
         data.setProjectName("LAB");
         data.setReportingCenter("789");
 

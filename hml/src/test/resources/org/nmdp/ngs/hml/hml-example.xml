@@ -24,13 +24,13 @@
 
 <!-- NOTE: This is a brief example of a DRAFT version of HML in action. It is not intended to be an accurate genotyping result. -->
 
-<hml xmlns="http://schemas.nmdp.org/spec/hml/0.9.4" 
-     xmlns:hml="http://schemas.nmdp.org/spec/hml/0.9.4" 
+<hml xmlns="http://schemas.nmdp.org/spec/hml/0.9.5" 
+     xmlns:hml="http://schemas.nmdp.org/spec/hml/0.9.5" 
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-     xsi:schemaLocation="http://schemas.nmdp.org/spec/hml/0.9.4 http://schemas.nmdp.org/spec/hml/0.9.4/hml-0.9.4.xsd"
+     xsi:schemaLocation="http://schemas.nmdp.org/spec/hml/0.9.5 http://schemas.nmdp.org/spec/hml/0.9.5/hml-0.9.5.xsd"
      reporting-center="789"
      project-name="LAB"
-     version="0.9.4">
+     version="0.9.5">
   <sample center-code="321" id="123456789">
     <typing gene-family="HLA"/>
   </sample>

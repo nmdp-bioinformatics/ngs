@@ -24,7 +24,7 @@
 <jxb:bindings version="1.0" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
               xmlns:xjc= "http://java.sun.com/xml/ns/jaxb/xjc"
               jxb:extensionBindingPrefixes="xjc" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <jxb:bindings schemaLocation="hml-0.9.4.xsd" node="/xs:schema">
+  <jxb:bindings schemaLocation="hml-0.9.5.xsd" node="/xs:schema">
     <jxb:schemaBindings>
       <jxb:package name="org.nmdp.ngs.hml.jaxb"/>
     </jxb:schemaBindings>

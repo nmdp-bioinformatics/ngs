@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    hml  Histoimmunogenetics Markup Language (HML)
+    Histoimmunogenetics Markup Language (HML)
     Copyright (c) 2014 National Marrow Donor Program (NMDP)
 
     This specification is free software; you can redistribute it and/or modify it
@@ -31,22 +31,17 @@
 <!--                                                                        -->
 
 <xs:schema 
-  xmlns="http://schemas.nmdp.org/spec/hml/0.9.4"
-  xmlns:hmlns="http://schemas.nmdp.org/spec/hml/0.9.4" 
+  xmlns="http://schemas.nmdp.org/spec/hml/0.9.5"
+  xmlns:hmlns="http://schemas.nmdp.org/spec/hml/0.9.5" 
   xmlns:gl="https://gl.immunogenomics.org/gl-resource" 
   xmlns:glx="https://gl.immunogenomics.org/gl-resource-xlink" 
   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
   elementFormDefault="qualified" attributeFormDefault="unqualified" 
-  targetNamespace="http://schemas.nmdp.org/spec/hml/0.9.4"
-  version="0.9.4">
+  targetNamespace="http://schemas.nmdp.org/spec/hml/0.9.5"
+  version="0.9.5">
 
-<!--
-
-  this will be removed in version 0.9.5
-
-  <xs:import namespace="https://gl.immunogenomics.org/gl-resource-xlink" 
-             schemaLocation="http://gl.immunogenomics.org/gl-resource-xlink.xsd"/>
--->
+  <!-- xs:import namespace="https://gl.immunogenomics.org/gl-resource-xlink" 
+             schemaLocation="http://gl.immunogenomics.org/gl-resource-xlink.xsd"/ -->
   <xs:import namespace="https://gl.immunogenomics.org/gl-resource" 
              schemaLocation="http://gl.immunogenomics.org/gl-resource.xsd"/>
 
@@ -75,11 +70,11 @@
       </xs:sequence>
       <xs:attribute name="version" use="required">
         <xs:annotation><xs:documentation>
-          Expected to be 0.9.4 to use this schema.
+          Expected to be 0.9.5 to use this schema.
         </xs:documentation></xs:annotation>
         <xs:simpleType id="version">
           <xs:restriction base="xs:string">
-            <xs:pattern value="0\.9\.4" /><!-- xs:pattern value="[0][.][9]([.][0-9]*)?" / -->
+            <xs:pattern value="0\.9\.5" /><!-- xs:pattern value="[0][.][9]([.][0-9]*)?" / -->
             <xs:maxLength value="5" />
           </xs:restriction>
         </xs:simpleType>
@@ -313,7 +308,7 @@
       <xs:attribute name="method" use="required">
         <xs:simpleType>
           <xs:restriction base="xs:string">
-            <xs:pattern value="DNA|SER|IEF|RNA" />
+            <xs:pattern value="DNA|SER" />
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
@@ -341,16 +336,11 @@
           ---------
           Choice of... (required)
           - any element from gl-resource.xsd (qty: 1)
-          - any element from gl-resource-xlink.xsd (qty: 1)
+          - any element from gl-resource-xlink.xsd (qty: 1) [UNSUPPORTED IN THIS VERSION]
       </xs:documentation></xs:annotation>
       <xs:choice minOccurs="1" maxOccurs="1">
         <xs:any namespace="https://gl.immunogenomics.org/gl-resource" minOccurs="1" maxOccurs="1" />
-<!--
-
-  this will be removed in version 0.9.5
-
-        <xs:any namespace="https://gl.immunogenomics.org/gl-resource-xlink" minOccurs="1" maxOccurs="1" />
--->
+        <!-- xs:any namespace="https://gl.immunogenomics.org/gl-resource-xlink" minOccurs="1" maxOccurs="1" / -->
       </xs:choice>
     </xs:complexType>
   </xs:element>
