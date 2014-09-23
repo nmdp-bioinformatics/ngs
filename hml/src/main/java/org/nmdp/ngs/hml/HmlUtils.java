@@ -99,7 +99,7 @@ public final class HmlUtils {
         checkNotNull(sequence);
 
         Sequence s = new Sequence();
-        s.setAlphabet(alphabet);
+        s.setAlphabet(alphabet.toUpperCase());
 
         SymbolList symbolList = null;
         if ("dna".equalsIgnoreCase(alphabet)) {
@@ -331,8 +331,6 @@ public final class HmlUtils {
     public static TargetedRegion createTargetedRegion(final String assembly, final Locus locus) {
         checkNotNull(assembly);
         checkNotNull(locus);
-        return createTargetedRegion(assembly, locus.getContig(), locus.getMin() - 1L, locus.getMax());
-        // todo: fix when pull request #24 is merged
-        //return createTargetedRegion(assembly, locus.getContig(), locus.getStart() - 1L, locus.getEnd());
+        return createTargetedRegion(assembly, locus.getContig(), locus.getStart() - 1L, locus.getEnd());
     }
 }
