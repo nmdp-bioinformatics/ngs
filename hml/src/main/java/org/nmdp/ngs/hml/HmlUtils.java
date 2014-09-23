@@ -245,7 +245,7 @@ public final class HmlUtils {
 
 
     /**
-     * Create and return a new targeted region.
+     * Create and return a new HML TargetedRegion with the specified parameters.
      *
      * @param assembly assembly, must not be null, should be a major or minor
      *    version of the GRC human assembly, e.g. GRCh38
@@ -255,7 +255,7 @@ public final class HmlUtils {
      *    be at least <code>0L</code>
      * @param end end, 0-based coordinate system, closed-open range, must
      *    be at least <code>0L</code>
-     * @return a new targeted region
+     * @return a new HML TargetedRegion with the specified parameters
      */
     public static TargetedRegion createTargetedRegion(final String assembly,
                                                       final String contig,
@@ -275,7 +275,7 @@ public final class HmlUtils {
     }
 
     /**
-     * Create and return a new targeted region.
+     * Create and return a new HML TargetedRegion with the specified parameters.
      *
      * @param assembly assembly, must not be null, should be a major or minor
      *    version of the GRC human assembly, e.g. GRCh38
@@ -288,7 +288,7 @@ public final class HmlUtils {
      * @param strand strand, if provided must be one of { 1, -1, +, - }
      * @param id id
      * @param description description
-     * @return a new targeted region
+     * @return a new HML TargetedRegion with the specified parameters
      */
     public static TargetedRegion createTargetedRegion(final String assembly,
                                                       final String contig,
@@ -321,12 +321,12 @@ public final class HmlUtils {
     }
 
     /**
-     * Create and return a new targeted region with the specified assembly and locus.
+     * Create and return a new HML TargetedRegion with the specified assembly and locus.
      *
      * @param assembly assembly, must not be null, should be a major or minor
      *    version of the GRC human assembly, e.g. GRCh38
      * @param locus locus, must not be null
-     * @return a new targeted region with the specified assembly and locus
+     * @return a new HML TargetedRegion with the specified assembly and locus
      */
     public static TargetedRegion createTargetedRegion(final String assembly, final Locus locus) {
         checkNotNull(assembly);
