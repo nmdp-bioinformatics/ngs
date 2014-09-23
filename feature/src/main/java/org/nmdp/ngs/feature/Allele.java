@@ -81,13 +81,13 @@ public final class Allele extends Locus {
      * Construct a new allele.
      * @param name of the allele
      * @param contig assembly (may include information about the source reference)
-     * @param min or lower genomic coordinate
-     * @param max or upper genomic coordinate
+     * @param start or lower genomic coordinate
+     * @param end or upper genomic coordinate
      * @param sequence of the allele
      * @param lesion or named difference with respect to the reference
      */
-    Allele(final String name, final String contig, final int min, final int max, final SymbolList sequence, final Lesion lesion) {
-        super(contig, min, max);
+    Allele(final String name, final String contig, final int start, final int end, final SymbolList sequence, final Lesion lesion) {
+        super(contig, start, end);
         this.name = name;
         this.sequence = sequence; 
         this.lesion = lesion;
@@ -118,7 +118,7 @@ public final class Allele extends Locus {
      */
     public static final class Builder {
         private String name, contig, reference;
-        private int min, max;
+        private int start, end;
         private SymbolList sequence;
         private Lesion lesion;
         /**
@@ -147,20 +147,20 @@ public final class Allele extends Locus {
         }
         /**
          * 
-         * @param min assignment
-         * @return this builder with assigned min
+         * @param start assignment
+         * @return this builder with assigned start
          */
-        public Builder withMin(final int min) {
-            this.min = min;
+        public Builder withStart(final int start) {
+            this.start = start;
             return this;
         }
         /**
          * 
-         * @param max assignment
-         * @return this builder with assigned max
+         * @param end assignment
+         * @return this builder with assigned end
          */
-        public Builder withMax(final int max) {
-            this.max = max;
+        public Builder withEnd(final int end) {
+            this.end = end;
             return this;
         }
         /**
@@ -205,8 +205,8 @@ public final class Allele extends Locus {
             this.name = "";
             this.contig = "";
             this.reference = "";
-            this.min = 0;
-            this.max = 0;
+            this.start = 0;
+            this.end = 0;
             this.sequence = SymbolList.EMPTY_LIST;
             this.lesion = Lesion.UNKNOWN;
             return this;
@@ -219,7 +219,7 @@ public final class Allele extends Locus {
         public Allele build() throws AlleleException {
 
             if (sequence == null || sequence == SymbolList.EMPTY_LIST) {
-                String gaps = Joiner.on("").join(Collections.nCopies(max - min, "-"));
+                String gaps = Joiner.on("").join(Collections.nCopies(end - start, "-"));
 
                 try {
                     this.sequence = DNATools.createDNA(gaps);
@@ -231,18 +231,18 @@ public final class Allele extends Locus {
 
             if (reference != null && !reference.isEmpty()) {
                 if (lesion == Lesion.INSERTION || lesion == Lesion.DELETION) {
-                    if (max == min) {
-                        min = Locus.Util.pushLeft(min, sequence.seqString(), reference);
-                        max = Locus.Util.pushRight(max, sequence.seqString(), reference);
+                    if (end == start) {
+                        start = Locus.Util.pushLeft(start, sequence.seqString(), reference);
+                        end = Locus.Util.pushRight(end, sequence.seqString(), reference);
                     }
                 }
             }
 
-            return new Allele(name, contig, min, max, sequence, lesion);
+            return new Allele(name, contig, start, end, sequence, lesion);
         }
     }
     /**
-     * Define allele equivalence as the same genomic location (contig, min, and max) as well as the same lesion and sequence.
+     * Define allele equivalence as the same genomic location (contig, start, and end) as well as the same lesion and sequence.
      * @param right allele
      * @return true if this is equal to right, false otherwise
      */
@@ -275,14 +275,14 @@ public final class Allele extends Locus {
         if (this.overlaps(right)) {
             //System.out.println("this range" + this.toString() + " sequence = " + this.sequence.seqString() + "sequence length = " + sequence.length());
 
-            RangeLocation homologue = this.intersection(right);
+            Locus homologue = intersection(right);
 
             //System.out.println("homologue = " + homologue);
 
             SymbolList copy = DNATools.createDNA(this.sequence.seqString());
-            int length = homologue.getMax() - homologue.getMin();
-            int target = homologue.getMin() - right.getMin() + 1;
-            int from = homologue.getMin() - this.getMin() + 1;
+            int length = homologue.getEnd() - homologue.getStart();
+            int target = homologue.getStart() - right.getStart() + 1;
+            int from = homologue.getStart() - this.getStart() + 1;
 
             //System.out.println("length = " + length);
             //System.out.println("target = " + target);
@@ -303,11 +303,11 @@ public final class Allele extends Locus {
 
             //copy.edit(new Edit());
 
-            //Sequence left = this.sequence.subList(0, homologue.getMin());
-            //Sequence middle = right.sequence.subList(homologue.getMin() - right.getMin(), i1);
-            return new Allele(this.name, this.contig, this.getMin(), this.getMax(), copy, Lesion.UNKNOWN);
+            //Sequence left = this.sequence.subList(0, homologue.getStart());
+            //Sequence middle = right.sequence.subList(homologue.getStart() - right.getStart(), i1);
+            return new Allele(this.name, this.contig, this.getStart(), this.getEnd(), copy, Lesion.UNKNOWN);
         }
-        return new Allele(this.name, this.contig, this.getMin(), this.getMax(), this.sequence, Lesion.UNKNOWN);
+        return new Allele(this.name, this.contig, this.getStart(), this.getEnd(), this.sequence, Lesion.UNKNOWN);
     }
     /**
      * A method to simulate merging of two alleles strictly, meaning the sequence in the overlapping regions must be equal.
@@ -322,10 +322,10 @@ public final class Allele extends Locus {
     public Allele merge(final Allele right, final long minimumOverlap) throws IllegalSymbolException, IndexOutOfBoundsException, IllegalAlphabetException, AlleleException {
       
         Allele.Builder builder = Allele.builder();
-        Locus overlap = ((Locus) this).intersection((Locus) right);
+        Locus overlap = intersection(right);
 
         // System.out.println("overlap = " + overlap);
-        // System.out.println("overlap.length() " + overlap.length() + " < " + minimumOverlap + "??");
+        // System.out.println("overlap.length() " + overlap.length() + " < " + startimumOverlap + "??");
 
         if (overlap.length() < minimumOverlap) {
             return builder.reset().build();
@@ -333,8 +333,8 @@ public final class Allele extends Locus {
 
         Allele bit = builder  
             .withContig(overlap.getContig())
-            .withMin(overlap.getMin())
-            .withMax(overlap.getMax())
+            .withStart(overlap.getStart())
+            .withEnd(overlap.getEnd())
             .withSequence(SymbolList.EMPTY_LIST)
             .withLesion(Lesion.UNKNOWN)
             .build();
@@ -350,12 +350,12 @@ public final class Allele extends Locus {
         // System.out.println("b = " + b + " " + b.sequence.seqString());   
 
         if (a.sequence.seqString().equals(b.sequence.seqString())) {
-            Locus union = ((Locus) this).union((Locus) right);
+            Locus union = union(right);
             return builder
                 .withName(right.getName())
                 .withContig(union.getContig())
-                .withMin(union.getMin())
-                .withMax(union.getMax())
+                .withStart(union.getStart())
+                .withEnd(union.getEnd())
                 .withSequence(SymbolList.EMPTY_LIST)
                 .withLesion(Lesion.UNKNOWN)
                 .build()
@@ -374,18 +374,18 @@ public final class Allele extends Locus {
      * @throws IllegalSymbolException 
      */
     public Allele leftHardClip(final String pattern) throws IllegalAlphabetException, AlleleException, IllegalSymbolException {
-        int min = this.getMin();
+        int start = this.getStart();
 
         SymbolList copy = DNATools.createDNA(sequence.seqString());
         while (copy.seqString().startsWith(pattern)) {
             copy.edit(new Edit(1, pattern.length(), SymbolList.EMPTY_LIST));
-            min += pattern.length();
+            start += pattern.length();
         }
 
         return builder()
             .withContig(this.getContig())
-            .withMin(min)
-            .withMax(this.getMax())
+            .withStart(start)
+            .withEnd(this.getEnd())
             .withSequence(copy)
             .withLesion(this.lesion)
             .build();
@@ -399,27 +399,27 @@ public final class Allele extends Locus {
      * @throws IllegalSymbolException 
      */
     public Allele rightHardClip(final String pattern) throws IllegalSymbolException, IndexOutOfBoundsException, IllegalAlphabetException, AlleleException {
-        int max = this.getMax();
+        int end = this.getEnd();
 
-        // System.out.println("max before = " + max);
+        // System.out.println("end before = " + end);
 
         SymbolList copy = DNATools.createDNA(sequence.seqString());
         while (copy.seqString().endsWith(pattern)) {
             copy.edit(new Edit(copy.length() - pattern.length() + 1, pattern.length(), SymbolList.EMPTY_LIST));
 
-            max -= pattern.length();
+            end -= pattern.length();
 
-            // System.out.println("max during " + max);
+            // System.out.println("end during " + end);
             // System.out.println("editing copy " + copy.seqString());
         }
 
-        // System.out.println("max after = " + max);
+        // System.out.println("end after = " + end);
         // System.out.println("edited copy = " + copy.seqString());
 
         return builder()
             .withContig(this.getContig())
-            .withMin(this.getMin())
-            .withMax(max)
+            .withStart(this.getStart())
+            .withEnd(end)
             .withSequence(copy)
             .withLesion(this.lesion)
             .build();
