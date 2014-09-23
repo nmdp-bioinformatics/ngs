@@ -34,8 +34,8 @@ import com.google.common.base.Objects;
 public class Locus extends RangeLocation {
     protected String contig;
 
-    public Locus(final String contig, final int min, final int max) {
-        super(min, max);
+    public Locus(final String contig, final int start, final int end) {
+        super(start, end);
         this.contig = contig;
     }
   
@@ -44,8 +44,16 @@ public class Locus extends RangeLocation {
         this.contig = contig;
     }
 
+    public final int getStart() {
+        return getMin();
+    }
+
+    public final int getEnd() {
+        return getMax();
+    }
+
     public boolean isPointLocation() {
-        return this.getMin() == this.getMax();
+        return this.getStart() == this.getEnd();
     }
   
     public final static class Util {
@@ -107,7 +115,7 @@ public class Locus extends RangeLocation {
             return new Locus("", 0, 0);
         }
     
-        if (this.getMax() == right.getMin() || this.getMin() == right.getMax()) {
+        if (this.getEnd() == right.getStart() || this.getStart() == right.getEnd()) {
             return new Locus(contig, 0, 0);
         }
     
@@ -131,11 +139,11 @@ public class Locus extends RangeLocation {
     }
 
     public final int length() {
-        return this.getMax() - this.getMin();
+        return this.getEnd() - this.getStart();
     }
 
     public boolean isEmpty() {
-        return this.getMin() == 0 && this.getMax() == 0;
+        return this.getStart() == 0 && this.getEnd() == 0;
     }
 
     public boolean overlaps(final Locus right) {
@@ -143,7 +151,7 @@ public class Locus extends RangeLocation {
             return false;
         }
     
-        if (this.getMax() == right.getMin() || this.getMin() == right.getMax()) {
+        if (this.getEnd() == right.getStart() || this.getStart() == right.getEnd()) {
             return false;
         }
 
@@ -162,7 +170,7 @@ public class Locus extends RangeLocation {
     
     @Override
     public int hashCode() {
-      return Objects.hashCode(this.getMin(), this.getMax(), contig);
+      return Objects.hashCode(this.getStart(), this.getEnd(), contig);
     }
   
     @Override

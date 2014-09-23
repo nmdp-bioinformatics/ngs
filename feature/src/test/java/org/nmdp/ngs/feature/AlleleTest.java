@@ -57,34 +57,34 @@ public final class AlleleTest {
         try {
             allele1 = builder()
                         .withContig("chr6")
-                        .withMin(5)
-                        .withMax(20)
+                        .withStart(5)
+                        .withEnd(20)
                         .build();
 
             allele2 = builder()
                         .withContig("chr6")
-                        .withMin(10)
-                        .withMax(15)
+                        .withStart(10)
+                        .withEnd(15)
                         .withSequence(DNATools.createDNASequence("AAAAA", ""))
                         .build();
 
             allele3 = builder()
                         .withContig("chr6")
-                        .withMin(5)
-                        .withMax(15)
+                        .withStart(5)
+                        .withEnd(15)
                         .build();
 
             allele4 = builder()
                         .withContig("chr6")
-                        .withMin(10)
-                        .withMax(20)
+                        .withStart(10)
+                        .withEnd(20)
                         .withSequence(DNATools.createDNASequence("AAAAATTTTT", ""))
                         .build();
 
             allele5 = builder()
                         .withContig("chr6")
-                        .withMin(5)
-                        .withMax(15)
+                        .withStart(5)
+                        .withEnd(15)
                         .withSequence(DNATools.createDNASequence("CCCCCAAAAA", ""))
                         .build();
         }
@@ -108,22 +108,22 @@ public final class AlleleTest {
     public void testBuilderSubstitution() throws IllegalSymbolException, AlleleException {
         temp = builder()
             .withContig("chr6")
-            .withMin(1)
-            .withMax(2)
+            .withStart(1)
+            .withEnd(2)
             .withSequence(DNATools.createDNA("A"))
             .withLesion(Allele.Lesion.SUBSTITUTION)
             .build();
 
         assertEquals(temp.getContig(), "chr6");
-        assertEquals(temp.getMin(), 1);
-        assertEquals(temp.getMax(), 2);
+        assertEquals(temp.getStart(), 1);
+        assertEquals(temp.getEnd(), 2);
         assertEquals(temp.sequence.seqString(), "a");
         assertEquals(temp.lesion, Allele.Lesion.SUBSTITUTION);
 
         temp = builder()
             .withContig("chr6")
-            .withMin(1)
-            .withMax(2)
+            .withStart(1)
+            .withEnd(2)
             .withLesion(Allele.Lesion.SUBSTITUTION)
             .build();
 
@@ -134,28 +134,28 @@ public final class AlleleTest {
     public void testDoubleCrossover() throws AlleleException {
         try {
             temp = allele1.doubleCrossover(allele2);
-            assertEquals(temp.getMin(), 5);
-            assertEquals(temp.getMax(), 20);
+            assertEquals(temp.getStart(), 5);
+            assertEquals(temp.getEnd(), 20);
             assertEquals(temp.sequence.seqString(), "-----aaaaa-----");
 
             temp = allele2.doubleCrossover(allele1);
-            assertEquals(temp.getMin(), 10);
-            assertEquals(temp.getMax(), 15);
+            assertEquals(temp.getStart(), 10);
+            assertEquals(temp.getEnd(), 15);
             assertEquals(temp.sequence.seqString(), "-----");
 
             temp = allele3.doubleCrossover(allele4);
-            assertEquals(temp.getMin(), 5);
-            assertEquals(temp.getMax(), 15);
+            assertEquals(temp.getStart(), 5);
+            assertEquals(temp.getEnd(), 15);
             assertEquals(temp.sequence.seqString(), "-----aaaaa");
 
             temp = allele4.doubleCrossover(allele3);
-            assertEquals(temp.getMin(), 10);
-            assertEquals(temp.getMax(), 20);
+            assertEquals(temp.getStart(), 10);
+            assertEquals(temp.getEnd(), 20);
             assertEquals(temp.sequence.seqString(), "-----ttttt");
 
             temp = allele4.doubleCrossover(allele4);
-            assertEquals(temp.getMin(), 10);
-            assertEquals(temp.getMax(), 20);
+            assertEquals(temp.getStart(), 10);
+            assertEquals(temp.getEnd(), 20);
             assertEquals(temp.sequence.seqString(), "aaaaattttt");
         }
         catch (Exception e) {
@@ -167,23 +167,23 @@ public final class AlleleTest {
     public void testMerge() {
         try {
             temp = allele5.merge(allele4, 0);
-            assertEquals(temp.getMin(), 5);
-            assertEquals(temp.getMax(), 20);
+            assertEquals(temp.getStart(), 5);
+            assertEquals(temp.getEnd(), 20);
             assertEquals(temp.sequence.seqString(), "cccccaaaaattttt");
 
             temp = allele4.merge(allele5, 0);
-            assertEquals(temp.getMin(), 5);
-            assertEquals(temp.getMax(), 20);
+            assertEquals(temp.getStart(), 5);
+            assertEquals(temp.getEnd(), 20);
             assertEquals(temp.sequence.seqString(), "cccccaaaaattttt");        
 
             temp = allele2.merge(allele4, 0);
-            assertEquals(temp.getMin(), 10);
-            assertEquals(temp.getMax(), 20);
+            assertEquals(temp.getStart(), 10);
+            assertEquals(temp.getEnd(), 20);
             assertEquals(temp.sequence.seqString(), "aaaaattttt");
 
             temp = allele2.merge(allele4, 5);
-            assertEquals(temp.getMin(), 10);
-            assertEquals(temp.getMax(), 20);
+            assertEquals(temp.getStart(), 10);
+            assertEquals(temp.getEnd(), 20);
             assertEquals(temp.sequence.seqString(), "aaaaattttt");
 
             temp = allele2.merge(allele4, 6);
@@ -197,56 +197,56 @@ public final class AlleleTest {
     @Test
     public void testLeftHardClip() throws IllegalSymbolException, IndexOutOfBoundsException, IllegalAlphabetException, AlleleException {
         temp = allele4.leftHardClip("a");
-        assertEquals(temp.getMin(), 15);
-        assertEquals(temp.getMax(), 20);
+        assertEquals(temp.getStart(), 15);
+        assertEquals(temp.getEnd(), 20);
         assertEquals(temp.sequence.seqString(), "ttttt");
 
         temp = allele4.leftHardClip("aa");
-        assertEquals(temp.getMin(), 14);
-        assertEquals(temp.getMax(), 20);
+        assertEquals(temp.getStart(), 14);
+        assertEquals(temp.getEnd(), 20);
         assertEquals(temp.sequence.seqString(), "attttt");
 
         temp = allele4.leftHardClip("aaaaa");
-        assertEquals(temp.getMin(), 15);
-        assertEquals(temp.getMax(), 20);
+        assertEquals(temp.getStart(), 15);
+        assertEquals(temp.getEnd(), 20);
         assertEquals(temp.sequence.seqString(), "ttttt");
 
         temp = allele4.leftHardClip("aaaaat");
-        assertEquals(temp.getMin(), 16);
-        assertEquals(temp.getMax(), 20);
+        assertEquals(temp.getStart(), 16);
+        assertEquals(temp.getEnd(), 20);
         assertEquals(temp.sequence.seqString(), "tttt");
 
         temp = allele4.leftHardClip("ttttt");
-        assertEquals(temp.getMin(), 10);
-        assertEquals(temp.getMax(), 20);
+        assertEquals(temp.getStart(), 10);
+        assertEquals(temp.getEnd(), 20);
         assertEquals(temp.sequence.seqString(), "aaaaattttt");
     }
     
     @Test
     public void testRightHardClip() throws IllegalAlphabetException, AlleleException, IllegalSymbolException {
         temp = allele4.rightHardClip("t");
-        assertEquals(temp.getMin(), 10);
-        assertEquals(temp.getMax(), 15);
+        assertEquals(temp.getStart(), 10);
+        assertEquals(temp.getEnd(), 15);
         assertEquals(temp.sequence.seqString(), "aaaaa");
 
         temp = allele4.rightHardClip("tt");
-        assertEquals(temp.getMin(), 10);
-        assertEquals(temp.getMax(), 16);
+        assertEquals(temp.getStart(), 10);
+        assertEquals(temp.getEnd(), 16);
         assertEquals(temp.sequence.seqString(), "aaaaat");
 
         temp = allele4.rightHardClip("ttttt");
-        assertEquals(temp.getMin(), 10);
-        assertEquals(temp.getMax(), 15);
+        assertEquals(temp.getStart(), 10);
+        assertEquals(temp.getEnd(), 15);
         assertEquals(temp.sequence.seqString(), "aaaaa");
 
         temp = allele4.rightHardClip("attttt");
-        assertEquals(temp.getMin(), 10);
-        assertEquals(temp.getMax(), 14);
+        assertEquals(temp.getStart(), 10);
+        assertEquals(temp.getEnd(), 14);
         assertEquals(temp.sequence.seqString(), "aaaa");
 
         temp = allele4.rightHardClip("aaaaa");
-        assertEquals(temp.getMin(), 10);
-        assertEquals(temp.getMax(), 20);
+        assertEquals(temp.getStart(), 10);
+        assertEquals(temp.getEnd(), 20);
         assertEquals(temp.sequence.seqString(), "aaaaattttt");
     }
 }
