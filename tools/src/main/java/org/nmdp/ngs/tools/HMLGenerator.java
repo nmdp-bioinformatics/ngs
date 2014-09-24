@@ -493,7 +493,7 @@ public class HMLGenerator {
                 context = JAXBContext.newInstance(Hml.class.getPackage().getName());
                 Marshaller m = context.createMarshaller();
                 
-                NamespacePrefixMapper hmlMapper = new NamespacePrefixMapper() {
+                /* NamespacePrefixMapper hmlMapper = new NamespacePrefixMapper() {
                     @Override
                     public String getPreferredPrefix(String namespaceURI, String suggestionPrefix, boolean required) {
                         if(HMLGenerator.hmlNSMap.get(namespaceURI) != null) {
@@ -502,7 +502,9 @@ public class HMLGenerator {
                         return "";
                     }
                 };
-                
+
+                m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", hmlMapper);
+                */
                 m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://schemas.nmdp.org/spec/hml/0.9.5/hml-0.9.5.xsd");
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
                 m.marshal(generator.getHML(), writer);
