@@ -117,6 +117,26 @@
       <artifactId>ngs-variant</artifactId>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.2.9</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.2.10-b140310.1920</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <version>2.2.10-b140310.1920</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+      <version>2.2.10-b140310.1920</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -195,6 +215,10 @@
             <program>
               <id>ngs-validate-hml</id>
               <mainClass>org.nmdp.ngs.tools.ValidateHml</mainClass>
+            </program>
+            <program>
+              <id>ngs-hml-generator</id>
+              <mainClass>org.nmdp.ngs.tools.HMLGenerator</mainClass>
             </program>
             <program>
               <id>ngs-validate-interleaved-fastq</id>
