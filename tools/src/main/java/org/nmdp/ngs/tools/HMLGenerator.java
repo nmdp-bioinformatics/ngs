@@ -60,6 +60,20 @@ public class HMLGenerator {
      */
     static ObjectFactory hmlfact = new ObjectFactory();
 
+    /**
+     * Namespace hash of namespace to prefix.    
+     */
+    static final Map<String, String> hmlNSMap = new HashMap<String, String>();
+    static {
+        hmlNSMap.put("http://schemas.nmdp.org/spec/hml/0.9.4", "hml");
+        hmlNSMap.put("http://schemas.nmdp.org/spec/hml/0.9.5", "hml");
+        hmlNSMap.put("http://schemas.nmdp.org/spec/hml/0.9.6", "hml");
+        hmlNSMap.put("http://schemas.nmdp.org/spec/hml/0.9.7", "hml");
+        hmlNSMap.put("http://www.w3.org/2001/XMLSchema", "xs");
+        hmlNSMap.put("https://gl.immunogenomics.org/gl-resource", "gl");
+        hmlNSMap.put("https://gl.immunogenomics.org/gl-resource-xlink", "glx");
+    }
+
 
     /**
      * HMLGenerator 
@@ -480,12 +494,12 @@ public class HMLGenerator {
                 Marshaller m = context.createMarshaller();
                 
                 NamespacePrefixMapper hmlMapper = new NamespacePrefixMapper() {
-                    Map<String, String> hmlNSMap = new HashMap<String, String>();
-//TODO - finish mapping
                     @Override
-                    public String getPreferredPrefix(String arg0, String arg1, boolean arg2) {
-                        // TODO Auto-generated method stub
-                        return null;
+                    public String getPreferredPrefix(String namespaceURI, String suggestionPrefix, boolean required) {
+                        if(HMLGenerator.hmlNSMap.get(namespaceURI) != null) {
+                            return suggestionPrefix;
+                        }
+                        return "";
                     }
                 };
                 
