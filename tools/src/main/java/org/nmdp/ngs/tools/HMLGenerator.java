@@ -1,10 +1,32 @@
+/*
 
+    ngs-tools  Next generation sequencing (NGS/HTS) command line tools.
+    Copyright (c) 2014 National Marrow Donor Program (NMDP)
+
+    This library is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation; either version 3 of the License, or (at
+    your option) any later version.
+
+    This library is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; with out even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+    License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library;  if not, write to the Free Software Foundation,
+    Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
+
+    > http://www.gnu.org/licenses/lgpl.html
+
+*/
 package org.nmdp.ngs.tools;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +35,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -45,8 +68,9 @@ import org.nmdp.ngs.hml.jaxb.TypingTestNames;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 /**
- * @author dvaliga
+ * HML generator.
  *
+ * @author dvaliga
  */
 public class HMLGenerator {
 
@@ -76,17 +100,16 @@ public class HMLGenerator {
 
 
     /**
-     * HMLGenerator 
+     * Create a new HML generator.
      */
     public HMLGenerator() {
         newMsg = hmlfact.createHml();
     }
 
-    
+
     private Hml getHML() {
         return this.newMsg;
     }
-    
 
     private void createHeaderInfo() throws IOException {
         String temp = this.displaySimpleOption("Enter a project name like 'LAB'", "LAB");
@@ -98,10 +121,9 @@ public class HMLGenerator {
         temp = this.displaySimpleOption("Enter NMDP reporting center code like '567'", null);
         getHML().setReportingCenter(temp);
     }
-    
 
     private void createTypingMethods(Typing typing) throws IOException {
-        
+
         String[] typingMethodMenu = new String[] {"SSO", "SSP", "SBT-Sanger", "SBT-NGS"};
         int selectedOption = displayOptionMenu("Select Typing Method", typingMethodMenu);
         switch(selectedOption) {
@@ -122,7 +144,7 @@ public class HMLGenerator {
                 createSBTNGS(typing);
                 break;
         }
-        
+
         String temp = this.displaySimpleOption("Do you want to model additional typing methods (SSO/SSP/SBT-Sanger/SBT-NGS)?", "N");
         if(temp != null && temp.equalsIgnoreCase("Y")) {
             createTypingMethods(typing);
@@ -137,7 +159,7 @@ public class HMLGenerator {
         ssoNode.setLocus(temp);
 
         ssoNode.setScores("18811881188118811881188118811881");
-        
+
         if(getHML().getTypingTestNames() != null && getHML().getTypingTestNames().size() > 0) {
 //TODO - Bug in JAXB so ID/IDREF will fail until it is fixed
             //ssoNode.setRefId("sampleTest001");
@@ -149,8 +171,8 @@ public class HMLGenerator {
         }
         typing.getTypingMethodOrInterpretation().add(ssoJaxb);     
     }
-    
-    
+
+
     private void createSSPElement(Typing typing) throws IOException {
         Ssp sspNode = hmlfact.createSsp();
         JAXBElement<Ssp> sspJaxb = hmlfact.createSsp(sspNode);
@@ -158,7 +180,7 @@ public class HMLGenerator {
         sspNode.setLocus(temp);
 
         sspNode.setScores("81188118811881188118811881188118");
-        
+
         if(getHML().getTypingTestNames() != null && getHML().getTypingTestNames().size() > 0) {
 //TODO - Bug in JAXB so ID/IDREF will fail until it is fixed
             //sspNode.setRefId("sampleTest001");
@@ -192,7 +214,7 @@ public class HMLGenerator {
             sbt.setTestIdSource(options[option - 1]);
             sbt.setTestId("1234567");
         }
-        
+
         //AMPLIFICATION
         Amplification amp = hmlfact.createAmplification();
         String[] alpha = new String[] {"DNA", "RNA"};
@@ -222,7 +244,7 @@ public class HMLGenerator {
             gssp.setValue("CATGCATGCATG");
             sbt.getGssp().add(gssp);
         }
-        
+
         typing.getTypingMethodOrInterpretation().add(sbtJaxb);
     }
 
@@ -252,7 +274,7 @@ public class HMLGenerator {
         ConsensusSequence conseq = hmlfact.createConsensusSequence();
             //URI read out-of-scope
         sbt.getConsensusSequence().add(conseq);
-        
+
         TargetedRegion tregion = hmlfact.createTargetedRegion();
         tregion.setAssembly("GRCh38");
         tregion.setContig("6");
@@ -262,10 +284,10 @@ public class HMLGenerator {
         tregion.setStrand("1");
         tregion.setId("CCDS34373.12");
         conseq.setTargetedRegion(tregion);
-        
+
         String[] alpha = new String[] {"DNA", "RNA"};
         int option = this.displayOptionMenu("Select alphabet for SBT consensus sequence", alpha);
-        
+
         Sequence seq1 = hmlfact.createSequence();
         seq1.setAlphabet(alpha[option - 1]);
         seq1.setValue("GGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTA");
@@ -275,13 +297,13 @@ public class HMLGenerator {
         seq2.setAlphabet(alpha[option - 1]);
         seq2.setValue("CTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGGCTAGG");
         conseq.getSequence().add(seq2);
-        
+
         //Raw reads out-of-scope
 
         typing.getTypingMethodOrInterpretation().add(sbtJaxb);
     }
 
-    
+
     /**
      * Creates the interpretation portion of the HML message.
      * @param typing
@@ -290,7 +312,7 @@ public class HMLGenerator {
     private void createInterpretation(Typing typing) throws IOException {
 
         Interpretation interp = hmlfact.createInterpretation();
-        
+
         GregorianCalendar cal = new GregorianCalendar();
         XMLGregorianCalendar xcal;
         try {
@@ -359,7 +381,7 @@ public class HMLGenerator {
 
         //Not implemented
         System.out.println("\ngl-resource not implemented.\n");
-        
+
         //interp.getHaploidOrGlResourceOrGenotypeList().add(glresource);
     }
 
@@ -370,7 +392,7 @@ public class HMLGenerator {
         interp.getHaploidOrGlResourceOrGenotypeList().add(glstr);
     }
 
-    
+
     private void createGenotypeList(Interpretation interp) throws IOException {
         GenotypeList glList = hmlfact.createGenotypeList();
 
@@ -407,7 +429,7 @@ public class HMLGenerator {
         interp.getHaploidOrGlResourceOrGenotypeList().add(glList);
     }
 
-    
+
     /**
      * Creates typing-test-names and typing tests as references for other 
      * data in this message (SSO, etc.)
@@ -433,7 +455,9 @@ public class HMLGenerator {
 
 
     /**
-     * @param args
+     * Main.
+     *
+     * @param args command line arguments
      */
     public static void main(String[] args) {
         System.out.println("HML Generator Version 0.9.5");
@@ -492,7 +516,7 @@ public class HMLGenerator {
             try {
                 context = JAXBContext.newInstance(Hml.class.getPackage().getName());
                 Marshaller m = context.createMarshaller();
-                
+
                 /* NamespacePrefixMapper hmlMapper = new NamespacePrefixMapper() {
                     @Override
                     public String getPreferredPrefix(String namespaceURI, String suggestionPrefix, boolean required) {
@@ -519,13 +543,12 @@ public class HMLGenerator {
                 System.out.println("\nDONE\n");
             }
 
-            
         } catch(IOException ex) {
             System.err.println("There was an error while generating HML - " + ex.getMessage());
         }
     }
-    
-    
+
+
     /**
      * Displays a formatted menu of options for more complex questions that may 
      * have multiple answers.  Returns the user selection which should be a 
@@ -563,7 +586,7 @@ public class HMLGenerator {
 
     /**
      * Displays a formatted prompt for simple user input.  This would be a simple 
-     * question or Y/N answers.  
+     * question or Y/N answers.
      * @param prompt
      * @param defaultVal
      * @return String
