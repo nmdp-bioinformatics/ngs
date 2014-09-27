@@ -40,6 +40,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.nmdp.ngs.hml.HmlWriter;
+
 import org.nmdp.ngs.hml.jaxb.Allele;
 import org.nmdp.ngs.hml.jaxb.AlleleList;
 import org.nmdp.ngs.hml.jaxb.Amplification;
@@ -126,7 +128,7 @@ public class HMLGenerator {
 
         String[] typingMethodMenu = new String[] {"SSO", "SSP", "SBT-Sanger", "SBT-NGS"};
         int selectedOption = displayOptionMenu("Select Typing Method", typingMethodMenu);
-        switch(selectedOption) {
+        switch (selectedOption) {
             case 1:
                 //SSO
                 createSSOElement(typing);
@@ -146,7 +148,7 @@ public class HMLGenerator {
         }
 
         String temp = this.displaySimpleOption("Do you want to model additional typing methods (SSO/SSP/SBT-Sanger/SBT-NGS)?", "N");
-        if(temp != null && temp.equalsIgnoreCase("Y")) {
+        if (temp != null && temp.equalsIgnoreCase("Y")) {
             createTypingMethods(typing);
         }
     }
@@ -160,10 +162,11 @@ public class HMLGenerator {
 
         ssoNode.setScores("18811881188118811881188118811881");
 
-        if(getHML().getTypingTestNames() != null && getHML().getTypingTestNames().size() > 0) {
+        if (getHML().getTypingTestNames() != null && getHML().getTypingTestNames().size() > 0) {
 //TODO - Bug in JAXB so ID/IDREF will fail until it is fixed
             //ssoNode.setRefId("sampleTest001");
-        } else {
+        }
+        else {
             String[] options = new String[] {"gtr", "nmdp-refid", "probe-name"};
             int option = this.displayOptionMenu("Test ID source for this SSO typing", options);
             ssoNode.setTestIdSource(options[option - 1]);
@@ -181,10 +184,11 @@ public class HMLGenerator {
 
         sspNode.setScores("81188118811881188118811881188118");
 
-        if(getHML().getTypingTestNames() != null && getHML().getTypingTestNames().size() > 0) {
+        if (getHML().getTypingTestNames() != null && getHML().getTypingTestNames().size() > 0) {
 //TODO - Bug in JAXB so ID/IDREF will fail until it is fixed
             //sspNode.setRefId("sampleTest001");
-        } else {
+        }
+        else {
             String[] options = new String[] {"gtr", "nmdp-refid", "probe-name"};
             int option = this.displayOptionMenu("Test ID source for this SSP typing", options);
             sspNode.setTestIdSource(options[option - 1]);
@@ -205,10 +209,11 @@ public class HMLGenerator {
         String temp = this.displaySimpleOption("Enter a locus for the SBT Sanger node like 'HLA-A'", null);
         sbt.setLocus(temp);
 
-        if(getHML().getTypingTestNames() != null && getHML().getTypingTestNames().size() > 0) {
+        if (getHML().getTypingTestNames() != null && getHML().getTypingTestNames().size() > 0) {
 //TODO - Bug in JAXB so ID/IDREF will fail until it is fixed
             //sbt.setRefId("sampleTest001");
-        } else {
+        }
+        else {
             String[] options = new String[] {"gtr", "nmdp-refid", "probe-name"};
             int option = this.displayOptionMenu("Test ID source for this SSO typing", options);
             sbt.setTestIdSource(options[option - 1]);
@@ -226,11 +231,11 @@ public class HMLGenerator {
 
         //GSSP
         temp = this.displaySimpleOption("Include GSSP for this SBT Sanger?", "N");
-        if(temp != null && temp.equalsIgnoreCase("Y")) {
+        if (temp != null && temp.equalsIgnoreCase("Y")) {
             Gssp gssp = hmlfact.createGssp();
             String[] gsspAttrs = new String[] {"registered-name", "primer-sequence", "primer-target"};
             option = this.displayOptionMenu("Select a GSSP primer identification method", gsspAttrs);
-            switch(option) {
+            switch (option) {
                 case 1:
                     gssp.setRegisteredName("L999.A1.B2.C123456");
                     break;
@@ -260,10 +265,11 @@ public class HMLGenerator {
         String temp = this.displaySimpleOption("Enter a locus for the SBT Sanger node like 'HLA-A'", null);
         sbt.setLocus(temp);
 
-        if(getHML().getTypingTestNames() != null && getHML().getTypingTestNames().size() > 0) {
+        if (getHML().getTypingTestNames() != null && getHML().getTypingTestNames().size() > 0) {
 //TODO - Bug in JAXB so ID/IDREF will fail until it is fixed
             //sbt.setRefId("sampleTest001");
-        } else {
+        }
+        else {
             String[] options = new String[] {"gtr", "nmdp-refid", "probe-name"};
             int option = this.displayOptionMenu("Test ID source for this SSO typing", options);
             sbt.setTestIdSource(options[option - 1]);
@@ -318,7 +324,8 @@ public class HMLGenerator {
         try {
             xcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
             interp.setDate(xcal);
-        } catch (DatatypeConfigurationException e) {
+        }
+        catch (DatatypeConfigurationException e) {
             System.err.println("Error creating interpretation date. " + e.getMessage());
         }
 
@@ -331,7 +338,7 @@ public class HMLGenerator {
 
         String[] interpMethodMenu = new String[] {"haploid", "gl-resource", "glstring", "genotype-list"};
         int selectedOption = displayOptionMenu("Select interpretation format", interpMethodMenu);
-        switch(selectedOption) {
+        switch (selectedOption) {
             case 1:
                 //haploid
                 createHaploidData(interp);
@@ -367,7 +374,7 @@ public class HMLGenerator {
 
         //Enter additional haploid?
         temp = this.displaySimpleOption("Do you want to include an additional haploid?", "N");
-        if(temp != null && temp.equalsIgnoreCase("Y")) {
+        if (temp != null && temp.equalsIgnoreCase("Y")) {
             createHaploidData(interp);
         }
     }
@@ -475,7 +482,7 @@ public class HMLGenerator {
             generator.createHeaderInfo();
 
             String temp = generator.displaySimpleOption("Do you have typing data that refers to a typing test list?", "Y");
-            if(temp != null && temp.equalsIgnoreCase("Y")) {
+            if (temp != null && temp.equalsIgnoreCase("Y")) {
                 generator.createTypingTests();
             }
 
@@ -483,9 +490,10 @@ public class HMLGenerator {
             Sample testSample = new Sample();
             generator.getHML().getSample().add(testSample);
             temp = generator.displaySimpleOption("Enter the 3-digit NMDP center-code to use for this sample.", null);
-            if(temp == null || temp.trim().length() > 3) {
+            if (temp == null || temp.trim().length() > 3) {
                 testSample.setCenterCode("999");
-            } else {
+            }
+            else {
                 testSample.setCenterCode(temp);
             }
             testSample.setId("1234-5678-9");
@@ -503,48 +511,23 @@ public class HMLGenerator {
 
             //Interpretation
             temp = generator.displaySimpleOption("Do you have interpretation data?", "Y");
-            if(temp != null && temp.equalsIgnoreCase("Y")) {
+            if (temp != null && temp.equalsIgnoreCase("Y")) {
                 generator.createInterpretation(typing);
             }
 
 
             //Write HML
             System.out.println("\n\n--- COPY HML MESSAGE BELOW ---\n");
-            
-            StringWriter writer = new StringWriter();
-            JAXBContext context;
-            try {
-                context = JAXBContext.newInstance(Hml.class.getPackage().getName());
-                Marshaller m = context.createMarshaller();
 
-                /* NamespacePrefixMapper hmlMapper = new NamespacePrefixMapper() {
-                    @Override
-                    public String getPreferredPrefix(String namespaceURI, String suggestionPrefix, boolean required) {
-                        if(HMLGenerator.hmlNSMap.get(namespaceURI) != null) {
-                            return suggestionPrefix;
-                        }
-                        return "";
-                    }
-                };
+            HmlWriter.write(generator.getHML(), System.out);
 
-                m.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", hmlMapper);
-                */
-                m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://schemas.nmdp.org/spec/hml/0.9.5/hml-0.9.5.xsd");
-                m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-                m.marshal(generator.getHML(), writer);
-
-                // output string to console
-                String theXML = writer.toString();
-                System.out.println(theXML);
-            } catch (JAXBException e) {
-                System.err.println("Failed to write HML output - " + e.getMessage());
-                e.printStackTrace();
-            } finally {
-                System.out.println("\nDONE\n");
-            }
-
-        } catch(IOException ex) {
-            System.err.println("There was an error while generating HML - " + ex.getMessage());
+        }
+        catch (IOException e) {
+            System.err.println("There was an error while generating HML - " + e.getMessage());
+            e.printStackTrace();
+        }
+        finally {
+            System.out.println("\nDONE\n");
         }
     }
 
@@ -560,7 +543,7 @@ public class HMLGenerator {
      */
     public int displayOptionMenu(String title, String[] options) throws IOException {
         System.out.println("\n=== " + title + " ===");
-        for(int optNum = 0; optNum < options.length; optNum++) {
+        for (int optNum = 0; optNum < options.length; optNum++) {
             System.out.println(" (" + (optNum + 1) + ") " + options[optNum]);
         }
         System.out.println("---------- ");
@@ -570,13 +553,15 @@ public class HMLGenerator {
         int selectedOption = 0;
         try {
             selectedOption = Integer.parseInt(input);
-            if(selectedOption < 1 || selectedOption > options.length) {
+            if (selectedOption < 1 || selectedOption > options.length) {
                 throw new Exception("Option out of range");
             }
-        } catch(NumberFormatException nfe) {
+        }
+        catch (NumberFormatException e) {
             System.err.println("\nINVALID RESPONSE - SELECT THE NUMBER OF THE OPTION YOU WISH TO CHOOSE\n");
             return displayOptionMenu(title, options);
-        } catch(Exception e) {
+        }
+        catch (Exception e) {
             System.err.println("\nINVALID OPTION SELECTED\n");
             return displayOptionMenu(title, options);
         }
@@ -598,15 +583,18 @@ public class HMLGenerator {
         BufferedReader reader = new BufferedReader(inReader);
         String input = reader.readLine();
         try {
-            if(defaultVal != null && (input == null || input.trim().length() < 1)) {
+            if (defaultVal != null && (input == null || input.trim().length() < 1)) {
                 return defaultVal;
-            } else if(input == null || input.trim().length() < 1) {
+            }
+            else if (input == null || input.trim().length() < 1) {
                 //No default and no valid response
                 throw new Exception("Empty response");
-            } else {
+            }
+            else {
                 return input;
             }
-        } catch(Exception e) {
+        }
+        catch(Exception e) {
             System.err.println("\nINVALID INPUT\n");
             return displaySimpleOption(prompt, defaultVal);
         }
