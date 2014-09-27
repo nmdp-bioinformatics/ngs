@@ -77,7 +77,7 @@ public final class HmlReader {
             JAXBContext context = JAXBContext.newInstance(Hml.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-0.9.5.xsd");
+            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-0.9.6.xsd");
             Schema schema = schemaFactory.newSchema(schemaURL);
             unmarshaller.setSchema(schema);
             return (Hml) unmarshaller.unmarshal(reader);
