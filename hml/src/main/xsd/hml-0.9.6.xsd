@@ -1,0 +1,1057 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Histoimmunogenetics Markup Language (HML)
+    Copyright (c) 2014 National Marrow Donor Program (NMDP)
+
+    This specification is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation; either version 3 of the License, or (at
+    your option) any later version.
+
+    This specification is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; with out even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+    License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this specification;  if not, write to the Free Software Foundation,
+    Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
+
+    > http://www.gnu.org/licenses/lgpl.html
+
+-->
+
+<!--                                                                        -->
+<!--                          IMPORTANT NOTICE                              -->
+<!--                                                                        -->
+<!--  This is a DRAFT version of HML and cannot currently be used to        -->
+<!--  send or receive data.                                                 -->
+<!--                                                                        -->
+<!--                                                                        -->
+
+<xs:schema 
+  xmlns="http://schemas.nmdp.org/spec/hml/0.9.6"
+  xmlns:hmlns="http://schemas.nmdp.org/spec/hml/0.9.6" 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  elementFormDefault="qualified" attributeFormDefault="unqualified" 
+  targetNamespace="http://schemas.nmdp.org/spec/hml/0.9.6"
+  version="0.9.6">
+
+  <xs:element name="hml" id="hml" nillable="false">
+    <xs:annotation><xs:documentation>
+        Root element of the document identifying it as an HML message. Must 
+          contain the version of HML that this document should conform to.
+
+        Children:
+        ---------
+        - property (optional, qty: 0 or more)
+        - sample (required, qty: 1 or more)
+        - typing-test-names (optional, qty: 0 or more)
+
+        Attributes:
+        -----------
+        - version: version of HML the document follows (required)
+        - project-name: name of the typing project (optional)
+        - reporting-center (ex: 751) (optional)
+    </xs:documentation></xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="property"          type="hmlns:property" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="sample"            type="hmlns:sample" minOccurs="1" maxOccurs="unbounded" />
+        <xs:element name="typing-test-names" type="hmlns:typing-test-names" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="version" use="required">
+        <xs:annotation><xs:documentation>
+          Expected to be 0.9.6 to use this schema.
+        </xs:documentation></xs:annotation>
+        <xs:simpleType id="version">
+          <xs:restriction base="xs:string">
+            <xs:pattern value="0\.9\.6" /><!-- xs:pattern value="[0][.][9]([.][0-9]*)?" / -->
+            <xs:maxLength value="5" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="project-name" use="optional" >
+        <xs:simpleType>
+          <xs:restriction base="xs:string" >
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>      
+      <xs:attribute name="reporting-center" use="optional" >
+        <xs:simpleType>
+          <xs:restriction base="xs:string" >
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:complexType name="typing-test-names">
+    <xs:annotation><xs:documentation>
+        Specifies a list of test names internally referenced by an sso 
+          element or an ssp element. It wraps a list of "typing-test-name" 
+          elements, which contains the actual test identifiers.
+
+        Children:
+        ---------
+        - typing-test-name (required, qty: 1 or more)
+
+        Attributes:
+        -----------
+        - ref-id: identifier (XML ID format) internal to the document used for
+                  referencing the list of tests contained here (required)
+                  Must start with a non-numeric/symbol character.
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="typing-test-name" type="hmlns:typing-test-name" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="ref-id" type="xs:ID" use="required" />
+  </xs:complexType>
+
+
+  <xs:complexType name="typing-test-name">
+    <xs:annotation><xs:documentation>
+        Specifies a single test name contained in a referenced "typing-test-
+          names" list.  
+
+        Attributes:
+        -----------
+        - name: Fully qualified test name (required)
+                (ex: "L999.K1.V1.A9F-S11", "L999.K1.V1.SSP12345")
+    </xs:documentation></xs:annotation>
+    <xs:attribute name="name" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string" >
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+
+  <xs:complexType name="property">
+    <xs:annotation><xs:documentation>
+        Allows the optional inclusion of an anonymous key-value pair (not 
+         defined by the schema) without the need to extend or change the schema.
+         Any information contained in this element must be fully understood by 
+         the message recipient.
+
+        Attributes:
+        -----------
+        - name: anonymous "key" in the key-value pair
+        - value: anonymous "value" in the key-value pair
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <!-- Extensible letting a property have special-use child elements -->
+      <xs:any minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>    
+    <xs:attribute name="name" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string" >
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="value" type="xs:string" use="required"/>
+  </xs:complexType>
+
+
+  <xs:complexType name="sample">
+    <xs:annotation><xs:documentation>
+        Encloses the genotyping data pertaining to a particular sample. It may 
+          contain multiple typing elements (for instance, one for each locus).
+
+        Children:
+        ---------
+        - property (optional, qty: 0 or more)
+        - typing (required, qty: 1 or more)
+
+        Attributes:
+        -----------
+        - id: Identifier for the sample (ex: "1234-5678-9", "123456789") (required)
+        - center-code: center code of the sample's origin (donor center, 
+          transplant center, etc.) (optional)
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="property" type="hmlns:property" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="typing"   type="hmlns:typing" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="id"          type="xs:string" use="required" />
+    <xs:attribute name="center-code" use="optional" >
+      <xs:simpleType>
+        <xs:restriction base="xs:string" >
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+
+  <xs:complexType name="typing">
+    <xs:annotation><xs:documentation>
+        Encapsulates the primary data from a genotyping method with an 
+          optional genotyping result (interpretation) determined from the 
+          primary data.
+
+        Children:
+        ---------
+        - interpretation (not required, qty: 0 or 1)
+        - typing-method (required, qty: 1 or more)
+          The 'typing-method' element is abstract, meaning that it will never 
+          actually appear in an HML document. It must be substituted by an 
+          element such as sso, ssp, sbt-sanger, sbt-ngs, or any element 
+          defined as a substitute for the 'typing-method' element.
+
+        Attributes:
+        -----------
+        - gene-family:  Represents the gene evaluated in this typing report, e.g. 
+                        "HLA" or "KIR" (required)
+                        See: http://www.genenames.org/genefamilies for examples.
+        - date:         Typing/testing date for this sample (required)
+    </xs:documentation></xs:annotation>
+    <xs:choice minOccurs="1" maxOccurs="2">
+      <xs:element ref="hmlns:typing-method" minOccurs="1" maxOccurs="unbounded" />
+      <xs:element ref="interpretation" minOccurs="0" maxOccurs="1" />
+    </xs:choice>
+    <xs:attribute name="gene-family" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute type="xs:date" name="date" use="required" />
+  </xs:complexType>
+
+
+  <xs:element name="interpretation" id="interpretation">
+    <xs:complexType>
+      <xs:annotation><xs:documentation>
+          Specifies the genotyping call at the most specific level possible. 
+            This call can be represented within haploid elements or using gl-
+            resources. When using haploid for interpretation, typical use is one 
+            or two haploid elements for a particular locus, but possibly more if 
+            multiple loci are covered (ex: two DRB1 haploids + one DRB3 haploid).
+
+          Children:
+          ---------
+          Choice of... (required)
+          - haploid (qty: 1 or more)
+          - glstring (qty: 1 or more)
+          - genotype-list (qty: 1 or more)
+
+          Attributes:
+          -----------
+          - date: Date on which the typing was carried out, or on which the 
+             final call was determined. Format can be either ISO-8601 or 
+             "YYYY-MM-DD". (required)
+          - allele-db: Database or other source for nomenclature used in the 
+             interpretation. (ex: "IMGT-HLADB") (optional in the schema, but 
+             required by NMDP business rules)
+          - allele-version: A specific version of the allele-db (ex: "3.15.0"). 
+             (optional in this schema, but required by NMDP business rules)
+      </xs:documentation></xs:annotation>
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="haploid"        minOccurs="1" maxOccurs="unbounded" />
+        <xs:element ref="genotype-list"  minOccurs="1" maxOccurs="unbounded" />
+        <xs:element ref="glstring"       minOccurs="1" maxOccurs="unbounded" />
+      </xs:choice>
+      <xs:attribute name="date"      type="xs:date" use="required" />
+      <xs:attribute name="allele-db" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="allele-version" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="haploid">
+    <xs:complexType>
+      <xs:annotation><xs:documentation>
+          Specifies one-half of a full typing at a particular locus. Must 
+            conform to the database specified in interpretation.
+
+          Attributes:
+          -----------
+          - locus:     Locus (ex: "HLA-A", "HLA-DRB1") (required)
+          - method:    Typing method used (ex: "DNA", "SER") (required)
+          - type:      Allele/code level type (ex: "01:01", "01:AB") (required)
+      </xs:documentation></xs:annotation>
+      <xs:attribute name="locus" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="method" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="DNA|SER" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="([\s]*)|([0-9A-Z:\-\*]{2,40})" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="glstring">
+    <xs:complexType>
+      <xs:annotation><xs:documentation>
+          Specifies a resource in Genotype List String (GL String) format for the
+            interpretation of a typing result, or a URI identifying a resource in
+            GL String format. For more details about the format and use of GL Strings,
+            see (http://www.ncbi.nlm.nih.gov/pubmed/23849068)
+
+          Attributes:
+          -----------
+          - uri: Specifies a URI identifying a resource in GL String format for the
+            interpretation of a typing result. For more information about the format
+            and use of GL Strings, see (http://www.ncbi.nlm.nih.gov/pubmed/23849068).
+            (optional)
+
+          Data:
+          -----
+          - resource in GL String representation (string, required)
+      </xs:documentation></xs:annotation>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="uri" use="optional">
+            <xs:simpleType>
+              <xs:restriction base="xs:anyURI">
+                <xs:minLength value="5" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element> 
+
+
+  <xs:element name="genotype-list">
+    <xs:complexType>
+      <xs:annotation><xs:documentation>
+          NOTE: This element and its children are deprecated in HML 1.0.
+
+          A genotype-list represents a full unambiguous list of possibilities for
+            the typing of a sample. The values of the elements in this genotype-
+            list (each allele element) should conform to the nomenclature specified
+            by the interpretation.
+
+          Children:
+          ---------
+          - diploid-combination (required, qty: 1 or more)
+      </xs:documentation></xs:annotation>
+      <xs:sequence>
+        <xs:element name="diploid-combination" type="hmlns:diploid-combination" minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:complexType name="diploid-combination">
+    <xs:annotation><xs:documentation>
+        NOTE: This element and its children are deprecated in HML 1.0.
+
+        A diploid-combination element is one possibility value in a genotype-
+          list. There may be either one or two locus-block child elements, 
+          depending on whether the data provided in this diploid-combination 
+          covers one or two chromosomes.
+
+        Children:
+        ---------
+        - locus-block (required, qty: 1 or 2)
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="locus-block" type="hmlns:locus-block" minOccurs="1" maxOccurs="2" />
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:complexType name="locus-block">
+    <xs:annotation><xs:documentation>
+        NOTE: This element and its children are deprecated in HML 1.0.
+
+        A locus-block element allows allele-list elements to be grouped 
+          together to mean one allele-list is a possibility if and only if all
+          others are. This is useful, for example, in the case when listing 
+          HLA-DRB1 alleles next to the corresponding HLA-DRB3 alleles that are 
+          relevant in only some cases (example in comments).
+        <!-- Example:
+          <locus-block>
+            <allele-list>
+              <allele>HLA-DRB1*03:01:01:01</allele>
+              <allele>HLA-DRB1*03:03</allele>
+            </allele-list>
+            <allele-list>
+              <allele>HLA-DRB3*02:03</allele>
+            </allele-list>
+           </locus-block>
+        -->
+
+        Children:
+        ---------
+        - allele-list (required, qty: 1 or more)
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="allele-list" type="hmlns:allele-list" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:complexType name="allele-list">
+    <xs:annotation><xs:documentation>
+        NOTE: This element and its children is deprecated in HML 1.0.
+
+        An allele-list element is a representation of the list of allele
+          possibilities for a genotype. NMDP has historically used allele codes 
+          in combination with allele families to represent this.
+
+        <!-- Example: HLA-A*01:BC can now be represented as:
+        <allele-list>
+          <allele>HLA-A*01:02</allele>
+          <allele>HLA-A*01:03</allele>
+        </allele-list> 
+        -->
+
+        Children:
+        ---------
+        - allele (required, qty: 1 or more)
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="allele" type="hmlns:allele" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:complexType name="allele">
+    <xs:annotation><xs:documentation>
+        NOTE: This element and its children is deprecated in HML 1.0.
+
+        An allele element specifies a single allele: It should be given in
+          LOCUS*NAME format and names must be at allele-level resolution. The 
+          value must conform to the nomenclature specified in the interpretation.
+        <!-- Example: 
+          <allele>HLA-A*01:01:01:01</allele> 
+        -->
+
+        Attributes:
+        -----------
+        - present: Indicates the presence or absence of this allele. A value 
+          of "N" can be used to indicate that a particular allele was tested 
+          for and found not to be a possibility. A value of "U" (untested) 
+          indicates that the given allele was not tested for. The default 
+          value is "Y". [Y|N|U] (required, qty: 1 or more)
+    </xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="present" type="hmlns:present" use="optional" default="Y" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+
+  <xs:simpleType name="present">
+    <xs:annotation><xs:documentation>
+          An enumerated type indicating the presence or absence of an allele.
+
+          N: a particular allele was tested for and found not to be a 
+             possibility
+          U: the given allele was not tested for
+          Y: (default) the given allele was tested for and found to be a 
+             possible result
+      </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="N"/>
+      <xs:enumeration value="U"/>
+      <xs:enumeration value="Y"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:element abstract="true" name="typing-method">
+    <xs:annotation><xs:documentation>
+        Exists in abstract form only, meaning that it will never actually 
+        appear in an HML document. It must be substituted by an element such 
+        as sso, ssp, sbt-sanger, sbt-ngs, or any element defined as a substitute
+        for the 'typing-method' element.
+    </xs:documentation></xs:annotation>
+  </xs:element>
+
+
+  <xs:complexType name="sso"> 
+    <xs:annotation><xs:documentation>
+        Specifies an SSO (sequence-specific oligonucleotide) test that was 
+          done. Kit information and scores must be identified to allow for 
+          later test reinterpretation.
+
+        Attributes:
+        -----------
+        - locus:   locus for multi-locus targets (optional)
+        - ref-id:  Internal XML reference to a typing-test-names 
+                   element if contained in this document (optional)
+        - test-id: Test ID as registered with the test-id-source. (required if ref-id not specified)
+        - test-id-source: A formal or formal test registry location. For 
+                   example, this could be the NCBI GTR (specified as "GTR"), 
+                   NMDP for tests registered directly with NMDP (specified as 
+                   "NMDP), etc. (required if test-id is used)
+        - scores: The results of the SSO test, specified as one string 
+                   (ex: "118111100181")
+
+          NMDP allows the following test-id-source values: 
+          (Note that this may change in future versions) 
+            * gtr:          ID of kit registered with the NCBI Genetic   
+                            Testing Registry. (Preferred)
+            * nmdp-refid:   ID of kit registered with NMDP. The cardinal 
+                            sequence numbers of the registered probes in the 
+                            kit will determine the score order.
+            * probe-name:   Fully qualified probe name. If this attribute is 
+                            used, the scores attribute must contain exactly 
+                            one score. (ex: "L0999.K1.V1.A9F-S11")
+    </xs:documentation></xs:annotation>
+    <xs:attribute name="locus"          type="xs:string" use="optional" />
+    <xs:attribute name="ref-id"         type="xs:IDREF"  use="optional" />
+    <xs:attribute name="test-id"        type="xs:string" use="optional" />
+    <xs:attribute name="test-id-source" type="xs:string" use="optional" />
+    <xs:attribute name="scores"         type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:element name="sso" 
+              substitutionGroup="hmlns:typing-method" 
+              type="hmlns:sso"/>
+
+
+  <xs:complexType name="ssp">
+    <xs:annotation><xs:documentation>
+        Specifies an SSP (sequence-specific primer) test that was done. Kit 
+          information and scores must be identified to allow for later test 
+          re-interpretation.
+
+        Attributes:
+        -----------
+        - locus:   locus for multi-locus targets (optional)
+        - ref-id:  Internal XML reference to a typing-test-names 
+                   element if contained in this document (optional)
+        - test-id: Test ID as registered with the test-id-source. (required if ref-id not specified)
+        - test-id-source: A formal or formal test registry location. For 
+                   example, this could be the NCBI GTR (specified as "GTR"), 
+                   NMDP for tests registered directly with NMDP (specified as 
+                   "NMDP), etc. (required if test-id is used)
+        - scores: The results of the SSP test, specified as one string 
+                   (ex: "118111100181")
+
+          NMDP allows the following test-id-source values: 
+          (Note that this may change in future versions) 
+            * gtr:          ID of kit registered with the NCBI Genetic  
+                            Testing Registry. (Preferred)
+            * nmdp-refid:   ID of kit registered with NMDP. The cardinal 
+                            sequence numbers of the registered probes in the 
+                            kit will determine the score order.
+            * probe-name:   Fully qualified probe name. If this attribute is 
+                            used, the scores attribute must contain exactly 
+                            one score. (ex: "L0999.K1.V1.A9F-S11")
+    </xs:documentation></xs:annotation>
+    <xs:attribute name="locus"          type="xs:string" use="optional" />
+    <xs:attribute name="ref-id"         type="xs:IDREF"  use="optional" />
+    <xs:attribute name="test-id"        type="xs:string" use="optional" />
+    <xs:attribute name="test-id-source" type="xs:string" use="optional" />
+    <xs:attribute name="scores"         type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:element name="ssp" 
+              substitutionGroup="hmlns:typing-method" 
+              type="hmlns:ssp"/>
+
+
+  <xs:complexType name="sbt-sanger">
+    <xs:annotation><xs:documentation>
+        Describes an SBT (sequence-based typing) that was performed using a
+        Sanger technique.
+
+        Children:
+        ---------
+        - amplification     (required, qty: 1)
+        - sub-amplification (not required, qty: 0 or more)
+        - gssp              (not required, qty: 0 or more)
+        Attributes:
+        -----------
+        - locus:   The locus for which the SBT was performed. (optional)
+        - ref-id:  Internal XML reference to a typing-test-names 
+                   element if contained in this document (optional)
+        - test-id: Test ID as registered with the test-id-source. (required if ref-id not specifid)
+        - test-id-source: A formal or formal test registry location. For 
+                   example, this could be the NCBI GTR (specified as "GTR"), 
+                   NMDP for tests registered directly with NMDP (specified as 
+                   "NMDP), etc. (required if test-id is used)
+
+          NMDP allows the following test-id-source values:
+          (Note that this may change in future versions) 
+            * gtr:          ID of kit registered with the NCBI Genetic  
+                            Testing Registry. (Preferred)
+            * nmdp-refid:   ID of kit registered with NMDP. The cardinal 
+                            sequence numbers of the registered probes in the 
+                            kit will determine the score order.
+            * probe-name:   Fully qualified probe name. If this attribute is 
+                            used, the scores attribute must contain exactly 
+                            one score. (ex: "L0999.K1.V1.A9F-S11")
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="amplification"     type="hmlns:amplification" minOccurs="1" maxOccurs="1" />
+      <xs:element name="sub-amplification" type="hmlns:sub-amplification" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="gssp"              type="hmlns:gssp" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="locus" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="ref-id"  type="xs:IDREF"  use="optional" />
+    <xs:attribute name="test-id" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="test-id-source" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:element name="sbt-sanger" 
+              substitutionGroup="hmlns:typing-method" 
+              type="hmlns:sbt-sanger"/>
+
+
+  <xs:complexType name="amplification">
+    <xs:annotation><xs:documentation>
+        Identifies the amplification primer used for SBT-Sanger, and the 
+        resulting sequence from using it.
+
+        Attributes:
+        -----------
+        - registered-name: Identifies the amplification primer. Must be 
+                           recognized by the message recipient. (string, required)
+
+        Data:
+        -----
+        - Amplification result (string, required)
+    </xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="hmlns:sequence">
+        <xs:attribute name="registered-name" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="sub-amplification">
+    <xs:annotation><xs:documentation>
+        Identifies sub-amplification primers. These primers are used to resolve
+          ambiguities and may be used either concurrently with or after the 
+          amplification step.
+
+        Attributes:
+        -----------
+        - registered-name: Identifies the amplification primer. Must be 
+          recognized by the message recipient. (string, required)
+
+        Data:
+        -----
+        - Resulting sequence from the sub-amplification. (string, required)
+    </xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="hmlns:sequence">
+        <xs:attribute name="registered-name" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="gssp">
+    <xs:annotation><xs:documentation>
+        Describes the Group Specific Sequencing Primer used.
+
+        Attributes:
+        -----------
+        - registered-name: Identifies the amplification primer. Must be 
+          recognized by the message recipient. (string, optional)
+        - primer-sequence: PCR primer sequences used to amplify a polymorphic 
+          region of sequences. (string, optional)
+        - primer-target: If the primer sequence is proprietary (or otherwise 
+          unable to be explicitly specified), the primer sequence can be imputed 
+          from the gssp result. This imputed primer sequence is specified as the 
+          primer-target. (string, optional)
+
+        Data:
+        -----
+        - Resulting sequence from the GSSP used. (string, required)
+    </xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="hmlns:sequence">
+        <xs:attribute name="registered-name" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="primer-sequence" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="primer-target" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="sequence">
+    <xs:annotation><xs:documentation>
+        A sequence of nucleotides in the DNA or RNA alphabet.
+        
+        The DNA alphabet consists of primary nucleotides (A, C, G, T).
+        The RNA alphabet consists of primary nucleotides (A, C, G, U).
+
+        Wildcard IUPAC nucleotides (M, R, W, S, Y, K, V, H, D, B, X, N) may be 
+        used if they are acceptable in the context in which they appear. The 
+        default is to use all upper case letters. 
+
+        The full specification of the IUPAC codes may be found here:
+        (http://nar.oxfordjournals.org/content/13/9/3021.short)
+        Cornish-Bowden A. Nomenclature for incompletely specified bases in 
+        nucleic acid sequences: recommendations 1984. Nucleic Acids Res. 1985; 
+        13:3021-3030.
+
+        Attribute:
+        ----------
+        - alphabet: Identifies the alphabet of the sequence contained within the 
+                    tags. Expects either 'DNA' or 'RNA'. Defaults to 'DNA'.
+                    (string, optional)
+        - xs:anyAttribute:  Custom use attribute for additional sequence 
+                    information. (optional)
+        Data:
+        -----
+        - Sequence in DNA or RNA alphabet (string, required)
+    </xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="hmlns:iupac-bases">
+        <xs:attribute name="alphabet" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:pattern value="DNA|RNA" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <!-- Custom use attribute for additional information (optional) -->
+        <xs:anyAttribute />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType> 
+
+
+  <xs:simpleType name="iupac-bases">
+    <xs:annotation><xs:documentation>
+        Nucleotide bases representing sequence ambiguity.
+        Primary nucleotides: A, C, G, T (DNA), U (RNA).
+        "Wildcard" nucleotides: M, R, W, S, Y, K, V, H, D, B, X, N.
+
+        Wildcard nucleotides may be used if they are acceptable in the context 
+        in which they appear. The default is to use all upper case letters. 
+
+        The full specification of the IUPAC codes may be found here:
+        (http://nar.oxfordjournals.org/content/13/9/3021.short)
+        Cornish-Bowden A. Nomenclature for incompletely specified bases in 
+        nucleic acid sequences: recommendations 1984. Nucleic Acids Res. 1985; 
+        13:3021-3030.
+
+        The bases of the sequence string are restricted to the upper and lower case
+        versions of the nucleotides specified above.
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([\sACGTUMRWSYKVHDBXNacgtumrwsykvhdbxn])+" />
+      <xs:minLength value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:complexType name="sbt-ngs">
+    <xs:annotation><xs:documentation>
+        Describes an NGS (next-generation sequencing) event that was performed.
+
+        Children:
+        ---------
+        - consensus-sequence (required, qty: 1 or more)
+        - raw-reads (not required, qty: 0 or more)
+
+        Attributes:
+        -----------
+        - locus:   The locus for which the SBT was performed. (optional)
+        - ref-id:  Internal XML reference to a typing-test-names 
+                   element if contained in this document (optional)
+        - test-id: Test ID as registered with the test-id-source. (required if ref-id not specified)
+        - test-id-source: A formal or formal test registry location. For 
+                   example, this could be the NCBI GTR (specified as "gtr"), 
+                   NMDP for tests registered directly with NMDP (specified as 
+                   "NMDP"), etc. (required if test-id is used)
+
+        NMDP allows the following test-id-source values: 
+        (Note that this may change in future versions) 
+            * gtr:          ID of kit registered with the NCBI Genetic  
+                            Testing Registry. (Preferred)
+            * nmdp-refid:   ID of kit registered with NMDP. The cardinal 
+                            sequence numbers of the registered probes in the 
+                            kit will determine the score order.
+            * probe-name:   Fully qualified probe name. If this attribute is 
+                            used, the scores attribute must contain exactly 
+                            one score. (ex: "L0999.K1.V1.A9F-S11")
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="consensus-sequence" type="hmlns:consensus-sequence" minOccurs="1" maxOccurs="unbounded" />
+      <xs:element name="raw-reads"          type="hmlns:raw-reads" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="locus" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="ref-id"  type="xs:IDREF"  use="optional" />
+    <xs:attribute name="test-id" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="test-id-source" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>  
+  </xs:complexType>
+
+  <xs:element name="sbt-ngs" 
+              substitutionGroup="hmlns:typing-method" 
+              type="hmlns:sbt-ngs" />
+
+
+  <xs:complexType name="consensus-sequence">
+    <xs:annotation><xs:documentation>
+        Describes a sequence that is the result of an alignment or 
+        assembly of shorter sequence reads generated by an NGS platform. 
+
+        Children:
+        ---------
+        - targeted-region (required, qty: 1)
+        - sequence (required, qty:1-2)
+
+        Attributes:
+        -----------
+          - allele-db: Database or other source for nomenclature used for the 
+             consensus. (ex: "IMGT-HLADB") (optional)
+          - allele-version: A specific version of the allele-db (ex: "3.15.0"). 
+             (optional)
+    </xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element ref="targeted-region"  minOccurs="1" maxOccurs="1" />
+      <xs:element name="sequence"        type="hmlns:sequence" minOccurs="1" maxOccurs="2" />
+    </xs:sequence>
+    <xs:attribute name="allele-db" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="allele-version" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType> 
+
+
+  <xs:element name="targeted-region">
+    <xs:annotation><xs:documentation>
+        Highlights the specific regions of the gene or genome that were 
+        targeted.  
+        NOTE: This is the region that was targeted, not necessarily the region 
+        reported under "sequence".  
+
+        References:
+        ----------
+            http://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/human/
+            ftp://ftp.ncbi.nlm.nih.gov/genbank/genomes/Eukaryotes/vertebrates_mammals/Homo_sapiens/
+            ftp://ftp.ncbi.nlm.nih.gov/genbank/genomes/Eukaryotes/vertebrates_mammals/Homo_sapiens/GRCh38/README_ASSEMBLIES
+            
+        Example:
+        -------
+        <!-- 
+        <targeted-region assembly="GRCh38" 
+                         contig="6" 
+                         start="29910182" 
+                         end="29910403" 
+                         strand="-1" 
+                         id="ENSE00001633002" 
+                         description="HLA-A exon 3" />
+        -->
+
+        Attributes:
+        -----------
+        - assembly: (required) Major/minor release from GRC (eg. "GRCh37", "GRCh37.p1", ...)
+                    Major release: The formal release of a genome assembly, like "GRCh37"
+                    Minor release: A release of a genome assembly including patches that occurs 
+                                   between major releases, like "GRCh37.p13"
+        - contig:   (required) Contig name from assembly (eg. "1", "2", ...)
+        - start:    (required) Start position of a targeted region on contig,
+                    0-based or space-counted coordinate system, closed-open range
+        - end:      (required) End position of a targeted region on contig,
+                    0-based or space-counted coordinate system, closed-open range
+        - strand:   (optional) String value (eg. one of "-1", "1", "-", "+");
+                    defaults to "+" if unspecified
+        - id:       (optional) String identifier like "ENSE0000163302"
+        - description:  (optional) Text description of the targeted region, like "HLA-A exon 3"
+    </xs:documentation></xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="assembly" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string" >
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="contig" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string" >
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="start" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:long" >
+            <xs:minInclusive value="0" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="end" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:long" >
+            <xs:minInclusive value="0" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="strand" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:string" >
+            <xs:enumeration value="-1"/>
+            <xs:enumeration value="1"/>
+            <xs:enumeration value="+"/>
+            <xs:enumeration value="-"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="id" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:string" >
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="description" use="optional">
+        <xs:simpleType>
+          <xs:restriction base="xs:string" >
+            <xs:minLength value="1" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:complexType name="raw-reads">
+    <xs:annotation><xs:documentation>
+        Reports the raw sequence reads generated by an NGS platform. Because 
+        various platforms report reads in various formats, the platform must be
+        specified. Since this data is quite large even for relatively small
+        regions of the genome, this information must be linked to using an 
+        external URI.
+
+        Attributes:
+        -----------
+        - uri: An external link to the raw reads. (required)
+        - format: Identifies the format of the data located at the URI. (required)
+    </xs:documentation></xs:annotation>
+    <xs:attribute name="uri" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:anyURI">
+          <xs:minLength value="5" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="format" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string" >
+          <xs:minLength value="1" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+</xs:schema>

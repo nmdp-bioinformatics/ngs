@@ -33,6 +33,11 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.Writer;
 
+import java.util.GregorianCalendar;
+
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,9 +52,9 @@ public final class HmlWriterTest {
     private Hml data;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         data = new Hml();
-        data.setVersion("0.9.5");
+        data.setVersion("0.9.6");
         data.setProjectName("LAB");
         data.setReportingCenter("789");
 
@@ -58,6 +63,7 @@ public final class HmlWriterTest {
         sample.setCenterCode("321");
 
         Typing typing = new Typing();
+        typing.setDate(createXmlGregorianCalendar());
         typing.setGeneFamily("HLA");
         sample.getTyping().add(typing);
         data.getSample().add(sample);        
@@ -105,5 +111,9 @@ public final class HmlWriterTest {
 
     private static OutputStream createOutputStream() throws Exception {
         return new ByteArrayOutputStream();
+    }
+
+    private static XMLGregorianCalendar createXmlGregorianCalendar() throws Exception {
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar());
     }
 }
