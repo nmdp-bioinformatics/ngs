@@ -86,20 +86,6 @@ public class HMLGenerator {
      */
     static ObjectFactory hmlfact = new ObjectFactory();
 
-    /**
-     * Namespace hash of namespace to prefix.    
-     */
-    static final Map<String, String> hmlNSMap = new HashMap<String, String>();
-    static {
-        hmlNSMap.put("http://schemas.nmdp.org/spec/hml/0.9.4", "hml");
-        hmlNSMap.put("http://schemas.nmdp.org/spec/hml/0.9.5", "hml");
-        hmlNSMap.put("http://schemas.nmdp.org/spec/hml/0.9.6", "hml");
-        hmlNSMap.put("http://schemas.nmdp.org/spec/hml/0.9.7", "hml");
-        hmlNSMap.put("http://www.w3.org/2001/XMLSchema", "xs");
-        hmlNSMap.put("https://gl.immunogenomics.org/gl-resource", "gl");
-        hmlNSMap.put("https://gl.immunogenomics.org/gl-resource-xlink", "glx");
-    }
-
 
     /**
      * Create a new HML generator.
@@ -117,7 +103,7 @@ public class HMLGenerator {
         String temp = this.displaySimpleOption("Enter a project name like 'LAB'", "LAB");
         getHML().setProjectName(temp);
 
-        temp = this.displaySimpleOption("Enter HML version", "0.9.5");
+        temp = this.displaySimpleOption("Enter HML version", "0.9.6");
         getHML().setVersion(temp);
 
         temp = this.displaySimpleOption("Enter NMDP reporting center code like '567'", null);
@@ -331,7 +317,7 @@ public class HMLGenerator {
 
         String temp = this.displaySimpleOption("Enter the interpretation database", "IMGT/HLA");
         interp.setAlleleDb(temp);
-        temp = this.displaySimpleOption("Enter the interpretation database version", "3.15.0");
+        temp = this.displaySimpleOption("Enter the interpretation database version", "3.17.0");
         interp.setAlleleVersion(temp);
 
         typing.getTypingMethodOrInterpretation().add(interp);
@@ -370,7 +356,7 @@ public class HMLGenerator {
         temp = this.displaySimpleOption("Enter haploid type like '01:02' or '03:YGKM'", null);
         hap1.setType(temp);
 
-        interp.getHaploidOrGlResourceOrGenotypeList().add(hap1);
+        interp.getHaploidOrGenotypeListOrGlstring().add(hap1);
 
         //Enter additional haploid?
         temp = this.displaySimpleOption("Do you want to include an additional haploid?", "N");
@@ -396,7 +382,7 @@ public class HMLGenerator {
     private void createGLString(Interpretation interp) throws IOException {
         Glstring glstr = hmlfact.createGlstring();
         glstr.setValue("HLA-DRB1*04:11:01+HLA-DRB1*04:07:01/HLA-DRB1*04:92");
-        interp.getHaploidOrGlResourceOrGenotypeList().add(glstr);
+        interp.getHaploidOrGenotypeListOrGlstring().add(glstr);
     }
 
 
@@ -433,7 +419,7 @@ public class HMLGenerator {
         allele3.setValue("HLA-DRB3*02:03");
         all2.getAllele().add(allele3);
 
-        interp.getHaploidOrGlResourceOrGenotypeList().add(glList);
+        interp.getHaploidOrGenotypeListOrGlstring().add(glList);
     }
 
 
@@ -467,7 +453,7 @@ public class HMLGenerator {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("HML Generator Version 0.9.5");
+        System.out.println("HML Generator");
         System.out.println("This utility was created to generate a sample HML format for labs and organizations ");
         System.out.println("intending to transmit histoimmunogenic data to the NMDP. This utility does NOT generate ");
         System.out.println("a complete HML message, but rather creates a skeleton structure based on answers to ");
@@ -500,6 +486,17 @@ public class HMLGenerator {
 
             //Typing for sample
             Typing typing = new Typing();
+
+            GregorianCalendar cal = new GregorianCalendar();
+            XMLGregorianCalendar xcal;
+            try {
+                xcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+                typing.setDate(xcal);
+            }
+            catch (DatatypeConfigurationException e) {
+                System.err.println("Error creating typing date. " + e.getMessage());
+            }
+
             String[] options = new String[] {"HLA", "KIR"};
             int option = generator.displayOptionMenu("Select GENE-FAMILY", options);
             typing.setGeneFamily(options[option - 1]);
