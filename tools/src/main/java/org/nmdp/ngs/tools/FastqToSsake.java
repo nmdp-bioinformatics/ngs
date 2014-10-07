@@ -25,7 +25,7 @@ package org.nmdp.ngs.tools;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import static org.dishevelled.compress.Sources.charSource;
+import static org.dishevelled.compress.Readers.reader;
 import static org.dishevelled.compress.Writers.writer;
 
 import java.io.File;
@@ -101,13 +101,13 @@ public final class FastqToSsake implements Runnable {
             // read both FASTQ files into RAM (ick)
             final List<Fastq> reads = Lists.newArrayList();
             SangerFastqReader fastqReader = new SangerFastqReader();
-            fastqReader.stream(charSource(firstFastqFile), new StreamListener() {
+            fastqReader.stream(reader(firstFastqFile), new StreamListener() {
                     @Override
                     public void fastq(final Fastq fastq) {
                         reads.add(fastq);
                     }
                 });
-            fastqReader.stream(charSource(secondFastqFile), new StreamListener() {
+            fastqReader.stream(reader(secondFastqFile), new StreamListener() {
                     @Override
                     public void fastq(final Fastq fastq) {
                         reads.add(fastq);
