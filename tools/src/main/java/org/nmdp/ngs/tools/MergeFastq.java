@@ -24,7 +24,7 @@ package org.nmdp.ngs.tools;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import static org.dishevelled.compress.Sources.charSource;
+import static org.dishevelled.compress.Readers.reader;
 import static org.dishevelled.compress.Writers.writer;
 
 import java.io.File;
@@ -83,7 +83,7 @@ public final class MergeFastq implements Runnable {
             Append append = new Append(fastqWriter, writer);
             SangerFastqReader fastqReader = new SangerFastqReader();
             for (File inputFastqFile : inputFastqFiles) {
-                fastqReader.stream(charSource(inputFastqFile), append);
+                fastqReader.stream(reader(inputFastqFile), append);
             }
         }
         catch (IOException e) {
