@@ -39,11 +39,11 @@ import static org.nmdp.ngs.align.Alignments.maximumLength;
 import static org.nmdp.ngs.align.Alignments.mismatches;
 import static org.nmdp.ngs.align.Alignments.starts;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -66,7 +66,7 @@ import org.junit.Test;
  * Unit test for Alignments.
  */
 public final class AlignmentsTest {
-    private Set<Range<Long>> ranges;
+    private List<Range<Long>> ranges;
     private RangeSet<Long> rangeSet;
     private GappedSequence subject;
     private GappedSequence query;
@@ -75,7 +75,7 @@ public final class AlignmentsTest {
 
     @Before
     public void setUp() throws Exception {
-        ranges = new HashSet<Range<Long>>();
+        ranges = new ArrayList<Range<Long>>();
         ranges.add(Range.closedOpen(0L, 0L));
         ranges.add(Range.closedOpen(0L, 1L));
         ranges.add(Range.closedOpen(0L, 43L));
