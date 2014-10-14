@@ -78,25 +78,40 @@ public final class PairedEndFastqReader {
      * @param secondReader second reader, must not be null
      * @param listener paired end listener, must not be null
      * @throws IOException if an I/O error occurs
+     * @deprecated by {@link #readPaired(Readable,Readable,PairedEndListener)}, will be removed in version 2.0
      */
     public static void readPaired(final Reader firstReader,
                                   final Reader secondReader,
                                   final PairedEndListener listener) throws IOException {
+        readPaired((Readable) firstReader, (Readable) secondReader, listener);
+    }
 
-        checkNotNull(firstReader);
-        checkNotNull(secondReader);
+    /**
+     * Read the specified paired end reads.  The paired end reads are read fully into RAM before processing.
+     *
+     * @param firstReadable first readable, must not be null
+     * @param secondReadable second readable, must not be null
+     * @param listener paired end listener, must not be null
+     * @throws IOException if an I/O error occurs
+     */
+    public static void readPaired(final Readable firstReadable,
+                                  final Readable secondReadable,
+                                  final PairedEndListener listener) throws IOException {
+
+        checkNotNull(firstReadable);
+        checkNotNull(secondReadable);
         checkNotNull(listener);
 
         // read both FASTQ files into RAM (ick)
         final List<Fastq> reads = Lists.newArrayList();
         SangerFastqReader fastqReader = new SangerFastqReader();
-        fastqReader.stream(firstReader, new StreamListener() {
+        fastqReader.stream(firstReadable, new StreamListener() {
                 @Override
                 public void fastq(final Fastq fastq) {
                     reads.add(fastq);
                 }
             });
-        fastqReader.stream(secondReader, new StreamListener() {
+        fastqReader.stream(secondReadable, new StreamListener() {
                 @Override
                 public void fastq(final Fastq fastq) {
                     reads.add(fastq);
@@ -143,13 +158,28 @@ public final class PairedEndFastqReader {
      * @param secondReader second reader, must not be null
      * @param listener paired end listener, must not be null
      * @throws IOException if an I/O error occurs
+     * @deprecated by {@link #streamPaired(Readable,Readable,PairedEndListener)}, will be removed in version 2.0
      */
     public static void streamPaired(final Reader firstReader,
                                     final Reader secondReader,
                                     final PairedEndListener listener) throws IOException {
+        streamPaired((Readable) firstReader, (Readable) secondReader, listener);
+    }
 
-        checkNotNull(firstReader);
-        checkNotNull(secondReader);
+    /**
+     * Stream the specified paired end reads.  RAM usage is minimal if the paired end reads are sorted.
+     *
+     * @param firstReadable first readable, must not be null
+     * @param secondReadable second readable, must not be null
+     * @param listener paired end listener, must not be null
+     * @throws IOException if an I/O error occurs
+     */
+    public static void streamPaired(final Readable firstReadable,
+                                    final Readable secondReadable,
+                                    final PairedEndListener listener) throws IOException {
+
+        checkNotNull(firstReadable);
+        checkNotNull(secondReadable);
         checkNotNull(listener);
 
         final ConcurrentMap<String, Fastq> keyedByPrefix = new ConcurrentHashMap<>();
@@ -179,14 +209,14 @@ public final class PairedEndFastqReader {
             Callable<Void> task1 = new Callable<Void>() {
                 @Override
                 public Void call() throws IOException {
-                    new SangerFastqReader().stream(firstReader, streamListener);
+                    new SangerFastqReader().stream(firstReadable, streamListener);
                     return null;
                 }
             };
             Callable<Void> task2 = new Callable<Void>() {
                 @Override
                 public Void call() throws IOException {
-                    new SangerFastqReader().stream(secondReader, streamListener);
+                    new SangerFastqReader().stream(secondReadable, streamListener);
                     return null;
                 }
             };
@@ -217,9 +247,21 @@ public final class PairedEndFastqReader {
      * @param reader reader, must not be null
      * @param listener paired end listener, must not be null
      * @throws IOException if an I/O error occurs
+     * @deprecated by {@link #streamInterleaved(Readable,PairedEndListener)}, will be removed in version 2.0
      */
     public static void streamInterleaved(final Reader reader, final PairedEndListener listener) throws IOException {
-        checkNotNull(reader);
+        streamInterleaved((Readable) reader, listener);
+    }
+
+    /**
+     * Stream the specified interleaved paired end reads.  Per the interleaved format, all reads must be sorted and paired.
+     *
+     * @param readable readable, must not be null
+     * @param listener paired end listener, must not be null
+     * @throws IOException if an I/O error occurs
+     */
+    public static void streamInterleaved(final Readable readable, final PairedEndListener listener) throws IOException {
+        checkNotNull(readable);
         checkNotNull(listener);
 
         StreamListener streamListener = new StreamListener() {
@@ -242,7 +284,7 @@ public final class PairedEndFastqReader {
             };
 
         try {
-            new SangerFastqReader().stream(reader, streamListener);
+            new SangerFastqReader().stream(readable, streamListener);
         }
         catch (PairedEndFastqReaderException e) {
             throw new IOException("could not stream interleaved paired end FASTQ reads", e);
