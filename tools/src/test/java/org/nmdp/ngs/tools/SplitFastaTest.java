@@ -36,12 +36,14 @@ import org.junit.Test;
 public final class SplitFastaTest {
     private File fastaFile;
     private String outputFilePrefix;
+    private String outputFileExtension;
     private File outputDirectory;
 
     @Before
     public void setUp() throws Exception {
         fastaFile = File.createTempFile("splitFastaTest", "fa");
         outputFilePrefix = "outputFilePrefix";
+        outputFileExtension = "fa";
         outputDirectory = File.createTempFile("splitFastaTest", "dir");
     }
 
@@ -53,16 +55,21 @@ public final class SplitFastaTest {
 
     @Test(expected=NullPointerException.class)
     public void testConstructorNullOutputFilePrefix() {
-        new SplitFasta(fastaFile, null, outputDirectory);
+        new SplitFasta(fastaFile, null, outputFileExtension, outputDirectory);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testConstructorNullOutputFileExtension() {
+        new SplitFasta(fastaFile, outputFilePrefix, null, outputDirectory);
     }
 
     @Test(expected=NullPointerException.class)
     public void testConstructorNullOutputDirectory() {
-        new SplitFasta(fastaFile, outputFilePrefix, null);
+        new SplitFasta(fastaFile, outputFilePrefix, outputFileExtension, null);
     }
 
     @Test
     public void testConstructor() {
-        assertNotNull(new SplitFasta(fastaFile, outputFilePrefix, outputDirectory));
+        assertNotNull(new SplitFasta(fastaFile, outputFilePrefix, outputFileExtension, outputDirectory));
     }
 }
