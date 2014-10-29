@@ -26,6 +26,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -33,9 +35,34 @@ import org.junit.Test;
  */
 public final class SplitFastaTest {
     private File fastaFile;
+    private String outputFilePrefix;
+    private File outputDirectory;
+
+    @Before
+    public void setUp() throws Exception {
+        fastaFile = File.createTempFile("splitFastaTest", "fa");
+        outputFilePrefix = "outputFilePrefix";
+        outputDirectory = File.createTempFile("splitFastaTest", "dir");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        fastaFile.delete();
+        outputDirectory.delete();
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testConstructorNullOutputFilePrefix() {
+        new SplitFasta(fastaFile, null, outputDirectory);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testConstructorNullOutputDirectory() {
+        new SplitFasta(fastaFile, outputFilePrefix, null);
+    }
 
     @Test
     public void testConstructor() {
-        assertNotNull(new SplitFasta(fastaFile));
+        assertNotNull(new SplitFasta(fastaFile, outputFilePrefix, outputDirectory));
     }
 }
