@@ -213,6 +213,10 @@
               <mainClass>org.nmdp.ngs.tools.FilterInterpretableExons</mainClass>
             </program>
             <program>
+              <id>ngs-hml-generator</id>
+              <mainClass>org.nmdp.ngs.tools.HMLGenerator</mainClass>
+            </program>
+            <program>
               <id>ngs-hsp-to-bed</id>
               <mainClass>org.nmdp.ngs.tools.HspToBed</mainClass>
             </program>
@@ -237,12 +241,12 @@
               <mainClass>org.nmdp.ngs.tools.MergeFastq</mainClass>
             </program>
             <program>
-              <id>ngs-validate-hml</id>
-              <mainClass>org.nmdp.ngs.tools.ValidateHml</mainClass>
+              <id>ngs-split-fasta</id>
+              <mainClass>org.nmdp.ngs.tools.SplitFasta</mainClass>
             </program>
             <program>
-              <id>ngs-hml-generator</id>
-              <mainClass>org.nmdp.ngs.tools.HMLGenerator</mainClass>
+              <id>ngs-validate-hml</id>
+              <mainClass>org.nmdp.ngs.tools.ValidateHml</mainClass>
             </program>
             <program>
               <id>ngs-validate-interleaved-fastq</id>
