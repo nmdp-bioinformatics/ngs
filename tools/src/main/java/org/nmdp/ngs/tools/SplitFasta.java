@@ -22,6 +22,8 @@
 */
 package org.nmdp.ngs.tools;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import static org.dishevelled.compress.Readers.reader;
 import static org.dishevelled.compress.Writers.writer;
 
@@ -29,6 +31,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
+
+import java.nio.file.Paths;
 
 import org.biojava.bio.BioException;
 
@@ -45,6 +49,7 @@ import org.dishevelled.commandline.Switch;
 import org.dishevelled.commandline.Usage;
 
 import org.dishevelled.commandline.argument.FileArgument;
+import org.dishevelled.commandline.argument.StringArgument;
 
 /**
  * Split sequences in FASTA format and write to separate gzipped files in FASTA format.
@@ -52,7 +57,12 @@ import org.dishevelled.commandline.argument.FileArgument;
 @SuppressWarnings("deprecation")
 public final class SplitFasta implements Runnable {
     private final File fastaFile;
+    private final String outputFilePrefix;
+    private final File outputDirectory;
     private static final int LINE_WIDTH = 60;
+    private static final String DEFAULT_OUTPUT_FILE_PREFIX = "";
+    private static final File DEFAULT_OUTPUT_DIRECTORY = Paths.get(".").toFile();
+
     private static final String USAGE = "java SplitFastq [args]";
 
 
@@ -60,9 +70,15 @@ public final class SplitFasta implements Runnable {
      * Split sequences in FASTA format and write to separate gzipped files in FASTA format.
      *
      * @param fastaFile input FASTA file, if any
+     * @param outputFilePrefix output file prefix, must not be null
+     * @param outputDirectory output directory, must not be null
      */
-    public SplitFasta(final File fastaFile) {
+    public SplitFasta(final File fastaFile, final String outputFilePrefix, final File outputDirectory) {
+        checkNotNull(outputFilePrefix);
+        checkNotNull(outputDirectory);
         this.fastaFile = fastaFile;
+        this.outputFilePrefix = outputFilePrefix;
+        this.outputDirectory = outputDirectory;
     }
 
 
@@ -77,7 +93,8 @@ public final class SplitFasta implements Runnable {
                 PrintWriter writer = null;
                 try {
                     // special case for IMGT/HLA _gen.fasta reference sequences; remove HLA: from HLA:HLA00001
-                    writer = writer(new File(sequence.getName().replace("HLA:", "") + ".fa.gz"));
+                    String accession = sequence.getName().replace("HLA:", "");
+                    writer = writer(new File(outputDirectory, outputFilePrefix + accession + ".fa.gz"));
 
                     // adapted from biojava FastaFormat since using Writer requires bending over backward
                     writer.print(">");
@@ -130,8 +147,10 @@ public final class SplitFasta implements Runnable {
     public static void main(final String[] args) {
         Switch help = new Switch("h", "help", "display help message");
         FileArgument fastaFile = new FileArgument("i", "fasta-file", "input FASTA file, default stdin", false);
+        StringArgument outputFilePrefix = new StringArgument("p", "output-file-prefix", "output file prefix, default \"\"", false);
+        FileArgument outputDirectory = new FileArgument("d", "output-directory", "output directory, default .", false);
 
-        ArgumentList arguments = new ArgumentList(help, fastaFile);
+        ArgumentList arguments = new ArgumentList(help, fastaFile, outputFilePrefix, outputDirectory);
         CommandLine commandLine = new CommandLine(args);
         try
         {
@@ -140,7 +159,7 @@ public final class SplitFasta implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(-2);
             }
-            new SplitFasta(fastaFile.getValue()).run();
+            new SplitFasta(fastaFile.getValue(), outputFilePrefix.getValue(DEFAULT_OUTPUT_FILE_PREFIX), outputDirectory.getValue(DEFAULT_OUTPUT_DIRECTORY)).run();
         }
         catch (CommandLineParseException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
