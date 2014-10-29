@@ -52,32 +52,37 @@ import org.dishevelled.commandline.argument.FileArgument;
 import org.dishevelled.commandline.argument.StringArgument;
 
 /**
- * Split sequences in FASTA format and write to separate gzipped files in FASTA format.
+ * Split sequences in FASTA format and write to separate files in FASTA format.
  */
 @SuppressWarnings("deprecation")
 public final class SplitFasta implements Runnable {
     private final File fastaFile;
     private final String outputFilePrefix;
+    private final String outputFileExtension;
     private final File outputDirectory;
     private static final int LINE_WIDTH = 60;
     private static final String DEFAULT_OUTPUT_FILE_PREFIX = "";
+    private static final String DEFAULT_OUTPUT_FILE_EXTENSION = "fq.gz";
     private static final File DEFAULT_OUTPUT_DIRECTORY = Paths.get(".").toFile();
 
     private static final String USAGE = "java SplitFastq [args]";
 
 
     /**
-     * Split sequences in FASTA format and write to separate gzipped files in FASTA format.
+     * Split sequences in FASTA format and write to separate files in FASTA format.
      *
      * @param fastaFile input FASTA file, if any
      * @param outputFilePrefix output file prefix, must not be null
+     * @param outputFileExtension output file extension, must not be null
      * @param outputDirectory output directory, must not be null
      */
-    public SplitFasta(final File fastaFile, final String outputFilePrefix, final File outputDirectory) {
+    public SplitFasta(final File fastaFile, final String outputFilePrefix, final String outputFileExtension, final File outputDirectory) {
         checkNotNull(outputFilePrefix);
+        checkNotNull(outputFileExtension);
         checkNotNull(outputDirectory);
         this.fastaFile = fastaFile;
         this.outputFilePrefix = outputFilePrefix;
+        this.outputFileExtension = outputFileExtension;
         this.outputDirectory = outputDirectory;
     }
 
@@ -94,7 +99,7 @@ public final class SplitFasta implements Runnable {
                 try {
                     // special case for IMGT/HLA _gen.fasta reference sequences; remove HLA: from HLA:HLA00001
                     String accession = sequence.getName().replace("HLA:", "");
-                    writer = writer(new File(outputDirectory, outputFilePrefix + accession + ".fa.gz"));
+                    writer = writer(new File(outputDirectory, outputFilePrefix + accession + "." + outputFileExtension));
 
                     // adapted from biojava FastaFormat since using Writer requires bending over backward
                     writer.print(">");
@@ -148,9 +153,10 @@ public final class SplitFasta implements Runnable {
         Switch help = new Switch("h", "help", "display help message");
         FileArgument fastaFile = new FileArgument("i", "fasta-file", "input FASTA file, default stdin", false);
         StringArgument outputFilePrefix = new StringArgument("p", "output-file-prefix", "output file prefix, default \"\"", false);
+        StringArgument outputFileExtension = new StringArgument("x", "output-file-extension", "output file extension, default " + DEFAULT_OUTPUT_FILE_EXTENSION, false);
         FileArgument outputDirectory = new FileArgument("d", "output-directory", "output directory, default .", false);
 
-        ArgumentList arguments = new ArgumentList(help, fastaFile, outputFilePrefix, outputDirectory);
+        ArgumentList arguments = new ArgumentList(help, fastaFile, outputFilePrefix, outputFileExtension, outputDirectory);
         CommandLine commandLine = new CommandLine(args);
         try
         {
@@ -159,7 +165,7 @@ public final class SplitFasta implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(-2);
             }
-            new SplitFasta(fastaFile.getValue(), outputFilePrefix.getValue(DEFAULT_OUTPUT_FILE_PREFIX), outputDirectory.getValue(DEFAULT_OUTPUT_DIRECTORY)).run();
+            new SplitFasta(fastaFile.getValue(), outputFilePrefix.getValue(DEFAULT_OUTPUT_FILE_PREFIX), outputFileExtension.getValue(DEFAULT_OUTPUT_FILE_EXTENSION), outputDirectory.getValue(DEFAULT_OUTPUT_DIRECTORY)).run();
         }
         catch (CommandLineParseException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
