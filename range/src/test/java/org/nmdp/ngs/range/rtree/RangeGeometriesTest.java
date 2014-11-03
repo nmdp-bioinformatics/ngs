@@ -153,9 +153,7 @@ public final class RangeGeometriesTest {
         rtree = rtree.add("baz", open(18, 36));
 
         int count = 0;
-        // todo:  https://github.com/davidmoten/rtree/issues/10
-        //for (Entry<String> result : rtree.search(singleton(20)).toBlocking().toIterable()) {
-        for (Entry<String> result : rtree.search(range(Range.singleton(20))).toBlocking().toIterable()) {
+        for (Entry<String> result : rtree.search(singleton(20)).toBlocking().toIterable()) {
             count++;
         }
         assertEquals(3, count);
