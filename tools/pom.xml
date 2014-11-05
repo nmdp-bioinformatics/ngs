@@ -75,6 +75,10 @@
         <version>1.118</version>
         <exclusions>
           <exclusion>
+            <groupId>org.seqdoop</groupId>
+            <artifactId>cofoja</artifactId>
+          </exclusion>
+          <exclusion>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
           </exclusion>
