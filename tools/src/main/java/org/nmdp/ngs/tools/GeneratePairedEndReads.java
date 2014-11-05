@@ -115,7 +115,7 @@ public final class GeneratePairedEndReads implements Runnable {
     private static final double NO_VARIATION = 1.0E-100;
     private static final CoverageStrategy DEFAULT_COVERAGE = new MinimumCoverageStrategy(DEFAULT_MINIMUM_COVERAGE);
     private static final MutationStrategy DEFAULT_MUTATION = new IdentityMutationStrategy();
-    private static final String USAGE = "java GeneratePairedEndReads [args] -1 out_1.fq -2 out_2.fq";
+    private static final String USAGE = "ngs-generate-paired-end-reads -1 out_R1.fq.gz -2 out_R2.fq.gz [args]";
 
 
     private GeneratePairedEndReads(final File referenceFile,
@@ -222,6 +222,7 @@ public final class GeneratePairedEndReads implements Runnable {
      * @param args command line arguments
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument referenceFile = new FileArgument("r", "reference", "reference input file, in fasta format, default stdin", false);
         FileArgument firstReadFile = new FileArgument("1", "first-read", "first read output file, in fastq format", true);
@@ -236,7 +237,7 @@ public final class GeneratePairedEndReads implements Runnable {
         DoubleArgument meanQualityWeight = new DoubleArgument("w", "mean-quality-weight", "mean quality weight, default " + DEFAULT_MEAN_QUALITY_WEIGHT, false);
         DoubleArgument qualityWeightVariation = new DoubleArgument("t", "quality-weight-variation", "quality weight variation, default " + DEFAULT_QUALITY_WEIGHT_VARIATION, false);
         DoubleArgument meanQuality = new DoubleArgument("q", "mean-quality", "mean quality, default " + DEFAULT_MEAN_QUALITY, false);
-        DoubleArgument qualityVariation = new DoubleArgument("a", "quality-variation", "quality variation, default " + DEFAULT_QUALITY_VARIATION, false);
+        DoubleArgument qualityVariation = new DoubleArgument("f", "quality-variation", "quality variation, default " + DEFAULT_QUALITY_VARIATION, false);
         StringArgument mutationType = new StringArgument("m", "mutation", "mutation strategy type {substitution, insertion, deletion, ambiguous, indel, composite}, default identity", false);
         DoubleArgument extendInsertionRate = new DoubleArgument("x", "extend-insertion-rate", "extend insertion rate, default " + DEFAULT_EXTEND_INSERTION_RATE, false);
         IntegerArgument maximumInsertionLength = new IntegerArgument("e", "maximum-insertion-length", "maximum insertion length, default " + DEFAULT_MAXIMUM_INSERTION_LENGTH, false);
@@ -248,7 +249,7 @@ public final class GeneratePairedEndReads implements Runnable {
         DoubleArgument mutationRate = new DoubleArgument("n", "mutation-rate", "mutation rate, default " + DEFAULT_MUTATION_RATE, false);
         IntegerArgument seed = new IntegerArgument("z", "seed", "random number seed, default relates to current time", false);
 
-        ArgumentList arguments = new ArgumentList(help, referenceFile, firstReadFile, secondReadFile, meanLength, lengthVariation,
+        ArgumentList arguments = new ArgumentList(about, help, referenceFile, firstReadFile, secondReadFile, meanLength, lengthVariation,
                                                   meanInsertSize, insertSizeVariation, minimumCoverage, meanCoverage,
                                                   qualityType, meanQualityWeight, qualityWeightVariation, meanQuality, qualityVariation,
                                                   mutationType, extendInsertionRate, maximumInsertionLength, insertionRate, deletionRate,
@@ -257,9 +258,13 @@ public final class GeneratePairedEndReads implements Runnable {
         CommandLine commandLine = new CommandLine(args);
         try {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
 
             RandomGenerator random = seed.wasFound() ? new MersenneTwister(seed.getValue()) : new MersenneTwister();
@@ -320,6 +325,14 @@ public final class GeneratePairedEndReads implements Runnable {
             new GeneratePairedEndReads(referenceFile.getValue(), firstReadFile.getValue(), secondReadFile.getValue(), random, length, insertSize, quality, coverage, mutationRate.getValue(DEFAULT_MUTATION_RATE), mutation).run();
         }
         catch (CommandLineParseException e) {
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
+            if (help.wasFound()) {
+                Usage.usage(USAGE, null, commandLine, arguments, System.out);
+                System.exit(0);
+            }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
         }

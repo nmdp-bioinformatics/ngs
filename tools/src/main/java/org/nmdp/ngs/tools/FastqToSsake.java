@@ -66,7 +66,7 @@ public final class FastqToSsake implements Runnable {
     public static final int DEFAULT_INSERT_SIZE = 500;
     private static final Pattern LEFT = Pattern.compile("^.* 1.*$");
     private static final Pattern RIGHT = Pattern.compile("^.* 2.*$");
-    private static final String USAGE = "java FastqToSsake -1 foo_1.fq -2 foo_2.fq [args]\n\n   Note:  the contents of both FASTQ files are read into RAM.\n   Increase RAM to the JVM using e.g. -Xms2g -Xmx8g if necessary.";
+    private static final String USAGE = "ngs-fastq-to-ssake -1 foo_1.fq.gz -2 foo_2.fq.gz [args]\n\n   Note:  the contents of both FASTQ files are read into RAM.\n   Increase RAM to the JVM using e.g. -Xms2g -Xmx8g if necessary.";
 
 
     /**
@@ -198,6 +198,7 @@ public final class FastqToSsake implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument firstFastqFile = new FileArgument("1", "first-fastq-file", "first FASTQ input file", true);
         FileArgument secondFastqFile = new FileArgument("2", "second-fastq-file", "second FASTQ input file", true);
@@ -205,18 +206,30 @@ public final class FastqToSsake implements Runnable {
         FileArgument unpairedFile = new FileArgument("u", "unpaired-file", "write unpaired read names to file", false);
         IntegerArgument insertSize = new IntegerArgument("s", "insert-size", "insert size, must be at least zero, default " + DEFAULT_INSERT_SIZE, false);
 
-        ArgumentList arguments = new ArgumentList(help, firstFastqFile, secondFastqFile, ssakeFile, insertSize, unpairedFile);
+        ArgumentList arguments = new ArgumentList(about, help, firstFastqFile, secondFastqFile, ssakeFile, insertSize, unpairedFile);
         CommandLine commandLine = new CommandLine(args);
         try
         {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             new FastqToSsake(firstFastqFile.getValue(), secondFastqFile.getValue(), ssakeFile.getValue(), insertSize.getValue(DEFAULT_INSERT_SIZE), unpairedFile.getValue()).run();
         }
         catch (CommandLineParseException e) {
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
+            if (help.wasFound()) {
+                Usage.usage(USAGE, null, commandLine, arguments, System.out);
+                System.exit(0);
+            }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
         }

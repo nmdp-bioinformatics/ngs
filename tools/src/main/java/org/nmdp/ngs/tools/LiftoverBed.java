@@ -51,7 +51,7 @@ public final class LiftoverBed implements Runnable {
     private final File refBedFile;
     private final File sourceBedFile;
     private final File targetBedFile;
-    private static final String USAGE = "java LiftoverBed [options] -r ref.bed -i source.bed -o target.bed";
+    private static final String USAGE = "ngs-liftover-bed -r ref.bed.gz [args]";
 
 
     /**
@@ -208,22 +208,35 @@ public final class LiftoverBed implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument refBedFile = new FileArgument("r", "ref-bed-file", "reference BED file", true);
         FileArgument sourceBedFile = new FileArgument("i", "source-bed-file", "input BED file, default stdin", false);
         FileArgument targetBedFile = new FileArgument("o", "target-bed-file", "output BED file, default stdout", false);
 
-        ArgumentList arguments = new ArgumentList(help, refBedFile, sourceBedFile, targetBedFile);
+        ArgumentList arguments = new ArgumentList(about, help, refBedFile, sourceBedFile, targetBedFile);
         CommandLine commandLine = new CommandLine(args);
         try {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             new LiftoverBed(refBedFile.getValue(), sourceBedFile.getValue(), targetBedFile.getValue()).run();
         }
         catch (CommandLineParseException e) {
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
+            if (help.wasFound()) {
+                Usage.usage(USAGE, null, commandLine, arguments, System.out);
+                System.exit(0);
+            }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
         }

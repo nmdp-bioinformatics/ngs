@@ -64,7 +64,7 @@ public final class DownsampleFastq implements Runnable {
     private final BinomialDistribution distribution;
     private final FastqReader fastqReader = new SangerFastqReader();
     private final FastqWriter fastqWriter = new SangerFastqWriter();
-    private static final String USAGE = "java DownsampleFastq -p 0.5 [args]";
+    private static final String USAGE = "ngs-downsample-fastq -p 0.5 [args]";
 
 
     /**
@@ -131,20 +131,25 @@ public final class DownsampleFastq implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument inputFastqFile = new FileArgument("i", "input-fastq-file", "input FASTQ file, default stdin", false);
         FileArgument outputFastqFile = new FileArgument("o", "output-fastq-file", "output FASTQ file, default stdout", false);
         DoubleArgument probability = new DoubleArgument("p", "probability", "probability a FASTQ record will be removed, [0.0-1.0]", true);
         IntegerArgument seed = new IntegerArgument("z", "seed", "random number seed, default relates to current time", false);
 
-        ArgumentList arguments = new ArgumentList(help, inputFastqFile, outputFastqFile, probability, seed);
+        ArgumentList arguments = new ArgumentList(about, help, inputFastqFile, outputFastqFile, probability, seed);
         CommandLine commandLine = new CommandLine(args);
         try
         {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
 
             RandomGenerator random = seed.wasFound() ? new MersenneTwister(seed.getValue()) : new MersenneTwister();
@@ -153,6 +158,14 @@ public final class DownsampleFastq implements Runnable {
             new DownsampleFastq(inputFastqFile.getValue(), outputFastqFile.getValue(), distribution).run();
         }
         catch (CommandLineParseException e) {
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
+            if (help.wasFound()) {
+                Usage.usage(USAGE, null, commandLine, arguments, System.out);
+                System.exit(0);
+            }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
         }

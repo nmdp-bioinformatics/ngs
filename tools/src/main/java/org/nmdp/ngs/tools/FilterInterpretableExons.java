@@ -63,7 +63,7 @@ public final class FilterInterpretableExons implements Runnable {
     private final File aminoAcidHmm2File;
     private final File inputFastaFile;
     private final File outputFastaFile;
-    private static final String USAGE = "java FilterInterpretableExons -a A_prot.hmm2 -i consensus.fasta -o filtered.fasta";
+    private static final String USAGE = "ngs-filter-interpretable-exons -m A_prot.hmm2 -i consensus.fa.gz -o filtered.fa.gz";
 
 
     /**
@@ -150,22 +150,39 @@ public final class FilterInterpretableExons implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
-        FileArgument aminoAcidHmm2File = new FileArgument("a", "amino-acid-hmm2-file", "amino acid HMM file in HMMER2 format", true);
+        FileArgument aminoAcidHmm2File = new FileArgument("m", "amino-acid-hmm2-file", "amino acid HMM file in HMMER2 format", true);
         FileArgument inputFastaFile = new FileArgument("i", "input-fasta-file", "input FASTA file, default stdin", false);
         FileArgument outputFastaFile = new FileArgument("o", "output-fasta-file", "output FASTA file, default stdout", false);
 
-        ArgumentList arguments = new ArgumentList(help, aminoAcidHmm2File, inputFastaFile, outputFastaFile);
+        ArgumentList arguments = new ArgumentList(about, help, aminoAcidHmm2File, inputFastaFile, outputFastaFile);
         CommandLine commandLine = new CommandLine(args);
         try {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             new FilterInterpretableExons(aminoAcidHmm2File.getValue(), inputFastaFile.getValue(), outputFastaFile.getValue()).run();
         }
-        catch (CommandLineParseException | NullPointerException e) {
+        catch (CommandLineParseException e) {
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
+            if (help.wasFound()) {
+                Usage.usage(USAGE, null, commandLine, arguments, System.out);
+                System.exit(0);
+            }
+            Usage.usage(USAGE, e, commandLine, arguments, System.err);
+            System.exit(-1);
+        }
+        catch (NullPointerException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
         }

@@ -69,7 +69,7 @@ public final class FastaToFastq implements Runnable {
     private final File fastaFile;
     private final File fastqFile;
     public static final int DEFAULT_QUALITY = 40;
-    private static final String USAGE = "java FastaToFastq [args]";
+    private static final String USAGE = "ngs-fasta-to-fastq [args]";
 
 
     /**
@@ -147,16 +147,21 @@ public final class FastaToFastq implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument fastaFile = new FileArgument("i", "fasta-file", "input FASTA file, default stdin", false);
         FileArgument fastqFile = new FileArgument("o", "fastq-file", "output FASTQ file, default stdout", false);
         IntegerArgument quality = new IntegerArgument("q", "quality", "quality score for FASTQ, [0..93], default " + DEFAULT_QUALITY, false);
 
-        ArgumentList arguments = new ArgumentList(help, fastaFile, fastqFile, quality);
+        ArgumentList arguments = new ArgumentList(about, help, fastaFile, fastqFile, quality);
         CommandLine commandLine = new CommandLine(args);
         try
         {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(-2);

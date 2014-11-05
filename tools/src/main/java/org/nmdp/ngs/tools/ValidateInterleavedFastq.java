@@ -44,7 +44,7 @@ import org.nmdp.ngs.reads.paired.PairedEndFastqReader;
  */
 public final class ValidateInterleavedFastq implements Runnable {
     private final File inputFastqFile;
-    private static final String USAGE = "java ValidateInterleavedFastq [args]";
+    private static final String USAGE = "ngs-validate-interleaved-fastq [args]";
 
 
     /**
@@ -85,25 +85,26 @@ public final class ValidateInterleavedFastq implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument inputFastqFile = new FileArgument("i", "input-fastq-file", "input interleaved FASTQ file, default stdin", false);
 
-        ArgumentList arguments = new ArgumentList(help, inputFastqFile);
+        ArgumentList arguments = new ArgumentList(about, help, inputFastqFile);
         CommandLine commandLine = new CommandLine(args);
         try
         {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+             }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             new ValidateInterleavedFastq(inputFastqFile.getValue()).run();
         }
-        catch (CommandLineParseException e) {
-            Usage.usage(USAGE, e, commandLine, arguments, System.err);
-            System.exit(-1);
-        }
-        catch (IllegalArgumentException e) {
+        catch (CommandLineParseException | IllegalArgumentException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
         }

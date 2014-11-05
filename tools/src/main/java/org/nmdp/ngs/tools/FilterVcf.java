@@ -58,7 +58,7 @@ public final class FilterVcf implements Runnable {
     private final Filter filter;
     private final File inputVcfFile;
     private final File outputVcfFile;
-    private static final String USAGE = "java FilterVcf -s rs149201999 -i input.vcf.gz -o output.vcf.gz";
+    private static final String USAGE = "ngs-filter-vcf -s rs149201999 -i input.vcf.gz -o output.vcf.gz";
 
 
     /**
@@ -126,33 +126,6 @@ public final class FilterVcf implements Runnable {
         }
     }
 
-    /**
-     * Main.
-     *
-     * @param args command line args
-     */
-    public static void main(final String[] args) {
-        Switch help = new Switch("h", "help", "display help message");
-        StringListArgument snpIdFilter = new StringListArgument("s", "snp-ids", "filter by snp id", true);
-        FileArgument inputVcfFile = new FileArgument("i", "input-vcf-file", "input VCF file, default stdin", false);
-        FileArgument outputVcfFile = new FileArgument("o", "output-vcf-file", "output VCF file, default stdout", false);
-
-        ArgumentList arguments = new ArgumentList(help, snpIdFilter, inputVcfFile, outputVcfFile);
-        CommandLine commandLine = new CommandLine(args);
-        try {
-            CommandLineParser.parse(commandLine, arguments);
-            if (help.wasFound()) {
-                Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
-            }
-            new FilterVcf(new IdFilter(snpIdFilter.getValue()), inputVcfFile.getValue(), outputVcfFile.getValue()).run();
-        }
-        catch (CommandLineParseException | NullPointerException e) {
-            Usage.usage(USAGE, e, commandLine, arguments, System.err);
-            System.exit(-1);
-        }
-    }
-
     interface Filter {
         boolean accept(VcfRecord record);
     }
@@ -173,6 +146,50 @@ public final class FilterVcf implements Runnable {
                 }
             }
             return false;
+        }
+    }
+
+    /**
+     * Main.
+     *
+     * @param args command line args
+     */
+    public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
+        Switch help = new Switch("h", "help", "display help message");
+        StringListArgument snpIdFilter = new StringListArgument("s", "snp-ids", "filter by snp id", true);
+        FileArgument inputVcfFile = new FileArgument("i", "input-vcf-file", "input VCF file, default stdin", false);
+        FileArgument outputVcfFile = new FileArgument("o", "output-vcf-file", "output VCF file, default stdout", false);
+
+        ArgumentList arguments = new ArgumentList(about, help, snpIdFilter, inputVcfFile, outputVcfFile);
+        CommandLine commandLine = new CommandLine(args);
+        try {
+            CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
+            if (help.wasFound()) {
+                Usage.usage(USAGE, null, commandLine, arguments, System.out);
+                System.exit(0);
+            }
+            new FilterVcf(new IdFilter(snpIdFilter.getValue()), inputVcfFile.getValue(), outputVcfFile.getValue()).run();
+        }
+        catch (CommandLineParseException e) {
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
+            if (help.wasFound()) {
+                Usage.usage(USAGE, null, commandLine, arguments, System.out);
+                System.exit(0);
+            }
+            Usage.usage(USAGE, e, commandLine, arguments, System.err);
+            System.exit(-1);
+        }
+        catch (NullPointerException e) {
+            Usage.usage(USAGE, e, commandLine, arguments, System.err);
+            System.exit(-1);
         }
     }
 }
