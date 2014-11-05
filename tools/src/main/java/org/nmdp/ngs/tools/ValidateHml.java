@@ -44,7 +44,7 @@ import org.nmdp.ngs.hml.HmlReader;
  */
 public final class ValidateHml implements Runnable {
     private final File inputHmlFile;
-    private static final String USAGE = "java ValidateHml [args]";
+    private static final String USAGE = "ngs-validate-hml [args]";
 
 
     /**
@@ -85,25 +85,26 @@ public final class ValidateHml implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument inputHmlFile = new FileArgument("i", "input-hml-file", "input HML file, default stdin", false);
 
-        ArgumentList arguments = new ArgumentList(help, inputHmlFile);
+        ArgumentList arguments = new ArgumentList(about, help, inputHmlFile);
         CommandLine commandLine = new CommandLine(args);
         try
         {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             new ValidateHml(inputHmlFile.getValue()).run();
         }
-        catch (CommandLineParseException e) {
-            Usage.usage(USAGE, e, commandLine, arguments, System.err);
-            System.exit(-1);
-        }
-        catch (IllegalArgumentException e) {
+        catch (CommandLineParseException | IllegalArgumentException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
         }

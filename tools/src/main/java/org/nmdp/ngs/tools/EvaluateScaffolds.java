@@ -70,7 +70,7 @@ public final class EvaluateScaffolds implements Runnable {
     private final File referenceFastaFile;
     private final File scaffoldsFastaFile;
     private final File evalFile;
-    private static final String USAGE = "java EvaluateScaffolds -r reference.fa -s scaffolds.fa";
+    private static final String USAGE = "ngs-evaluate-scaffolds -r reference.fa.gz -s scaffolds.fa.gz";
 
 
     /**
@@ -225,22 +225,35 @@ public final class EvaluateScaffolds implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument referenceFastaFile = new FileArgument("r", "reference", "input reference FASTA file", true);
         FileArgument scaffoldsFastaFile = new FileArgument("s", "scaffolds", "input scaffolds FASTA file", true);
         FileArgument evalFile = new FileArgument("e", "eval", "output eval file, default stdout", false);
 
-        ArgumentList arguments = new ArgumentList(help, referenceFastaFile, scaffoldsFastaFile, evalFile);
+        ArgumentList arguments = new ArgumentList(about, help, referenceFastaFile, scaffoldsFastaFile, evalFile);
         CommandLine commandLine = new CommandLine(args);
         try {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             new EvaluateScaffolds(referenceFastaFile.getValue(), scaffoldsFastaFile.getValue(), evalFile.getValue()).run();
         }
         catch (CommandLineParseException e) {
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
+            if (help.wasFound()) {
+                Usage.usage(USAGE, null, commandLine, arguments, System.out);
+                System.exit(0);
+            }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
         }

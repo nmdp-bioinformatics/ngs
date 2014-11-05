@@ -158,6 +158,14 @@ public final class DownsampleFastq implements Runnable {
             new DownsampleFastq(inputFastqFile.getValue(), outputFastqFile.getValue(), distribution).run();
         }
         catch (CommandLineParseException e) {
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
+            if (help.wasFound()) {
+                Usage.usage(USAGE, null, commandLine, arguments, System.out);
+                System.exit(0);
+            }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
         }

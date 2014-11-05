@@ -51,7 +51,7 @@ public final class FastqDescription implements Runnable {
     private final File fastqFile;
     private final File descriptionFile;
     private final FastqReader fastqReader = new SangerFastqReader();
-    private static final String USAGE = "java FastqDescription [args]";
+    private static final String USAGE = "ngs-fastq-description [args]";
 
 
     /**
@@ -109,15 +109,20 @@ public final class FastqDescription implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument fastqFile = new FileArgument("i", "fastq-file", "input FASTQ file, default stdin", false);
         FileArgument descriptionFile = new FileArgument("o", "description-file", "output file of description lines, default stdout", false);
 
-        ArgumentList arguments = new ArgumentList(help, fastqFile, descriptionFile);
+        ArgumentList arguments = new ArgumentList(about, help, fastqFile, descriptionFile);
         CommandLine commandLine = new CommandLine(args);
         try
         {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(-2);

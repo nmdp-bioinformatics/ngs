@@ -32,7 +32,7 @@ import java.io.PrintStream;
 final class About {
     private static final String ARTIFACT_ID = "${project.artifactId}";
     private static final String BUILD_TIMESTAMP = "${maven.build.timestamp}";
-    private static final String COMMIT = "${git.commit}";
+    private static final String COMMIT = "${git.commit.id}";
     private static final String COPYRIGHT = "Copyright (c) 2014 National Marrow Donor Program (NMDP)";
     private static final String LICENSE = "Licensed GNU Lesser General Public License (LGPL), version 3 or later";
     private static final String VERSION = "${project.version}";
@@ -101,7 +101,7 @@ final class About {
         sb.append("\n");
         sb.append("Commit: ");
         sb.append(commit());
-        sb.append("\tBuild: ");
+        sb.append("  Build: ");
         sb.append(buildTimestamp());
         sb.append("\n");
         sb.append(copyright());

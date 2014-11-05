@@ -64,8 +64,7 @@ public final class SplitFasta implements Runnable {
     private static final String DEFAULT_OUTPUT_FILE_PREFIX = "";
     private static final String DEFAULT_OUTPUT_FILE_EXTENSION = "fq.gz";
     private static final File DEFAULT_OUTPUT_DIRECTORY = Paths.get(".").toFile();
-
-    private static final String USAGE = "java SplitFastq [args]";
+    private static final String USAGE = "ngs-split-fasta [args]";
 
 
     /**
@@ -150,20 +149,25 @@ public final class SplitFasta implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument fastaFile = new FileArgument("i", "fasta-file", "input FASTA file, default stdin", false);
         StringArgument outputFilePrefix = new StringArgument("p", "output-file-prefix", "output file prefix, default \"\"", false);
         StringArgument outputFileExtension = new StringArgument("x", "output-file-extension", "output file extension, default " + DEFAULT_OUTPUT_FILE_EXTENSION, false);
         FileArgument outputDirectory = new FileArgument("d", "output-directory", "output directory, default .", false);
 
-        ArgumentList arguments = new ArgumentList(help, fastaFile, outputFilePrefix, outputFileExtension, outputDirectory);
+        ArgumentList arguments = new ArgumentList(about, help, fastaFile, outputFilePrefix, outputFileExtension, outputDirectory);
         CommandLine commandLine = new CommandLine(args);
         try
         {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             new SplitFasta(fastaFile.getValue(), outputFilePrefix.getValue(DEFAULT_OUTPUT_FILE_PREFIX), outputFileExtension.getValue(DEFAULT_OUTPUT_FILE_EXTENSION), outputDirectory.getValue(DEFAULT_OUTPUT_DIRECTORY)).run();
         }

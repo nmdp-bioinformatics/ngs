@@ -49,7 +49,7 @@ public final class HspToBed implements Runnable {
     private final File bedFile;
     private final boolean reverse;
     private final boolean transformEvalue;
-    private static final String USAGE = "java HspToBed [options] -i result.txt -o result.bed";
+    private static final String USAGE = "ngs-hsp-to-bed [args]";
 
 
     /**
@@ -219,6 +219,7 @@ public final class HspToBed implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         StringArgument displayName = new StringArgument("d", "display-name", "query display name", false);
         FileArgument hspFile = new FileArgument("i", "hsp-file", "input HSP file, from e.g. blastn -outfmt 7, default stdin", false);
@@ -226,13 +227,17 @@ public final class HspToBed implements Runnable {
         Switch reverse = new Switch("r", "reverse", "reverse query and target in BED file");
         Switch transformEvalue = new Switch("t", "transform-evalue", "transform e-value to BED score [0..1000]");
 
-        ArgumentList arguments = new ArgumentList(help, displayName, hspFile, bedFile, reverse, transformEvalue);
+        ArgumentList arguments = new ArgumentList(about, help, displayName, hspFile, bedFile, reverse, transformEvalue);
         CommandLine commandLine = new CommandLine(args);
         try {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             new HspToBed(displayName.getValue(), hspFile.getValue(), bedFile.getValue(), reverse.wasFound(), transformEvalue.wasFound()).run();
         }

@@ -56,7 +56,7 @@ import org.dishevelled.commandline.argument.FileArgument;
 public final class MaskedToBed implements Runnable {
     private final File fastaFile;
     private final File bedFile;
-    private static final String USAGE = "java MaskedToBed [options] -i ref-masked.fasta -o masked.bed";
+    private static final String USAGE = "ngs-masked-to-bed [args]";
 
 
     /**
@@ -149,17 +149,22 @@ public final class MaskedToBed implements Runnable {
      * @param args command line args
      */
     public static void main(final String[] args) {
+        Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument fastaFile = new FileArgument("i", "fasta-file", "input hard-masked FASTA file, default stdin", false);
         FileArgument bedFile = new FileArgument("o", "bed-file", "output BED file, default stdout", false);
 
-        ArgumentList arguments = new ArgumentList(help, fastaFile, bedFile);
+        ArgumentList arguments = new ArgumentList(about, help, fastaFile, bedFile);
         CommandLine commandLine = new CommandLine(args);
         try {
             CommandLineParser.parse(commandLine, arguments);
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             new MaskedToBed(fastaFile.getValue(), bedFile.getValue()).run();
         }
