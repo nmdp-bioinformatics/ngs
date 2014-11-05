@@ -70,6 +70,17 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.seqdoop</groupId>
+        <artifactId>htsjdk</artifactId>
+        <version>1.118</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
         <version>2.2.9</version>
@@ -135,6 +146,11 @@
     <dependency>
       <groupId>org.nmdp.ngs</groupId>
       <artifactId>ngs-variant</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seqdoop</groupId>
+      <artifactId>htsjdk</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -222,12 +238,16 @@
               <mainClass>org.nmdp.ngs.tools.FastqToSsake</mainClass>
             </program>
             <program>
-              <id>ngs-filter-vcf</id>
-              <mainClass>org.nmdp.ngs.tools.FilterVcf</mainClass>
+              <id>ngs-filter-consensus</id>
+              <mainClass>org.nmdp.ngs.tools.FilterConsensus</mainClass>
             </program>
             <program>
               <id>ngs-filter-interpretable-exons</id>
               <mainClass>org.nmdp.ngs.tools.FilterInterpretableExons</mainClass>
+            </program>
+            <program>
+              <id>ngs-filter-vcf</id>
+              <mainClass>org.nmdp.ngs.tools.FilterVcf</mainClass>
             </program>
             <program>
               <id>ngs-hml-generator</id>
