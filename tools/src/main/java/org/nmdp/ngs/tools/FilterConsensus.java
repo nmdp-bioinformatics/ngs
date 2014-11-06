@@ -348,6 +348,14 @@ public final class FilterConsensus implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
+
+            if (!inputBamFile.getValue().exists()) {
+                throw new IllegalArgumentException("-i, --input-bam-file must be a file that exists");
+            }
+            if (!inputGenomicFile.getValue().exists()) {
+                throw new IllegalArgumentException("-x, --input-genomic-range-file must be a file that exists");
+            }
+
             new FilterConsensus(inputBamFile.getValue(),
                                 inputGenomicFile.getValue(),
                                 outputFile.getValue(),
@@ -357,7 +365,7 @@ public final class FilterConsensus implements Runnable {
                                 minimumBreadth.getValue(DEFAULT_MINIMUM_BREADTH),
                                 expectedPloidy.getValue(DEFAULT_EXPECTED_PLOIDY)).run();
         }
-        catch (CommandLineParseException e) {
+        catch (CommandLineParseException | IllegalArgumentException e) {
             if (about.wasFound()) {
                 About.about(System.out);
                 System.exit(0);
