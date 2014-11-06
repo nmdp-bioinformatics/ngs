@@ -164,7 +164,7 @@ public final class FastaToFastq implements Runnable {
             }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             new FastaToFastq(fastaFile.getValue(), fastqFile.getValue(), quality.getValue(DEFAULT_QUALITY)).run();
         }
