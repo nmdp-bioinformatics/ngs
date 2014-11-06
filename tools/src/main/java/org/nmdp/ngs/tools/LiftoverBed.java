@@ -44,6 +44,9 @@ import org.dishevelled.commandline.Usage;
 
 import org.dishevelled.commandline.argument.FileArgument;
 
+import org.nmdp.ngs.align.BedReader;
+import org.nmdp.ngs.align.BedRecord;
+
 /**
  * Liftover BED file.
  */
@@ -79,13 +82,7 @@ public final class LiftoverBed implements Runnable {
 
             Map<String, BedRecord> ref = readRefFile();
 
-            while (reader.ready()) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-
-                BedRecord source = BedRecord.parse(line);
+            for (BedRecord source : BedReader.read(reader)) {
                 BedRecord target = ref.get(source.chrom());
 
                 if (target != null) {
@@ -131,13 +128,7 @@ public final class LiftoverBed implements Runnable {
         try {
             reader = reader(refBedFile);
 
-            while (reader.ready()) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-
-                BedRecord rec = BedRecord.parse(line);
+            for (BedRecord rec : BedReader.read(reader)) {
                 BedRecord prev = ref.put(rec.name(), rec);
                 if (prev != null) {
                     // warn non-unique mapping
@@ -153,52 +144,6 @@ public final class LiftoverBed implements Runnable {
             }
         }
         return ref;
-    }
-
-    private static final class BedRecord {
-        private final String chrom;
-        private final int start;
-        private final int end;
-        private final String name;
-        private final String score;
-
-        private BedRecord(final String chrom, final int start, final int end, final String name, final String score) {
-            this.chrom = chrom;
-            this.start = start;
-            this.end = end;
-            this.name = name;
-            this.score = score;
-        }
-
-        String chrom() {
-            return chrom;
-        }
-
-        int start() {
-            return start;
-        }
-
-        int end() {
-            return end;
-        }
-
-        String name() {
-            return name;
-        }
-
-        String score() {
-            return score;
-        }
-
-        static BedRecord parse(final String line) {
-            String[] tokens = line.split("\\s+");
-            String chrom = tokens[0];
-            int start = Integer.parseInt(tokens[1]);
-            int end = Integer.parseInt(tokens[2]);
-            String name = tokens[3];
-            String score = (tokens.length > 4) ? tokens[4] : null;
-            return new BedRecord(chrom, start, end, name, score);
-        }
     }
 
 
