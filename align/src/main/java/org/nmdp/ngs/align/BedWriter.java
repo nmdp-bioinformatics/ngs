@@ -40,10 +40,22 @@ public final class BedWriter {
 
 
     /**
-     * Write BED with the specified print writer.
+     * Write the specified BED record with the specified print writer.
      *
-     * @param records zero or more BED records, must not be null
-     * @param writer print witer to write BED with, must not be null
+     * @param record BED record to write, must not be null
+     * @param writer print writer to write BED record with, must not be null
+     */
+    public static void write(final BedRecord record, final PrintWriter writer) {
+        checkNotNull(record);
+        checkNotNull(writer);
+        writer.println(record.toString());
+    }
+
+    /**
+     * Write zero or more BED records with the specified print writer.
+     *
+     * @param records zero or more BED records to write, must not be null
+     * @param writer print writer to write BED records with, must not be null
      */
     public static void write(final Iterable<BedRecord> records, final PrintWriter writer) {
         checkNotNull(records);

@@ -30,6 +30,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
 
+import com.google.common.base.Joiner;
+
 import org.dishevelled.commandline.ArgumentList;
 import org.dishevelled.commandline.CommandLine;
 import org.dishevelled.commandline.CommandLineParseException;
@@ -39,6 +41,9 @@ import org.dishevelled.commandline.Usage;
 
 import org.dishevelled.commandline.argument.FileArgument;
 import org.dishevelled.commandline.argument.StringArgument;
+
+import org.nmdp.ngs.align.BedRecord;
+import org.nmdp.ngs.align.BedWriter;
 
 /**
  * Convert HSPs to BED format.
@@ -87,11 +92,11 @@ public final class HspToBed implements Runnable {
                     continue;
                 }
 
+                // todo: code similar to HSP parsing in o.n.n.align.Blastn
                 String[] tokens = line.split("\t");
                 String query = tokens[0];
                 String chr = tokens[1];
-                // todo:  was this left out on purpose?
-                //double identity = Double.parseDouble(tokens[2]);
+                double identity = Double.parseDouble(tokens[2]);
                 int alignmentLength = Integer.parseInt(tokens[3]);
                 int mismatches = Integer.parseInt(tokens[4]);
                 int gapOpens = Integer.parseInt(tokens[5]);
@@ -103,79 +108,20 @@ public final class HspToBed implements Runnable {
                 double bitscore = Double.parseDouble(tokens[11].trim());
 
                 if (reverse) {
-                    writer.print(displayName != null ? displayName : query);
-                    writer.print("\t");
-                    writer.print(queryStart);
-                    writer.print("\t");
-                    writer.print(queryEnd);
-                    writer.print("\t");
+                    BedRecord rec = new BedRecord(displayName != null ? displayName : query,
+                                                  queryStart, queryEnd,
+                                                  Joiner.on(":").join(chr, start, end, (start <= end ? "+" : "-"), identity, alignmentLength, mismatches, gapOpens, evalue, bitscore),
+                                                  String.valueOf((transformEvalue ? transform(evalue) : evalue)),
+                                                  (queryStart <= queryEnd ? "+" : "-"));
 
-                    writer.print(chr);
-                    writer.print(":");
-                    writer.print(start);
-                    writer.print(":");
-                    writer.print(end);
-                    writer.print(":");
-                    writer.print(start <= end ? "+" : "-");
-                    writer.print(":");
-                    writer.print(alignmentLength);
-                    writer.print(":");
-                    writer.print(mismatches);
-                    writer.print(":");
-                    writer.print(gapOpens);
-                    writer.print(":");
-                    writer.print(evalue);
-                    writer.print(":");
-                    writer.print(bitscore);
-                    writer.print("\t");
-
-                    if (transformEvalue) {
-                        writer.print(transform(evalue));
-                    }
-                    else {
-                        writer.print(evalue);
-                    }
-
-                    writer.print("\t");
-                    writer.print(queryStart <= queryEnd ? "+" : "-");
-                    writer.print("\n");
+                    BedWriter.write(rec, writer);
                 }
                 else {
-                    writer.print(chr);
-                    writer.print("\t");
-                    writer.print(start);
-                    writer.print("\t");
-                    writer.print(end);
-                    writer.print("\t");
-                    writer.print(displayName != null ? displayName : query);
-                    writer.print(":");
-                    writer.print(queryStart);
-                    writer.print(":");
-                    writer.print(queryEnd);
-                    writer.print(":");
-                    writer.print(queryStart <= queryEnd ? "+" : "-");
-                    writer.print(":");
-                    writer.print(alignmentLength);
-                    writer.print(":");
-                    writer.print(mismatches);
-                    writer.print(":");
-                    writer.print(gapOpens);
-                    writer.print(":");
-                    writer.print(evalue);
-                    writer.print(":");
-                    writer.print(bitscore);
-                    writer.print("\t");
-
-                    if (transformEvalue) {
-                        writer.print(transform(evalue));
-                    }
-                    else {
-                        writer.print(evalue);
-                    }
-
-                    writer.print("\t");
-                    writer.print(start <= end ? "+" : "-");
-                    writer.print("\n");
+                    BedRecord rec = new BedRecord(chr, start, end,
+                                                  Joiner.on(":").join((displayName != null ? displayName : query), queryStart, queryEnd, (queryStart <= queryEnd ? "+" : "-"), identity, alignmentLength, mismatches, gapOpens, evalue, bitscore),
+                                                  String.valueOf((transformEvalue ? transform(evalue) : evalue)),
+                                                  (start <= end ? "+" : "-"));
+                    BedWriter.write(rec, writer);
                 }
             }
         }
