@@ -70,4 +70,17 @@ public class LocusTest {
       assertEquals(Locus.Util.pushLeft(18, "gag", reference), 18);
       assertEquals(Locus.Util.pushLeft(3, "TCCACC", "AGCCCCAA"), 1);
     }
+    
+    @Test
+    public void testCompareTo() {
+      Locus locus1 = new Locus("chr6", 1, 10);
+      Locus locus2 = new Locus("chr6", 2, 10);
+      Locus locus3 = new Locus("chr6", 1, 5);
+      Locus locus4 = new Locus("chr7", 1, 5);
+      
+      assertTrue(locus1.compareTo(locus2) < 0);
+      assertTrue(locus2.compareTo(locus3) > 0);
+      assertTrue(locus2.compareTo(locus2) == 0);
+      assertTrue(locus3.compareTo(locus4) < 0);
+    }
 }
