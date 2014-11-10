@@ -139,10 +139,12 @@ public final class FilterConsensus implements Runnable {
         try {
             writer = writer(outputFile);
 
-            Map<String, Allele> exons = readGenomicFile(inputGenomicFile);
+            // map of region alleles from genomic file keyed by "exon" as integer
+            Map<Integer, Allele> exons = readGenomicFile(inputGenomicFile);
 
             // todo:  refactor this block into separate static methods
-            ListMultimap<String, Allele> regions = ArrayListMultimap.create();
+            // map of overlapping alignment alleles from BAM file keyed by "exon" as integer
+            ListMultimap<Integer, Allele> regions = ArrayListMultimap.create();
 
             for (SAMRecord record : new SAMFileReader(inputBamFile)) {
                 List<Edit> edits = cigarToEditList(record);
@@ -165,8 +167,8 @@ public final class FilterConsensus implements Runnable {
                     .withSequence(sequence)
                     .build();
 
-                for (Map.Entry<String, Allele> entry : exons.entrySet()) {
-                    String index = entry.getKey();
+                for (Map.Entry<Integer, Allele> entry : exons.entrySet()) {
+                    int index = entry.getKey();
                     Allele exon = entry.getValue();
 
                     String chr = exon.getContig();
@@ -194,10 +196,10 @@ public final class FilterConsensus implements Runnable {
             }
 
             // todo: improve this data structure
-            Map<String, ListMultimap<String, Allele>> contigs = new HashMap<String, ListMultimap<String, Allele>>();
+            Map<String, ListMultimap<Integer, Allele>> contigs = new HashMap<String, ListMultimap<Integer, Allele>>();
 
-            for (String region : regions.keySet()) {
-                for (Allele allele : regions.get(region)) {
+            for (int index : regions.keySet()) {
+                for (Allele allele : regions.get(index)) {
                     int sequenceLength = allele.sequence.seqString().length();
                     List<String> fields = Splitter.on("|").splitToList(allele.getName());
 
@@ -205,9 +207,9 @@ public final class FilterConsensus implements Runnable {
 
                     if (sequenceLength/locusLength >= minimumBreadth) {
                         if (!contigs.containsKey(fields.get(0))) {
-                            contigs.put(fields.get(0), ArrayListMultimap.<String, Allele>create());
+                            contigs.put(fields.get(0), ArrayListMultimap.<Integer, Allele>create());
                         }
-                        contigs.get(fields.get(0)).put(region, allele);
+                        contigs.get(fields.get(0)).put(index, allele);
 
                         if (!cdna) {
                             writer.println(allele.getName() + "|" + sequenceLength);
@@ -221,9 +223,7 @@ public final class FilterConsensus implements Runnable {
                 for (String contig : contigs.keySet()) {
                     StringBuilder sb = new StringBuilder();
 
-                    // todo: use integers instead of strings for keys
-                    SortedSet<String> sortedKeys = new TreeSet<String>(contigs.get(contig).keySet());
-                    for (String index : sortedKeys) {
+                    for (int index : contigs.get(contig).keySet()) {
                         List<Allele> list = contigs.get(contig).get(index);
                         Collections.sort(list, new Comparator<Allele>() {
                                 @Override
@@ -251,8 +251,9 @@ public final class FilterConsensus implements Runnable {
                 }
             }
         }
-        catch (IOException | AlleleException | ParseException | IllegalAlphabetException | IllegalSymbolException e) {
-            // todo
+        catch (IOException | AlleleException | IllegalAlphabetException | IllegalSymbolException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
         finally {
             try {
@@ -285,9 +286,10 @@ public final class FilterConsensus implements Runnable {
     }
 
     // todo:  use BED format; extract BED format reader from e.g. LiftoverBed
-    static Map<String, Allele> readGenomicFile(final File inputGenomicFile) throws IOException, AlleleException, ParseException {
+    static Map<Integer, Allele> readGenomicFile(final File inputGenomicFile) throws IOException {
+        int lineNumber = 0;
         BufferedReader reader = null;
-        Map<String, Allele> exons = new HashMap<String, Allele>();
+        Map<Integer, Allele> exons = new HashMap<Integer, Allele>();
         try {
             reader = reader(inputGenomicFile);
 
@@ -297,13 +299,24 @@ public final class FilterConsensus implements Runnable {
                     break;
                 }
                 String[] tokens = line.split("\\s+");
-                // todo: throw exception on wrong number of tokens
-                Locus locus = FeatureParser.parseLocus(tokens[1]);
-                exons.put(tokens[0], Allele.builder()
-                          .withContig(locus.getContig())
-                          .withStart(locus.getMin())
-                          .withEnd(locus.getMax() + 1)
-                          .build());
+                if (tokens.length != 2) {
+                    throw new IOException("invalid genomic file format at line " + lineNumber + ", invalid number of tokens");
+                }
+
+                try {
+                    int exon = Integer.parseInt(tokens[0]);
+                    Locus locus = FeatureParser.parseLocus(tokens[1]);
+                    exons.put(exon, Allele.builder()
+                              .withContig(locus.getContig())
+                              .withStart(locus.getMin())
+                              .withEnd(locus.getMax() + 1)
+                              .build());
+                }
+                catch (NumberFormatException | AlleleException | ParseException e) {
+                    throw new IOException("invalid genomic file format at line " + lineNumber + ", caught " + e.getMessage());
+                }
+
+                lineNumber++;
             }
         }
         finally {
@@ -327,7 +340,7 @@ public final class FilterConsensus implements Runnable {
         Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument inputBamFile = new FileArgument("i", "input-bam-file", "input BAM file", true);
-        FileArgument inputGenomicFile = new FileArgument("x", "input-genomic-range-file", "input file of genomic ranges, one per line of form contig:xxxx-yyyy", true);
+        FileArgument inputGenomicFile = new FileArgument("x", "input-genomic-range-file", "input file of genomic ranges, space-delimited exon chrom:start-end", true);
         FileArgument outputFile = new FileArgument("o", "output-file", "output FASTA file, default stdout", false);
         StringArgument gene = new StringArgument("g", "gene", "gene (to put in the FASTA header)", true);
         Switch cdna = new Switch("c", "cdna", "output cdna from the same contig (phased consensus sequence) in FASTA format (for interpretation)");
