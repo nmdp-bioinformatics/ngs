@@ -22,6 +22,7 @@
 */
 package org.nmdp.ngs.tools;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -29,6 +30,7 @@ import static org.nmdp.ngs.tools.FilterConsensus.cigarToEditList;
 import static org.nmdp.ngs.tools.FilterConsensus.readGenomicFile;
 
 import java.io.File;
+import java.io.IOException;
 
 import java.util.List;
 import java.util.Map;
@@ -85,8 +87,35 @@ public final class FilterConsensusTest {
 
     @Test
     public void testEmptyReadGenomicFile() throws Exception {
-        Map<String, Allele> exons = readGenomicFile(inputGenomicFile);
+        Map<Integer, Allele> exons = readGenomicFile(inputGenomicFile);
         assertTrue(exons.isEmpty());
+    }
+
+    @Test(expected=IOException.class)
+    public void testReadGenomicFileInvalidTokens() throws Exception {
+        copyResource("invalid-tokens.txt", inputGenomicFile);
+        readGenomicFile(inputGenomicFile);
+    }
+
+    @Test(expected=IOException.class)
+    public void testReadGenomicFileInvalidExon() throws Exception {
+        copyResource("invalid-exon.txt", inputGenomicFile);
+        readGenomicFile(inputGenomicFile);
+    }
+
+    @Test(expected=IOException.class)
+    public void testReadGenomicFileInvalidLocus() throws Exception {
+        copyResource("invalid-locus.txt", inputGenomicFile);
+        readGenomicFile(inputGenomicFile);
+    }
+
+    @Test
+    public void testReadGenomicFile() throws Exception {
+        copyResource("hla-a.txt", inputGenomicFile);
+        Map<Integer, Allele> exons = readGenomicFile(inputGenomicFile);
+        assertFalse(exons.isEmpty());
+        assertTrue(exons.containsKey(2));
+        assertTrue(exons.containsKey(3));
     }
 
     @Test
@@ -97,12 +126,12 @@ public final class FilterConsensusTest {
 
     @Test
     public void testRun() throws Exception {
-        // copy hla-a.bam resource to inputBamFile
-        Files.write(Resources.toByteArray(getClass().getResource("hla-a.bam")), inputBamFile);
-
-        // copy hla-a.txt to inputGenomicFile
-        Files.write(Resources.toByteArray(getClass().getResource("hla-a.txt")), inputGenomicFile);
-
+        copyResource("hla-a.bam", inputBamFile);
+        copyResource("hla-a.txt", inputGenomicFile);
         new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).run();
+    }
+
+    private static void copyResource(final String name, final File file) throws Exception {
+        Files.write(Resources.toByteArray(FilterConsensusTest.class.getResource(name)), file);        
     }
 }
