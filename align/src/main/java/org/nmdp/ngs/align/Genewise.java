@@ -69,7 +69,7 @@ public final class Genewise {
         File genewiseResult = File.createTempFile("genewise", ".txt");
 
         ProcessBuilder genewise = new ProcessBuilder("genewise",
-                                                     "-hmmer", "-both", "-genes", "-nosplice_gtag",
+                                                     "-hmmer", "-tfor", "-genes", "-nosplice_gtag",
                                                      aminoAcidHmm2File.getPath(), genomicDnaFastaFile.getPath());
 
         genewise.redirectErrorStream(true);
@@ -83,6 +83,7 @@ public final class Genewise {
             // ignore
         }
 
+        int lineNumber = 0;
         BufferedReader reader = null;
         List<GenewiseExon> exons = Lists.newLinkedList();
         try {
@@ -95,13 +96,22 @@ public final class Genewise {
                 if (line.startsWith("  Exon")) {
                     List<String> tokens = SPLITTER.splitToList(line);
                     if (tokens.size() < 5) {
-                        throw new IOException("invalid genewise genes format, line " + line);
+                        throw new IOException("invalid genewise genes format at line number " + lineNumber + ", line " + line);
                     }
-                    long start = Long.parseLong(tokens.get(1));
-                    long end = Long.parseLong(tokens.get(2));
-                    int phase = Integer.parseInt(tokens.get(4));
-                    exons.add(new GenewiseExon(start, end, phase));
+                    try {
+                        long start = Long.parseLong(tokens.get(1));
+                        long end = Long.parseLong(tokens.get(2));
+                        if (start > end) {
+                            throw new IOException("invalid genewise exon at line number " + lineNumber + ", start > end");
+                        }
+                        int phase = Integer.parseInt(tokens.get(4));
+                        exons.add(new GenewiseExon(start, end, phase));
+                    }
+                    catch (NumberFormatException e) {
+                        throw new IOException("invalid genewise exon at line number " + lineNumber + ", caught " + e.getMessage());
+                    }
                 }
+                lineNumber++;
             }
         }
         finally {
