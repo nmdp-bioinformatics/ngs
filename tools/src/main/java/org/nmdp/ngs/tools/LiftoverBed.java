@@ -44,8 +44,10 @@ import org.dishevelled.commandline.Usage;
 
 import org.dishevelled.commandline.argument.FileArgument;
 
+import org.nmdp.ngs.align.BedAdapter;
 import org.nmdp.ngs.align.BedReader;
 import org.nmdp.ngs.align.BedRecord;
+import org.nmdp.ngs.align.BedWriter;
 
 /**
  * Liftover BED file.
@@ -80,27 +82,24 @@ public final class LiftoverBed implements Runnable {
             reader = reader(sourceBedFile);
             writer = writer(targetBedFile);
 
-            Map<String, BedRecord> ref = readRefFile();
+            final PrintWriter w = writer;
+            final Map<String, BedRecord> ref = readRefFile();
+            BedReader.stream(reader, new BedAdapter() {
+                    @Override
+                    public void record(final BedRecord source) {
+                        BedRecord target = ref.get(source.chrom());
 
-            for (BedRecord source : BedReader.read(reader)) {
-                BedRecord target = ref.get(source.chrom());
+                        if (target != null) {
+                            BedRecord lifted = new BedRecord(target.chrom(),
+                                                             target.start() + source.start(),
+                                                             target.start() + source.start() + (source.end() - source.start()),
+                                                             source.name());
 
-                if (target != null) {
-                    writer.print(target.chrom());
-                    writer.print("\t");
-                    writer.print(target.start() + source.start());
-                    writer.print("\t");
-                    writer.print(target.start() + source.start() + (source.end() - source.start()));
-                    writer.print("\t");
-                    writer.print(source.name());
-                    if (source.score() != null) {
-                        writer.print("\t");
-                        writer.print(source.score());
+                            BedWriter.write(lifted, w);
+                        }
+                        // else warn
                     }
-                    writer.print("\n");
-                }
-                // else warn
-            }
+                });
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -124,16 +123,19 @@ public final class LiftoverBed implements Runnable {
 
     private Map<String, BedRecord> readRefFile() throws IOException {
         BufferedReader reader = null;
-        Map<String, BedRecord> ref = new HashMap<String, BedRecord>(10000);
+        final Map<String, BedRecord> ref = new HashMap<String, BedRecord>(10000);
         try {
             reader = reader(refBedFile);
 
-            for (BedRecord rec : BedReader.read(reader)) {
-                BedRecord prev = ref.put(rec.name(), rec);
-                if (prev != null) {
-                    // warn non-unique mapping
-                }
-            }
+            BedReader.stream(reader, new BedAdapter() {
+                    @Override
+                    public void record(final BedRecord rec) {
+                        BedRecord prev = ref.put(rec.name(), rec);
+                        if (prev != null) {
+                            // warn non-unique mapping
+                        }
+                    }
+                });
         }
         finally {
             try {

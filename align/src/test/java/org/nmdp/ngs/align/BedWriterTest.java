@@ -39,6 +39,7 @@ import org.junit.Test;
  * Unit test for BedWriter.
  */
 public final class BedWriterTest {
+    private BedRecord record;
     private Iterable<BedRecord> records;
     private StringWriter stringWriter;
     private PrintWriter writer;
@@ -46,6 +47,7 @@ public final class BedWriterTest {
     @Before
     public void setUp() throws Exception {
         records = read(new StringReader("chr1\t11873\t14409\tuc001aaa.3\t0\t+\t11873\t11873\t0\t3\t354,109,1189,\t0,739,1347,"));
+        record = records.iterator().next();
         stringWriter = new StringWriter();
         writer = new PrintWriter(stringWriter);
     }
@@ -56,17 +58,34 @@ public final class BedWriterTest {
     }
 
     @Test(expected=NullPointerException.class)
-    public void testWriteNullRecords() throws Exception {
-        write(null, writer);
+    public void testWriteNullRecord() throws Exception {
+        write((BedRecord) null, writer);
     }
 
     @Test(expected=NullPointerException.class)
     public void testWriteNullWriter() throws Exception {
-        write(records, null);
+        write(record, null);
     }
 
     @Test
     public void testWrite() throws Exception {
+        write(record, writer);
+        // note writer does not add trailing commas to blockSizes and blockStarts as examples contain
+        assertEquals("chr1\t11873\t14409\tuc001aaa.3\t0\t+\t11873\t11873\t0\t3\t354,109,1189\t0,739,1347", stringWriter.toString().trim());
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testWriteIterableNullRecords() throws Exception {
+        write((Iterable<BedRecord>) null, writer);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testWriteIterableNullWriter() throws Exception {
+        write(records, null);
+    }
+
+    @Test
+    public void testWriteIterable() throws Exception {
         write(records, writer);
         // note writer does not add trailing commas to blockSizes and blockStarts as examples contain
         assertEquals("chr1\t11873\t14409\tuc001aaa.3\t0\t+\t11873\t11873\t0\t3\t354,109,1189\t0,739,1347", stringWriter.toString().trim());
