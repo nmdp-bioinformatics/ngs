@@ -81,10 +81,7 @@ public final class HmlWriter {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(data, writer);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not marshal HML", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not marshal HML", e);
         }
     }

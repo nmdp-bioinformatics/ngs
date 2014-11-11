@@ -82,10 +82,7 @@ public final class SraReader {
             unmarshaller.setSchema(schema);
             return (Analysis) unmarshaller.unmarshal(reader);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not unmarshal Analysis", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not unmarshal Analysis", e);
         }
     }
@@ -152,10 +149,7 @@ public final class SraReader {
             unmarshaller.setSchema(schema);
             return (Experiment) unmarshaller.unmarshal(reader);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not unmarshal Experiment", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not unmarshal Experiment", e);
         }
     }
@@ -222,10 +216,7 @@ public final class SraReader {
             unmarshaller.setSchema(schema);
             return (RunSet) unmarshaller.unmarshal(reader);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not unmarshal RunSet", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not unmarshal RunSet", e);
         }
     }
@@ -292,10 +283,7 @@ public final class SraReader {
             unmarshaller.setSchema(schema);
             return (Sample) unmarshaller.unmarshal(reader);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not unmarshal Sample", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not unmarshal Sample", e);
         }
     }
@@ -362,10 +350,7 @@ public final class SraReader {
             unmarshaller.setSchema(schema);
             return (Study) unmarshaller.unmarshal(reader);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not unmarshal Study", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not unmarshal Study", e);
         }
     }
@@ -432,10 +417,7 @@ public final class SraReader {
             unmarshaller.setSchema(schema);
             return (Submission) unmarshaller.unmarshal(reader);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not unmarshal Submission", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not unmarshal Submission", e);
         }
     }

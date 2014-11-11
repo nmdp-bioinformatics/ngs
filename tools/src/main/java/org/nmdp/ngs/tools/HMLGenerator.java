@@ -25,16 +25,10 @@ package org.nmdp.ngs.tools;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -66,8 +60,6 @@ import org.nmdp.ngs.hml.jaxb.TargetedRegion;
 import org.nmdp.ngs.hml.jaxb.Typing;
 import org.nmdp.ngs.hml.jaxb.TypingTestName;
 import org.nmdp.ngs.hml.jaxb.TypingTestNames;
-
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 /**
  * HML generator.

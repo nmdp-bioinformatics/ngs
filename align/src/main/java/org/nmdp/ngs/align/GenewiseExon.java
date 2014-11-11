@@ -24,9 +24,12 @@ package org.nmdp.ngs.align;
 
 import com.google.common.collect.Range;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Genewise exon.
  */
+@Immutable
 public final class GenewiseExon {
     private final long start;
     private final long end;

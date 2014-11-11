@@ -32,18 +32,9 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
 
-import java.util.Collections;
-import java.util.List;
-
-import java.util.regex.Pattern;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
-
 import org.biojava.bio.program.fastq.Fastq;
 import org.biojava.bio.program.fastq.FastqWriter;
 import org.biojava.bio.program.fastq.SangerFastqWriter;
-import org.biojava.bio.program.fastq.StreamListener;
 
 import org.dishevelled.commandline.ArgumentList;
 import org.dishevelled.commandline.CommandLine;
@@ -65,7 +56,6 @@ public final class InterleaveFastq implements Runnable {
     private final File secondFastqFile;
     private final File pairedFile;
     private final File unpairedFile;
-    private final FastqWriter fastqWriter = new SangerFastqWriter();
     private static final String USAGE = "ngs-interleave-fastq -1 foo_1.fq.gz -2 foo_2.fq.gz --paired foo.paired.fq.gz --unpaired foo.unpaired.fq.gz\n\n   Note:  the contents of both FASTQ files are read into RAM.\n   Increase RAM to the JVM using e.g. -Xms2g -Xmx8g if necessary.";
 
 

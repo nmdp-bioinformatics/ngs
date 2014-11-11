@@ -62,7 +62,7 @@ public final class VcfWriterTest {
     public void setUp() throws Exception {
         header = new VcfHeader("VCFv4.1", ImmutableList.of("##fileformat=VCFv4.1"));
 
-        VcfSample sample = new VcfSample("NA19131", new VcfGenome[0]);
+        VcfSample sample = new VcfSample("NA19131", (VcfGenome[]) new VcfGenome[0]);
         samples = ImmutableList.of(sample);
 
         info = ImmutableListMultimap.<String, String>builder().build();

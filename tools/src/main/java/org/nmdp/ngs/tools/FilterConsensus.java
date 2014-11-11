@@ -39,8 +39,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -177,11 +175,10 @@ public final class FilterConsensus implements Runnable {
                     String range = chr + ":" + min + "-" + max;
 
                     if (alignment.overlaps(exon)) {
-                        Location intersection = alignment.intersection(exon);
                         Allele xover = exon.doubleCrossover(contig);
 
                         Allele clipped = xover.leftHardClip("-").rightHardClip("-");
-                        clipped.setName(">" + name + "|gene=" + gene + "|exon=" + index + "|ocation=" + range + "|" + (max - min));
+                        clipped.setName(">" + name + "|gene=" + gene + "|exon=" + index + "|location=" + range + "|" + (max - min));
                         regions.put(index, clipped);
 
                         int offset = 0;

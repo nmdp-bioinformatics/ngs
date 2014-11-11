@@ -82,10 +82,7 @@ public final class SraWriter {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(analysis, writer);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not marshal Analysis", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not marshal Analysis", e);
         }
     }
@@ -122,10 +119,7 @@ public final class SraWriter {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(experiment, writer);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not marshal Experiment", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not marshal Experiment", e);
         }
     }
@@ -162,10 +156,7 @@ public final class SraWriter {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(runSet, writer);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not marshal RunSet", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not marshal RunSet", e);
         }
     }
@@ -202,10 +193,7 @@ public final class SraWriter {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(sample, writer);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not marshal Sample", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not marshal Sample", e);
         }
     }
@@ -242,10 +230,7 @@ public final class SraWriter {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(study, writer);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not marshal Study", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not marshal Study", e);
         }
     }
@@ -282,10 +267,7 @@ public final class SraWriter {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(submission, writer);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not marshal Submission", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not marshal Submission", e);
         }
     }

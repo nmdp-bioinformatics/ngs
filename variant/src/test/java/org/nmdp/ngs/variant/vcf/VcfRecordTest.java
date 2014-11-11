@@ -28,11 +28,8 @@ import static org.junit.Assert.assertTrue;
 
 import static org.nmdp.ngs.variant.vcf.VcfRecord.builder;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
@@ -181,7 +178,7 @@ public final class VcfRecordTest {
             .withAlt(alt)
             .withQual(qual)
             .withFilter(filter)
-            .withInfo("NS", null)
+            .withInfo("NS", (String[]) null)
             .withFormat(format)
             .withGenotypes(genotypes)
             .build();

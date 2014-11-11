@@ -45,7 +45,6 @@ import org.biojava.bio.program.fastq.Fastq;
 import org.biojava.bio.program.fastq.SangerFastqWriter;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -258,7 +257,6 @@ public final class PairedEndFastqReaderTest {
     }
 
     @Test
-    //@Ignore // this fails because the listener doesn't check if the last record seen was left
     public void testStreamInterleavedUnpairedLeft() throws Exception {
         streamInterleaved(firstReader, listener);
     }
