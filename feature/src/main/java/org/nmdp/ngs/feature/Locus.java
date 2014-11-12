@@ -31,7 +31,7 @@ import com.google.common.base.Objects;
 /**
  * Locus.
  */
-public class Locus extends RangeLocation {
+public class Locus extends RangeLocation implements Comparable<Locus> {
     protected String contig;
 
     public Locus(final String contig, final int start, final int end) {
@@ -166,6 +166,16 @@ public class Locus extends RangeLocation {
 
         Locus locus = (Locus) right;
         return this.contig.equals(locus.contig);
+    }
+    /**
+     *  
+     */
+    @Override
+    public int compareTo(Locus right) {
+      if(this.contig.equals(right.contig)) {
+        return this.getMin() - right.getMin();
+      }
+      return this.contig.compareTo(right.contig);
     }
     
     @Override
