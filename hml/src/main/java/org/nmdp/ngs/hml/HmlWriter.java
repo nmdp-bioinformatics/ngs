@@ -75,13 +75,14 @@ public final class HmlWriter {
             JAXBContext context = JAXBContext.newInstance(Hml.class);
             Marshaller marshaller = context.createMarshaller();
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-0.9.6.xsd");
+            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-0.9.7.xsd");
             Schema schema = schemaFactory.newSchema(schemaURL);
             marshaller.setSchema(schema);
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(data, writer);
         }
         catch (JAXBException | SAXException e) {
+            e.printStackTrace();
             throw new IOException("could not marshal HML", e);
         }
     }
