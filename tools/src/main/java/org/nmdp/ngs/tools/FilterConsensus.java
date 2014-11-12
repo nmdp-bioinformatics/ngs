@@ -181,7 +181,7 @@ public final class FilterConsensus implements Runnable {
                         Allele xover = exon.doubleCrossover(contig);
 
                         Allele clipped = xover.leftHardClip("-").rightHardClip("-");
-                        clipped.setName(">" + name + "|gene=" + gene + "|exon=" + index + "|ocation=" + range + "|" + (max - min));
+                        clipped.setName(">" + name + "|gene=" + gene + "|exon=" + index + "|location=" + range + "|" + (max - min));
                         regions.put(index, clipped);
 
                         int offset = 0;
@@ -203,7 +203,7 @@ public final class FilterConsensus implements Runnable {
                     int sequenceLength = allele.sequence.seqString().length();
                     List<String> fields = Splitter.on("|").splitToList(allele.getName());
 
-                    int locusLength = Integer.parseInt(fields.get(fields.size() - 1));
+                    Double locusLength = Double.parseDouble(fields.get(fields.size() - 1));
 
                     if (sequenceLength/locusLength >= minimumBreadth) {
                         if (!contigs.containsKey(fields.get(0))) {
@@ -220,6 +220,7 @@ public final class FilterConsensus implements Runnable {
             }
 
             if (cdna) {
+                Map<String, String> cdnas = new HashMap<String, String>();
                 for (String contig : contigs.keySet()) {
                     StringBuilder sb = new StringBuilder();
 
@@ -234,12 +235,10 @@ public final class FilterConsensus implements Runnable {
                         Allele best = list.get(0);
                         sb.append(best.sequence.seqString());
                     }
- 
-                    writer.println(contig);
 
                     String cdnaSequence = sb.toString();
                     if (removeGaps) {
-                        cdnaSequence.replaceAll("-", "");
+                        cdnaSequence = cdnaSequence.replaceAll("-", "");
                     }
 
                     // todo:  use strand from genomic region file
@@ -247,7 +246,19 @@ public final class FilterConsensus implements Runnable {
                         cdnaSequence = DNATools.reverseComplement(DNATools.createDNA(cdnaSequence)).seqString();
                     }
 
-                    writer.println(cdnaSequence.toUpperCase());
+                    cdnas.put(contig, cdnaSequence.toUpperCase());
+                }
+                
+                List<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>(cdnas.entrySet());
+                Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
+                    @Override
+                    public int compare(final Map.Entry<String, String> first, final Map.Entry<String, String> second) {
+                        return second.getValue().length() - first.getValue().length();
+                    }
+                });
+                
+                for (Map.Entry<String, String> entry : list.subList(0, expectedPloidy > list.size() ? list.size() : expectedPloidy)) {
+                  writer.println(entry.getKey() + "\n" + entry.getValue());
                 }
             }
         }

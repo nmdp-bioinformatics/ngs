@@ -25,13 +25,15 @@ package org.nmdp.ngs.tools;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import static org.nmdp.ngs.tools.FilterConsensus.cigarToEditList;
 import static org.nmdp.ngs.tools.FilterConsensus.readGenomicFile;
 
 import java.io.File;
 import java.io.IOException;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.List;
 import java.util.Map;
 
@@ -133,5 +135,38 @@ public final class FilterConsensusTest {
 
     private static void copyResource(final String name, final File file) throws Exception {
         Files.write(Resources.toByteArray(FilterConsensusTest.class.getResource(name)), file);        
+    }
+    
+    @Test
+    public void testRunPloidy() throws Exception {
+              // copy hla-a.bam resource to inputBamFile
+        Files.write(Resources.toByteArray(getClass().getResource("testfile2.bam")), inputBamFile);
+
+        // copy hla-a.txt to inputGenomicFile
+        Files.write(Resources.toByteArray(getClass().getResource("hla-a.txt")), inputGenomicFile);
+        
+        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).run();
+    
+        int lines = 0;
+        BufferedReader reader = new BufferedReader(new FileReader(outputFile));
+        
+        while(reader.readLine() != null) {
+          lines++;
+        }
+        reader.close();
+        
+        assertEquals(lines, 4);
+        
+        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, 3).run();
+    
+        lines = 0;
+        reader = new BufferedReader(new FileReader(outputFile));
+        
+        while(reader.readLine() != null) {
+          lines++;
+        }
+        reader.close();
+        
+        assertEquals(lines, 6);
     }
 }
