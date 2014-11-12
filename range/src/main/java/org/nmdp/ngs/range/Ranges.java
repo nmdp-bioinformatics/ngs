@@ -52,7 +52,7 @@ public final class Ranges {
      */
     public static <C extends Comparable> C center(final Range<C> range) {
         checkNotNull(range);
-        if (!range.hasUpperBound() && !range.hasUpperBound()) {
+        if (!range.hasLowerBound() && !range.hasUpperBound()) {
             throw new IllegalStateException("cannot find the center of a range without bounds");
         }
         if (!range.hasLowerBound()) {

@@ -49,6 +49,9 @@ import org.dishevelled.commandline.Usage;
 
 import org.dishevelled.commandline.argument.FileArgument;
 
+import org.nmdp.ngs.align.BedRecord;
+import org.nmdp.ngs.align.BedWriter;
+
 /**
  * Convert hard-masked regions in a FASTA file to BED format.
  */
@@ -99,17 +102,7 @@ public final class MaskedToBed implements Runnable {
                     else {
                         if (start > 0) {
                             if (end > start) {
-                                writer.print(ref);
-                                writer.print("\t");
-
-                                // zero-based starting position of the feature in the chromosome
-                                writer.print(start - 1);
-                                writer.print("\t");
-
-                                // one-based ending position of the feature in the chromosome
-                                writer.print(end);
-                                writer.print("\t");
-                                writer.println("hard-mask");
+                                BedWriter.write(new BedRecord(ref, start - 1, end, "hard-mask"), writer);
                             }
                             start = -1;
                             end = -1;
@@ -118,11 +111,7 @@ public final class MaskedToBed implements Runnable {
                 }
             }
         }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        catch (BioException e) {
+        catch (BioException | IOException e) {
             e.printStackTrace();
             System.exit(-1);
         }

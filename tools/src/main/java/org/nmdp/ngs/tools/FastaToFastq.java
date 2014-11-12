@@ -117,11 +117,7 @@ public final class FastaToFastq implements Runnable {
                 fastqWriter.append(writer, fastq);
             }
         }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        catch (BioException e) {
+        catch (IOException | BioException e) {
             e.printStackTrace();
             System.exit(-1);
         }

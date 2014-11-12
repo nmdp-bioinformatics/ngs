@@ -142,11 +142,7 @@ public final class EvaluateScaffolds implements Runnable {
             sb.append("\t");
             writer.println(sb.toString());
         }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        catch (BioException e) {
+        catch (IOException | BioException e) {
             e.printStackTrace();
             System.exit(-1);
         }

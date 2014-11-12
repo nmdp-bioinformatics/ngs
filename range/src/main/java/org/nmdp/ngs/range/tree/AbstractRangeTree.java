@@ -41,11 +41,6 @@ import com.google.common.collect.Range;
 public abstract class AbstractRangeTree<C extends Comparable> implements RangeTree<C> {
 
     @Override
-    public int size() {
-        return count(Range.<C>all());
-    }
-
-    @Override
     public boolean isEmpty() {
         return size() == 0;
     }

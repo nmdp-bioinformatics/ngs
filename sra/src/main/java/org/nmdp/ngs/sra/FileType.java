@@ -86,10 +86,10 @@ public enum FileType {
     }
 
     /**
-     * Return the file type with the specified descripton, or null if no such file type exists.
+     * Return the file type with the specified description, or null if no such file type exists.
      *
      * @param description description
-     * @return the file type with the specified descripton, or null if no such file type exists
+     * @return the file type with the specified description, or null if no such file type exists
      */
     public static FileType fromDescription(final String description) {
         return BY_DESCRIPTION.get(description);

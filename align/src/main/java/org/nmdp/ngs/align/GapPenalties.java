@@ -22,9 +22,12 @@
 */
 package org.nmdp.ngs.align;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Gap penalties.
  */
+@Immutable
 public final class GapPenalties {
     private final short match;
     private final short replace;

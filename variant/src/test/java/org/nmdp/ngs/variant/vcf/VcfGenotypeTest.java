@@ -28,8 +28,6 @@ import static org.junit.Assert.assertNull;
 
 import static org.nmdp.ngs.variant.vcf.VcfGenotype.builder;
 
-import java.util.Map;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;

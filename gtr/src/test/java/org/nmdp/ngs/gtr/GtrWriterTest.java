@@ -24,8 +24,6 @@ package org.nmdp.ngs.gtr;
 
 import static org.nmdp.ngs.gtr.GtrWriter.write;
 
-import java.net.URL;
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;

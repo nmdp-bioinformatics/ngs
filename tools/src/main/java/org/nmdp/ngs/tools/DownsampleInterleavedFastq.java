@@ -32,8 +32,6 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
 
-import java.util.regex.Pattern;
-
 import org.apache.commons.math3.distribution.BinomialDistribution;
 
 import org.apache.commons.math3.random.MersenneTwister;

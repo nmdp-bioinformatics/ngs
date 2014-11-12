@@ -82,10 +82,7 @@ public final class HmlReader {
             unmarshaller.setSchema(schema);
             return (Hml) unmarshaller.unmarshal(reader);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not unmarshal HML", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not unmarshal HML", e);
         }
     }

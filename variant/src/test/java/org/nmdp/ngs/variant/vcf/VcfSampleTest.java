@@ -34,17 +34,17 @@ public final class VcfSampleTest {
 
     @Test(expected=NullPointerException.class)
     public void testConstructorNullId() {
-        new VcfSample(null, new VcfGenome[0]);
+        new VcfSample(null, (VcfGenome[]) new VcfGenome[0]);
     }
 
     @Test(expected=NullPointerException.class)
     public void testConstructorNullGenomes() {
-        new VcfSample("id", null);
+        new VcfSample("id", (VcfGenome[]) null);
     }
 
     @Test
     public void testConstructorEmptyGenomes() {
-        VcfSample sample = new VcfSample("id", new VcfGenome[0]);
+        VcfSample sample = new VcfSample("id", (VcfGenome[]) new VcfGenome[0]);
         assertNotNull(sample);
         assertEquals("id", sample.getId());
         assertNotNull(sample.getGenomes());

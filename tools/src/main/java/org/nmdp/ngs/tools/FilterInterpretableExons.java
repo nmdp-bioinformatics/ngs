@@ -35,9 +35,6 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.IOException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.biojava.bio.BioException;
 
 import org.biojava.bio.seq.Sequence;
@@ -104,11 +101,7 @@ public final class FilterInterpretableExons implements Runnable {
                 writer.println(sb.toString());
             }
         }
-        catch (BioException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        catch (IOException e) {
+        catch (BioException | IOException e) {
             e.printStackTrace();
             System.exit(-1);
         }
