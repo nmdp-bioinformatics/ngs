@@ -22,9 +22,12 @@
 */
 package org.nmdp.ngs.align;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * High-scoring segment pair (HSP).
  */
+@Immutable
 public final class HighScoringPair {
     private final String source;
     private final String target;

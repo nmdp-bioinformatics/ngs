@@ -110,10 +110,10 @@ public enum LibrarySelection {
     }
 
     /**
-     * Return the library selection with the specified descripton, or null if no such library selection exists.
+     * Return the library selection with the specified description, or null if no such library selection exists.
      *
      * @param description description
-     * @return the library selection with the specified descripton, or null if no such library selection exists
+     * @return the library selection with the specified description, or null if no such library selection exists
      */
     public static LibrarySelection fromDescription(final String description) {
         return BY_DESCRIPTION.get(description);

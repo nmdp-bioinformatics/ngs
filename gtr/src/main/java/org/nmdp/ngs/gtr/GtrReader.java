@@ -83,10 +83,7 @@ public final class GtrReader {
             unmarshaller.setSchema(schema);
             return (GTRPublicData) unmarshaller.unmarshal(reader);
         }
-        catch (JAXBException e) {
-            throw new IOException("could not unmarshal GTRPublicData", e);
-        }
-        catch (SAXException e) {
+        catch (JAXBException | SAXException e) {
             throw new IOException("could not unmarshal GTRPublicData", e);
         }
     }

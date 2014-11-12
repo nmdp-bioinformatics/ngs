@@ -160,11 +160,7 @@ public final class GenerateReads implements Runnable {
                 }
             }
         }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        catch (BioException e) {
+        catch (BioException | IOException e) {
             e.printStackTrace();
             System.exit(-1);
         }

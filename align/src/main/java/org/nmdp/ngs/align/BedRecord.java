@@ -25,7 +25,6 @@ package org.nmdp.ngs.align;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,6 +36,8 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Range;
 
 import com.google.common.primitives.Longs;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * BED record.
@@ -55,7 +56,7 @@ import com.google.common.primitives.Longs;
  *       For example: <code>chr1 11873 14409 uc001aaa.3 0 + 11873 11873 0 3 354,109,1189, 0,739,1347,</code></li>
  * </ul></p>
  */
-//@Immutable
+@Immutable
 public final class BedRecord {
     private final Format format;
     private final String chrom;
@@ -166,7 +167,6 @@ public final class BedRecord {
     /**
      * Create a new BED4 record.
      *
-     * @param format format, must not be null
      * @param chrom chrom, must not be null
      * @param start start, must be at least zero
      * @param end end, must be at least zero, and greater than or equal to start
@@ -179,7 +179,6 @@ public final class BedRecord {
     /**
      * Create a new BED5 record.
      *
-     * @param format format, must not be null
      * @param chrom chrom, must not be null
      * @param start start, must be at least zero
      * @param end end, must be at least zero, and greater than or equal to start
@@ -193,7 +192,6 @@ public final class BedRecord {
     /**
      * Create a new BED6 record.
      *
-     * @param format format, must not be null
      * @param chrom chrom, must not be null
      * @param start start, must be at least zero
      * @param end end, must be at least zero, and greater than or equal to start
@@ -208,7 +206,6 @@ public final class BedRecord {
     /**
      * Create a new BED12 record.
      *
-     * @param format format, must not be null
      * @param chrom chrom, must not be null
      * @param start start, must be at least zero
      * @param end end, must be at least zero, and greater than or equal to start

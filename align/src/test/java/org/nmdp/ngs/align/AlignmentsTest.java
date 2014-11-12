@@ -41,11 +41,7 @@ import static org.nmdp.ngs.align.Alignments.starts;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;

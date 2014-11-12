@@ -107,19 +107,19 @@ public enum LibraryStrategy {
     }
 
     /**
-     * Return a map of library strategys keyed by description.
+     * Return a map of library strategies keyed by description.
      *
-     * @return a map of library strategys keyed by description
+     * @return a map of library strategies keyed by description
      */
     public static Map<String, LibraryStrategy> byDescription() {
         return BY_DESCRIPTION;
     }
 
     /**
-     * Return the library strategy with the specified descripton, or null if no such library strategy exists.
+     * Return the library strategy with the specified description, or null if no such library strategy exists.
      *
      * @param description description
-     * @return the library strategy with the specified descripton, or null if no such library strategy exists
+     * @return the library strategy with the specified description, or null if no such library strategy exists
      */
     public static LibraryStrategy fromDescription(final String description) {
         return BY_DESCRIPTION.get(description);

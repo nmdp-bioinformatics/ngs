@@ -87,10 +87,10 @@ public enum StudyType {
     }
 
     /**
-     * Return the study type with the specified descripton, or null if no such study type exists.
+     * Return the study type with the specified description, or null if no such study type exists.
      *
      * @param description description
-     * @return the study type with the specified descripton, or null if no such study type exists
+     * @return the study type with the specified description, or null if no such study type exists
      */
     public static StudyType fromDescription(final String description) {
         return BY_DESCRIPTION.get(description);

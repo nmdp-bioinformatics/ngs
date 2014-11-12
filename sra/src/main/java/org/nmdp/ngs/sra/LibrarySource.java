@@ -93,10 +93,10 @@ public enum LibrarySource {
     }
 
     /**
-     * Return the library source with the specified descripton, or null if no such library source exists.
+     * Return the library source with the specified description, or null if no such library source exists.
      *
      * @param description description
-     * @return the library source with the specified descripton, or null if no such library source exists
+     * @return the library source with the specified description, or null if no such library source exists
      */
     public static LibrarySource fromDescription(final String description) {
         return BY_DESCRIPTION.get(description);

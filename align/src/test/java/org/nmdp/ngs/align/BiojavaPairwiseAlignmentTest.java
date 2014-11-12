@@ -31,8 +31,6 @@ import java.io.ObjectOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import org.biojava.bio.alignment.SubstitutionMatrix;
-
 import org.junit.Test;
 
 /**

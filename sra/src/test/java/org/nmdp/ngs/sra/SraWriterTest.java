@@ -29,8 +29,6 @@ import static org.nmdp.ngs.sra.SraWriter.writeSample;
 import static org.nmdp.ngs.sra.SraWriter.writeStudy;
 import static org.nmdp.ngs.sra.SraWriter.writeSubmission;
 
-import java.net.URL;
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;

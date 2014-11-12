@@ -84,10 +84,7 @@ public final class ParallelBiojavaPairwiseAlignment extends AbstractPairwiseAlig
                 alignmentPairs.add(future.get());
             }
         }
-        catch (ExecutionException e) {
-            // todo
-        }
-        catch (InterruptedException e) {
+        catch (ExecutionException | InterruptedException e) {
             // todo
         }
         return alignmentPairs;
@@ -120,10 +117,7 @@ public final class ParallelBiojavaPairwiseAlignment extends AbstractPairwiseAlig
                 alignmentPairs.add(future.get());
             }
         }
-        catch (ExecutionException e) {
-            // todo
-        }
-        catch (InterruptedException e) {
+        catch (ExecutionException | InterruptedException e) {
             // todo
         }
         return alignmentPairs;

@@ -98,10 +98,10 @@ public enum InstrumentModel {
     }
 
     /**
-     * Return the instrument model with the specified descripton, or null if no such instrument model exists.
+     * Return the instrument model with the specified description, or null if no such instrument model exists.
      *
      * @param description description
-     * @return the instrument model with the specified descripton, or null if no such instrument model exists
+     * @return the instrument model with the specified description, or null if no such instrument model exists
      */
     public static InstrumentModel fromDescription(final String description) {
         return BY_DESCRIPTION.get(description);
