@@ -61,6 +61,11 @@
       </dependency>
       <dependency>
         <groupId>org.nmdp.ngs</groupId>
+        <artifactId>ngs-range</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.nmdp.ngs</groupId>
         <artifactId>ngs-reads</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -92,6 +97,11 @@
     </dependencies>
   </dependencyManagement>
   <dependencies>
+    <dependency>
+      <groupId>com.github.davidmoten</groupId>
+      <artifactId>rtree</artifactId>
+      <scope>compile</scope>
+    </dependency>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
@@ -140,6 +150,11 @@
     <dependency>
       <groupId>org.nmdp.ngs</groupId>
       <artifactId>ngs-hml</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nmdp.ngs</groupId>
+      <artifactId>ngs-range</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -268,6 +283,10 @@
             <program>
               <id>ngs-interleave-fastq3</id>
               <mainClass>org.nmdp.ngs.tools.InterleaveFastq3</mainClass>
+            </program>
+            <program>
+              <id>ngs-intersect-bed</id>
+              <mainClass>org.nmdp.ngs.tools.IntersectBed</mainClass>
             </program>
             <program>
               <id>ngs-liftover-bed</id>
