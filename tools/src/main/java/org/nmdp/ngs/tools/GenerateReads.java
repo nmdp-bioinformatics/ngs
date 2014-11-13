@@ -196,12 +196,12 @@ public final class GenerateReads implements Runnable {
         DoubleArgument lengthVariation = new DoubleArgument("v", "length-variation", "length variation, default " + DEFAULT_LENGTH_VARIATION, false);
         IntegerArgument minimumCoverage = new IntegerArgument("c", "minimum-coverage", "minimum coverage, default " + DEFAULT_MINIMUM_COVERAGE, false);
         IntegerArgument meanCoverage = new IntegerArgument("g", "mean-coverage", "mean coverage", false);
-        StringArgument qualityType = new StringArgument("u", "quality", "quality strategy type {illumina, normal}, default normal", false);
+        StringArgument qualityType = new StringArgument("u", "quality", "quality strategy type { illumina, normal }, default normal", false);
         DoubleArgument meanQualityWeight = new DoubleArgument("w", "mean-quality-weight", "mean quality weight, default " + DEFAULT_MEAN_QUALITY_WEIGHT, false);
         DoubleArgument qualityWeightVariation = new DoubleArgument("t", "quality-weight-variation", "quality weight variation, default " + DEFAULT_QUALITY_WEIGHT_VARIATION, false);
         DoubleArgument meanQuality = new DoubleArgument("q", "mean-quality", "mean quality, default " + DEFAULT_MEAN_QUALITY, false);
         DoubleArgument qualityVariation = new DoubleArgument("f", "quality-variation", "quality variation, default " + DEFAULT_QUALITY_VARIATION, false);
-        StringArgument mutationType = new StringArgument("m", "mutation", "mutation strategy type {substitution, insertion, deletion, ambiguous, indel, composite}, default identity", false);
+        StringArgument mutationType = new StringArgument("m", "mutation", "mutation strategy type { substitution, insertion, deletion, ambiguous, indel, composite }, default identity", false);
         DoubleArgument extendInsertionRate = new DoubleArgument("x", "extend-insertion-rate", "extend insertion rate, default " + DEFAULT_EXTEND_INSERTION_RATE, false);
         IntegerArgument maximumInsertionLength = new IntegerArgument("e", "maximum-insertion-length", "maximum insertion length, default " + DEFAULT_MAXIMUM_INSERTION_LENGTH, false);
         DoubleArgument insertionRate = new DoubleArgument("i", "insertion-rate", "insertion rate, default " + DEFAULT_INSERTION_RATE, false);

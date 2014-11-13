@@ -350,11 +350,11 @@ public final class FilterConsensus implements Runnable {
         FileArgument inputBamFile = new FileArgument("i", "input-bam-file", "input BAM file", true);
         FileArgument inputGenomicFile = new FileArgument("x", "input-genomic-range-file", "input file of genomic ranges, space-delimited exon chrom:start-end", true);
         FileArgument outputFile = new FileArgument("o", "output-file", "output FASTA file, default stdout", false);
-        StringArgument gene = new StringArgument("g", "gene", "gene (to put in the FASTA header)", true);
-        Switch cdna = new Switch("c", "cdna", "output cdna from the same contig (phased consensus sequence) in FASTA format (for interpretation)");
+        StringArgument gene = new StringArgument("g", "gene", "gene name, written to the FASTA headers", true);
+        Switch cdna = new Switch("c", "cdna", "output cDNA from the same contig (phased consensus sequence) in FASTA format");
         Switch removeGaps = new Switch("r", "remove-gaps", "remove alignment gaps in the filtered consensus sequence");
         DoubleArgument minimumBreadth = new DoubleArgument("b", "minimum-breadth-of-coverage", "filter contigs less than minimum, default " + DEFAULT_MINIMUM_BREADTH, false);
-        IntegerArgument expectedPloidy = new IntegerArgument("p", "expected-ploidy", "..., default " + DEFAULT_EXPECTED_PLOIDY, false);
+        IntegerArgument expectedPloidy = new IntegerArgument("p", "expected-ploidy", "filter contigs more than expected ploidy, default " + DEFAULT_EXPECTED_PLOIDY, false);
 
         ArgumentList arguments = new ArgumentList(about, help, inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy);
         CommandLine commandLine = new CommandLine(args);
