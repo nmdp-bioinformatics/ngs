@@ -111,11 +111,11 @@ public final class GenerateBed implements Runnable {
             for (int i = 0; i < n; i++) {
                 // sample location and length
                 long start = (long) location.sample();
-                long end = start + (long) length.sample();
+                long end = start + 1L + (long) length.sample();
 
                 // trim to chrom ends
-                long adjStart = Math.max(0L, start);
-                long adjEnd = Math.max(adjStart, Math.min((long) size, end));
+                long adjStart = Math.min((long) (size - 1), Math.max(0L, start));
+                long adjEnd = Math.max(adjStart + 1L, Math.min((long) (size - 1), end));
 
                 // and write
                 BedWriter.write(new BedRecord(chrom, adjStart, adjEnd, "record" + i, "0", "+"), writer);
@@ -152,7 +152,7 @@ public final class GenerateBed implements Runnable {
         DoubleArgument lengthVariation = new DoubleArgument("v", "length-variation", "length variation, default " + DEFAULT_LENGTH_VARIATION, false);
         IntegerArgument seed = new IntegerArgument("z", "seed", "random number seed, default relates to current time", false);
 
-        ArgumentList arguments = new ArgumentList(about, help, bedFile, n, size, chrom, meanLength, lengthVariation);
+        ArgumentList arguments = new ArgumentList(about, help, bedFile, n, size, chrom, meanLength, lengthVariation, seed);
         CommandLine commandLine = new CommandLine(args);
         try
         {
