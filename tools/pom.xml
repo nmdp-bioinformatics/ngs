@@ -220,6 +220,10 @@
               <mainClass>org.nmdp.ngs.tools.EvaluateScaffolds</mainClass>
             </program>
             <program>
+              <id>ngs-generate-bed</id>
+              <mainClass>org.nmdp.ngs.tools.GenerateBed</mainClass>
+            </program>
+            <program>
               <id>ngs-generate-paired-end-reads</id>
               <mainClass>org.nmdp.ngs.tools.GeneratePairedEndReads</mainClass>
             </program>
