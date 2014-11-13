@@ -56,7 +56,7 @@ import org.nmdp.ngs.hml.jaxb.SbtSanger;
 import org.nmdp.ngs.hml.jaxb.Sequence;
 import org.nmdp.ngs.hml.jaxb.Sso;
 import org.nmdp.ngs.hml.jaxb.Ssp;
-import org.nmdp.ngs.hml.jaxb.TargetedRegion;
+import org.nmdp.ngs.hml.jaxb.Region;
 import org.nmdp.ngs.hml.jaxb.Typing;
 import org.nmdp.ngs.hml.jaxb.TypingTestName;
 import org.nmdp.ngs.hml.jaxb.TypingTestNames;
@@ -150,7 +150,7 @@ public class HMLGenerator {
             ssoNode.setTestIdSource(options[option - 1]);
             ssoNode.setTestId("1234567");
         }
-        typing.getTypingMethodOrInterpretation().add(ssoJaxb);     
+        typing.getTypingMethod().add(ssoJaxb);     
     }
 
 
@@ -172,7 +172,7 @@ public class HMLGenerator {
             sspNode.setTestIdSource(options[option - 1]);
             sspNode.setTestId("1234567");
         }
-        typing.getTypingMethodOrInterpretation().add(sspJaxb);
+        typing.getTypingMethod().add(sspJaxb);
     }
 
 
@@ -228,7 +228,7 @@ public class HMLGenerator {
             sbt.getGssp().add(gssp);
         }
 
-        typing.getTypingMethodOrInterpretation().add(sbtJaxb);
+        typing.getTypingMethod().add(sbtJaxb);
     }
 
 
@@ -259,7 +259,7 @@ public class HMLGenerator {
             //URI read out-of-scope
         sbt.getConsensusSequence().add(conseq);
 
-        TargetedRegion tregion = hmlfact.createTargetedRegion();
+        Region tregion = hmlfact.createRegion();
         tregion.setAssembly("GRCh38");
         tregion.setContig("6");
         tregion.setDescription("HLA-A exon 2");
@@ -267,7 +267,7 @@ public class HMLGenerator {
         tregion.setEnd(29943026L);
         tregion.setStrand("1");
         tregion.setId("CCDS34373.12");
-        conseq.setTargetedRegion(tregion);
+        conseq.setRegion(tregion);
 
         String[] alpha = new String[] {"DNA", "RNA"};
         int option = this.displayOptionMenu("Select alphabet for SBT consensus sequence", alpha);
@@ -284,7 +284,7 @@ public class HMLGenerator {
 
         //Raw reads out-of-scope
 
-        typing.getTypingMethodOrInterpretation().add(sbtJaxb);
+        typing.getTypingMethod().add(sbtJaxb);
     }
 
 
@@ -312,7 +312,7 @@ public class HMLGenerator {
         temp = this.displaySimpleOption("Enter the interpretation database version", "3.17.0");
         interp.setAlleleVersion(temp);
 
-        typing.getTypingMethodOrInterpretation().add(interp);
+        typing.setInterpretation(interp);
 
         String[] interpMethodMenu = new String[] {"haploid", "gl-resource", "glstring", "genotype-list"};
         int selectedOption = displayOptionMenu("Select interpretation format", interpMethodMenu);
@@ -348,7 +348,7 @@ public class HMLGenerator {
         temp = this.displaySimpleOption("Enter haploid type like '01:02' or '03:YGKM'", null);
         hap1.setType(temp);
 
-        interp.getHaploidOrGenotypeListOrGlstring().add(hap1);
+        interp.getPropertyOrHaploidOrGenotypeList().add(hap1);
 
         //Enter additional haploid?
         temp = this.displaySimpleOption("Do you want to include an additional haploid?", "N");
@@ -374,7 +374,7 @@ public class HMLGenerator {
     private void createGLString(Interpretation interp) throws IOException {
         Glstring glstr = hmlfact.createGlstring();
         glstr.setValue("HLA-DRB1*04:11:01+HLA-DRB1*04:07:01/HLA-DRB1*04:92");
-        interp.getHaploidOrGenotypeListOrGlstring().add(glstr);
+        interp.getPropertyOrHaploidOrGenotypeList().add(glstr);
     }
 
 
@@ -411,7 +411,7 @@ public class HMLGenerator {
         allele3.setValue("HLA-DRB3*02:03");
         all2.getAllele().add(allele3);
 
-        interp.getHaploidOrGenotypeListOrGlstring().add(glList);
+        interp.getPropertyOrHaploidOrGenotypeList().add(glList);
     }
 
 

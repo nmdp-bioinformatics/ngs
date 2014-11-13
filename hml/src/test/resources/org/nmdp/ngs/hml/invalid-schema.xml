@@ -24,10 +24,10 @@
 
 <!-- NOTE: This is a brief example of a DRAFT version of HML in action. It is not intended to be an accurate genotyping result. -->
 
-<hml xmlns="http://schemas.nmdp.org/spec/hml/0.9.6" 
-     xmlns:hml="http://schemas.nmdp.org/spec/hml/0.9.6" 
+<hml xmlns="http://schemas.nmdp.org/spec/hml/0.9.7" 
+     xmlns:hml="http://schemas.nmdp.org/spec/hml/0.9.7" 
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-     xsi:schemaLocation="http://schemas.nmdp.org/spec/hml/0.9.6 http://schemas.nmdp.org/spec/hml/0.9.6/hml-0.9.6.xsd"
+     xsi:schemaLocation="http://schemas.nmdp.org/spec/hml/0.9.7 http://schemas.nmdp.org/spec/hml/0.9.7/hml-0.9.7.xsd"
      reporting-center="789"
      project-name="LAB"
-     version="0.9.6"/>
+     version="0.9.7"/>

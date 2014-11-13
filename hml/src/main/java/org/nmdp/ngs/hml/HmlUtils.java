@@ -55,7 +55,7 @@ import org.biojava.bio.seq.io.SeqIOTools;
 import org.nmdp.ngs.feature.Locus;
 
 import org.nmdp.ngs.hml.jaxb.Sequence;
-import org.nmdp.ngs.hml.jaxb.TargetedRegion;
+import org.nmdp.ngs.hml.jaxb.Region;
 
 /**
  * Static utility methods for creating HML model classes.
@@ -244,7 +244,7 @@ public final class HmlUtils {
 
 
     /**
-     * Create and return a new HML TargetedRegion with the specified parameters.
+     * Create and return a new HML Region with the specified parameters.
      *
      * @param assembly assembly, must not be null, should be a major or minor
      *    version of the GRC human assembly, e.g. GRCh38
@@ -254,9 +254,9 @@ public final class HmlUtils {
      *    be at least <code>0L</code>
      * @param end end, 0-based coordinate system, closed-open range, must
      *    be at least <code>0L</code>
-     * @return a new HML TargetedRegion with the specified parameters
+     * @return a new HML Region with the specified parameters
      */
-    public static TargetedRegion createTargetedRegion(final String assembly,
+    public static Region createRegion(final String assembly,
                                                       final String contig,
                                                       final long start,
                                                       final long end) {
@@ -265,16 +265,16 @@ public final class HmlUtils {
         checkArgument(start >= 0L, "start must be at least 0L");
         checkArgument(end >= 0L, "end must be at least 0L");
 
-        TargetedRegion targetedRegion = new TargetedRegion();
-        targetedRegion.setAssembly(assembly);
-        targetedRegion.setContig(contig);
-        targetedRegion.setStart(start);
-        targetedRegion.setEnd(end);
-        return targetedRegion;
+        Region region = new Region();
+        region.setAssembly(assembly);
+        region.setContig(contig);
+        region.setStart(start);
+        region.setEnd(end);
+        return region;
     }
 
     /**
-     * Create and return a new HML TargetedRegion with the specified parameters.
+     * Create and return a new HML Region with the specified parameters.
      *
      * @param assembly assembly, must not be null, should be a major or minor
      *    version of the GRC human assembly, e.g. GRCh38
@@ -287,9 +287,9 @@ public final class HmlUtils {
      * @param strand strand, if provided must be one of { 1, -1, +, - }
      * @param id id
      * @param description description
-     * @return a new HML TargetedRegion with the specified parameters
+     * @return a new HML Region with the specified parameters
      */
-    public static TargetedRegion createTargetedRegion(final String assembly,
+    public static Region createRegion(final String assembly,
                                                       final String contig,
                                                       final long start,
                                                       final long end,
@@ -308,28 +308,28 @@ public final class HmlUtils {
                           || "-".equals(strand), "if provided, strand must be one of { 1, -1, +, - }");
         }
 
-        TargetedRegion targetedRegion = new TargetedRegion();
-        targetedRegion.setAssembly(assembly);
-        targetedRegion.setContig(contig);
-        targetedRegion.setStart(start);
-        targetedRegion.setEnd(end);
-        targetedRegion.setStrand(strand);
-        targetedRegion.setId(id);
-        targetedRegion.setDescription(description);
-        return targetedRegion;
+        Region region = new Region();
+        region.setAssembly(assembly);
+        region.setContig(contig);
+        region.setStart(start);
+        region.setEnd(end);
+        region.setStrand(strand);
+        region.setId(id);
+        region.setDescription(description);
+        return region;
     }
 
     /**
-     * Create and return a new HML TargetedRegion with the specified assembly and locus.
+     * Create and return a new HML Region with the specified assembly and locus.
      *
      * @param assembly assembly, must not be null, should be a major or minor
      *    version of the GRC human assembly, e.g. GRCh38
      * @param locus locus, must not be null
-     * @return a new HML TargetedRegion with the specified assembly and locus
+     * @return a new HML Region with the specified assembly and locus
      */
-    public static TargetedRegion createTargetedRegion(final String assembly, final Locus locus) {
+    public static Region createRegion(final String assembly, final Locus locus) {
         checkNotNull(assembly);
         checkNotNull(locus);
-        return createTargetedRegion(assembly, locus.getContig(), locus.getStart() - 1L, locus.getEnd());
+        return createRegion(assembly, locus.getContig(), locus.getStart() - 1L, locus.getEnd());
     }
 }

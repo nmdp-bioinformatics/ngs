@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 import static org.nmdp.ngs.hml.HmlUtils.createSequence;
 import static org.nmdp.ngs.hml.HmlUtils.createDnaSequences;
 import static org.nmdp.ngs.hml.HmlUtils.createRnaSequences;
-import static org.nmdp.ngs.hml.HmlUtils.createTargetedRegion;
+import static org.nmdp.ngs.hml.HmlUtils.createRegion;
 
 import java.net.URL;
 
@@ -46,7 +46,7 @@ import org.junit.Test;
 import org.nmdp.ngs.feature.Locus;
 
 import org.nmdp.ngs.hml.jaxb.Sequence;
-import org.nmdp.ngs.hml.jaxb.TargetedRegion;
+import org.nmdp.ngs.hml.jaxb.Region;
 
 /**
  * Unit test for HmlUtils.
@@ -179,89 +179,89 @@ public final class HmlUtilsTest {
     }
 
     @Test(expected=NullPointerException.class)
-    public void testCreateTargetedRegionNullAssembly() throws Exception {
-        createTargetedRegion(null, "6", 2L, 42L);
+    public void testCreateRegionNullAssembly() throws Exception {
+        createRegion(null, "6", 2L, 42L);
     }
 
     @Test(expected=NullPointerException.class)
-    public void testCreateTargetedRegionNullContig() throws Exception {
-        createTargetedRegion("GRCh38", null, 2L, 42L);
+    public void testCreateRegionNullContig() throws Exception {
+        createRegion("GRCh38", null, 2L, 42L);
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void testCreateTargetedRegionInvalidStart() throws Exception {
-        createTargetedRegion("GRCh38", "6", -1L, 42L);
+    public void testCreateRegionInvalidStart() throws Exception {
+        createRegion("GRCh38", "6", -1L, 42L);
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void testCreateTargetedRegionInvalidEnd() throws Exception {
-        createTargetedRegion("GRCh38", "6", 2L, -1L);
+    public void testCreateRegionInvalidEnd() throws Exception {
+        createRegion("GRCh38", "6", 2L, -1L);
     }
 
     @Test
-    public void testCreateTargetedRegion() throws Exception {
-        TargetedRegion targetedRegion = createTargetedRegion("GRCh38", "6", 2L, 42L);
-        assertEquals("GRCh38", targetedRegion.getAssembly());
-        assertEquals("6", targetedRegion.getContig());
-        assertEquals(2L, targetedRegion.getStart());
-        assertEquals(42L, targetedRegion.getEnd());
+    public void testCreateRegion() throws Exception {
+        Region region = createRegion("GRCh38", "6", 2L, 42L);
+        assertEquals("GRCh38", region.getAssembly());
+        assertEquals("6", region.getContig());
+        assertEquals(2L, region.getStart());
+        assertEquals(42L, region.getEnd());
     }
 
     @Test(expected=NullPointerException.class)
-    public void testCreateTargetedRegionExtNullAssembly() throws Exception {
-        createTargetedRegion(null, "6", 2L, 42L, "1", "id", "description");
+    public void testCreateRegionExtNullAssembly() throws Exception {
+        createRegion(null, "6", 2L, 42L, "1", "id", "description");
     }
 
     @Test(expected=NullPointerException.class)
-    public void testCreateTargetedRegionExtNullContig() throws Exception {
-        createTargetedRegion("GRCh38", null, 2L, 42L, "1", "id", "description");
+    public void testCreateRegionExtNullContig() throws Exception {
+        createRegion("GRCh38", null, 2L, 42L, "1", "id", "description");
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void testCreateTargetedRegionExtInvalidStart() throws Exception {
-        createTargetedRegion("GRCh38", "6", -1L, 42L, "1", "id", "description");
+    public void testCreateRegionExtInvalidStart() throws Exception {
+        createRegion("GRCh38", "6", -1L, 42L, "1", "id", "description");
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void testCreateTargetedRegionExtInvalidEnd() throws Exception {
-        createTargetedRegion("GRCh38", "6", 2L, -1L, "1", "id", "description");
+    public void testCreateRegionExtInvalidEnd() throws Exception {
+        createRegion("GRCh38", "6", 2L, -1L, "1", "id", "description");
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void testCreateTargetedRegionExtInvalidStrand() throws Exception {
-        createTargetedRegion("GRCh38", "6", 2L, 42L, "invalid", "id", "description");
+    public void testCreateRegionExtInvalidStrand() throws Exception {
+        createRegion("GRCh38", "6", 2L, 42L, "invalid", "id", "description");
     }
 
     @Test
-    public void testCreateTargetedRegionExt() throws Exception {
-        TargetedRegion targetedRegion = createTargetedRegion("GRCh38", "6", 2L, 42L, "1", "id", "description");
-        assertEquals("GRCh38", targetedRegion.getAssembly());
-        assertEquals("6", targetedRegion.getContig());
-        assertEquals(2L, targetedRegion.getStart());
-        assertEquals(42L, targetedRegion.getEnd());
-        assertEquals("1", targetedRegion.getStrand());
-        assertEquals("id", targetedRegion.getId());
-        assertEquals("description", targetedRegion.getDescription());
+    public void testCreateRegionExt() throws Exception {
+        Region region = createRegion("GRCh38", "6", 2L, 42L, "1", "id", "description");
+        assertEquals("GRCh38", region.getAssembly());
+        assertEquals("6", region.getContig());
+        assertEquals(2L, region.getStart());
+        assertEquals(42L, region.getEnd());
+        assertEquals("1", region.getStrand());
+        assertEquals("id", region.getId());
+        assertEquals("description", region.getDescription());
     }
 
     @Test(expected=NullPointerException.class)
-    public void testCreateTargetedRegionLocusNullAssembly() throws Exception {
+    public void testCreateRegionLocusNullAssembly() throws Exception {
         // note Locus uses 1-based, fully closed ranges
-        createTargetedRegion(null, new Locus("6", 3, 42));
+        createRegion(null, new Locus("6", 3, 42));
     }
 
     @Test(expected=NullPointerException.class)
-    public void testCreateTargetedRegionLocusNullLocus() throws Exception {
-        createTargetedRegion("GRCh38", (Locus) null);
+    public void testCreateRegionLocusNullLocus() throws Exception {
+        createRegion("GRCh38", (Locus) null);
     }
 
     @Test
-    public void testCreateTargetedRegionLocus() throws Exception {
+    public void testCreateRegionLocus() throws Exception {
         // note Locus uses 1-based, fully closed ranges
-        TargetedRegion targetedRegion = createTargetedRegion("GRCh38", new Locus("6", 3, 42));
-        assertEquals("GRCh38", targetedRegion.getAssembly());
-        assertEquals("6", targetedRegion.getContig());
-        assertEquals(2L, targetedRegion.getStart());
-        assertEquals(42L, targetedRegion.getEnd());
+        Region region = createRegion("GRCh38", new Locus("6", 3, 42));
+        assertEquals("GRCh38", region.getAssembly());
+        assertEquals("6", region.getContig());
+        assertEquals(2L, region.getStart());
+        assertEquals(42L, region.getEnd());
     }
 }
