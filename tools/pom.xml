@@ -188,12 +188,13 @@
           <descriptors>
             <descriptor>src/main/assembly/assembly.xml</descriptor>
           </descriptors>
+          <tarLongFileMode>posix</tarLongFileMode>
         </configuration>
         <executions>
           <execution>
             <phase>package</phase>
             <goals>
-              <goal>assembly</goal>
+              <goal>single</goal>
             </goals>
           </execution>
         </executions>
