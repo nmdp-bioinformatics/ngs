@@ -145,8 +145,8 @@ public final class FastaToFastq implements Runnable {
     public static void main(final String[] args) {
         Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
-        FileArgument fastaFile = new FileArgument("i", "fasta-file", "input FASTA file, default stdin", false);
-        FileArgument fastqFile = new FileArgument("o", "fastq-file", "output FASTQ file, default stdout", false);
+        FileArgument fastaFile = new FileArgument("i", "input-fasta-file", "input FASTA file, default stdin", false);
+        FileArgument fastqFile = new FileArgument("o", "output-fastq-file", "output FASTQ file, default stdout", false);
         IntegerArgument quality = new IntegerArgument("q", "quality", "quality score for FASTQ, [0..93], default " + DEFAULT_QUALITY, false);
 
         ArgumentList arguments = new ArgumentList(about, help, fastaFile, fastqFile, quality);
