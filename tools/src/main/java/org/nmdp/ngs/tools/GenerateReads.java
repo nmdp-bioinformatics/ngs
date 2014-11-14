@@ -112,14 +112,14 @@ public final class GenerateReads implements Runnable {
     private static final String USAGE = "ngs-generate-reads [args]";
 
 
-    private GenerateReads(final File referenceFile,
-                          final File readFile,
-                          final RandomGenerator random,
-                          final RealDistribution length,
-                          final QualityStrategy quality,
-                          final CoverageStrategy coverage,
-                          final double mutationRate,
-                          final MutationStrategy mutation) {
+    GenerateReads(final File referenceFile,
+                  final File readFile,
+                  final RandomGenerator random,
+                  final RealDistribution length,
+                  final QualityStrategy quality,
+                  final CoverageStrategy coverage,
+                  final double mutationRate,
+                  final MutationStrategy mutation) {
 
         this.referenceFile = referenceFile;
         this.readFile = readFile;
