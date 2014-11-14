@@ -105,13 +105,12 @@ public final class BedReader {
         public boolean processLine(final String line) throws IOException
         {
             try {
-                listener.record(BedRecord.valueOf(line));
+                lineNumber++;
+                return listener.record(BedRecord.valueOf(line));
             }
             catch (IllegalArgumentException | NullPointerException e) {
                 throw new IOException("could not read BED record at line " + lineNumber + ", caught " + e.getMessage(), e);
             }
-            lineNumber++;
-            return !listener.complete();
         }
     }
 
@@ -125,13 +124,9 @@ public final class BedReader {
 
 
         @Override
-        public void record(final BedRecord record) {
+        public boolean record(final BedRecord record) {
             records.add(record);
-        }
-
-        @Override
-        public boolean complete() {
-            return false;
+            return true;
         }
 
         /**

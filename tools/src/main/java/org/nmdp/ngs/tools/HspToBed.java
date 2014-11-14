@@ -45,7 +45,7 @@ import org.dishevelled.commandline.argument.StringArgument;
 import org.nmdp.ngs.align.BedRecord;
 import org.nmdp.ngs.align.BedWriter;
 import org.nmdp.ngs.align.HighScoringPair;
-import org.nmdp.ngs.align.HspAdapter;
+import org.nmdp.ngs.align.HspListener;
 import org.nmdp.ngs.align.HspReader;
 
 /**
@@ -87,10 +87,11 @@ public final class HspToBed implements Runnable {
             writer = writer(bedFile);
 
             final PrintWriter w = writer;
-            HspReader.stream(reader, new HspAdapter() {
+            HspReader.stream(reader, new HspListener() {
                     @Override
-                    public void hsp(final HighScoringPair hsp) {
+                    public boolean hsp(final HighScoringPair hsp) {
                         BedWriter.write((reverse ? toReverseBedRecord(hsp) : toBedRecord(hsp)), w);
+                        return true;
                     }
                 });
         }

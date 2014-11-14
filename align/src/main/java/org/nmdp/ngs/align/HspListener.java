@@ -31,13 +31,7 @@ public interface HspListener {
      * Notify this high-scoring segment pair listener of a high-scoring segment pair.
      *
      * @param hsp high-scoring segment pair
+     * @return true to continue processing, false to stop
      */
-    void hsp(HighScoringPair hsp);
-
-    /**
-     * Return true if this high-scoring segment pair listener is complete.
-     *
-     * @return true if this high-scoring segment pair listener is complete
-     */
-    boolean complete();
+    boolean hsp(HighScoringPair hsp);
 }

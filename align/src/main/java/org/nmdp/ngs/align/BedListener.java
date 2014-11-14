@@ -31,13 +31,7 @@ public interface BedListener {
      * Notify ths BED listener of a BED record.
      *
      * @param record BED record
+     * @return true to continue processing, false to stop
      */
-    void record(BedRecord record);
-
-    /**
-     * Return true if this BED listener is complete.
-     *
-     * @return true if this BED listener is complete
-     */
-    boolean complete();
+    boolean record(BedRecord record);
 }

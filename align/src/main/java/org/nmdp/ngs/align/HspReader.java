@@ -105,15 +105,12 @@ public final class HspReader {
         public boolean processLine(final String line) throws IOException
         {
             try {
-                if (!line.startsWith("#")) {
-                    listener.hsp(HighScoringPair.valueOf(line));
-                }
+                lineNumber++;
+                return line.startsWith("#") ? true : listener.hsp(HighScoringPair.valueOf(line));
             }
             catch (IllegalArgumentException e) {
                 throw new IOException("could not read high-scoring segment pair at line " + lineNumber + ", caught " + e.getMessage(), e);
             }
-            lineNumber++;
-            return !listener.complete();
         }
     }
 
@@ -127,13 +124,9 @@ public final class HspReader {
 
 
         @Override
-        public void hsp(final HighScoringPair hsp) {
+        public boolean hsp(final HighScoringPair hsp) {
             hsps.add(hsp);
-        }
-
-        @Override
-        public boolean complete() {
-            return false;
+            return true;
         }
 
         /**
