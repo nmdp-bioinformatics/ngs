@@ -33,64 +33,64 @@ import com.google.common.io.CharStreams;
 import com.google.common.io.LineProcessor;
 
 /**
- * BED format reader.
+ * High-scoring segment pair (HSP) reader.
  */
-public final class BedReader {
+public final class HspReader {
 
     /**
      * Private no-arg constructor.
      */
-    private BedReader() {
+    private HspReader() {
         // empty
     }
 
 
     /**
-     * Read zero or more BED records from the specified readable.
+     * Read zero or more high-scoring segment pairs from the specified readable.
      *
      * @param readable to read from, must not be null
-     * @return zero or more BED records read from the specified readable
+     * @return zero or more high-scoring segment pairs read from the specified readable
      * @throws IOException if an I/O error occurs
      */
-    public static Iterable<BedRecord> read(final Readable readable) throws IOException {
+    public static Iterable<HighScoringPair> read(final Readable readable) throws IOException {
         checkNotNull(readable);
         Collect collect = new Collect();
         stream(readable, collect);
-        return collect.records();
+        return collect.hsps();
     }
 
     /**
-     * Stream zero or more BED records from the specified readable.
+     * Stream zero or more high-scoring segment pairs from the specified readable.
      *
      * @param readable readable to stream from, must not be null
      * @param listener event based listener callback, must not be null
      * @throws IOException if an I/O error occurs
      */
-    public static void stream(final Readable readable, final BedListener listener) throws IOException {
+    public static void stream(final Readable readable, final HspListener listener) throws IOException {
         checkNotNull(readable);
         checkNotNull(listener);
 
-        BedLineProcessor lineProcessor = new BedLineProcessor(listener);
+        HspLineProcessor lineProcessor = new HspLineProcessor(listener);
         CharStreams.readLines(readable, lineProcessor);
     }
 
     /**
-     * BED line processor.
+     * High-scoring segment pair (HSP) line processor.
      */
-    private static final class BedLineProcessor implements LineProcessor<Object> {
+    private static final class HspLineProcessor implements LineProcessor<Object> {
         /** Line number. */
         private long lineNumber = 0;
 
-        /** BED listener. */
-        private final BedListener listener;
+        /** High-scoring segment pair listener. */
+        private final HspListener listener;
 
 
         /**
-         * Create a new BED line processor with the specified BED listener.
+         * Create a new high-scoring segment pair line processor with the specified high-scoring segment pair listener.
          *
-         * @param listener BED listener, must not be null
+         * @param listener high-scoring segment pair listener, must not be null
          */
-        private BedLineProcessor(final BedListener listener) {
+        private HspLineProcessor(final HspListener listener) {
             checkNotNull(listener);
             this.listener = listener;
         }
@@ -106,10 +106,10 @@ public final class BedReader {
         {
             try {
                 lineNumber++;
-                return listener.record(BedRecord.valueOf(line));
+                return line.startsWith("#") ? true : listener.hsp(HighScoringPair.valueOf(line));
             }
-            catch (IllegalArgumentException | NullPointerException e) {
-                throw new IOException("could not read BED record at line " + lineNumber + ", caught " + e.getMessage(), e);
+            catch (IllegalArgumentException e) {
+                throw new IOException("could not read high-scoring segment pair at line " + lineNumber + ", caught " + e.getMessage(), e);
             }
         }
     }
@@ -118,24 +118,24 @@ public final class BedReader {
     /**
      * Collect.
      */
-    private static class Collect implements BedListener {
-        /** List of collected BED records. */
-        private final List<BedRecord> records = new LinkedList<BedRecord>();
+    private static class Collect implements HspListener {
+        /** List of collected high-scoring segment pairs. */
+        private final List<HighScoringPair> hsps = new LinkedList<HighScoringPair>();
 
 
         @Override
-        public boolean record(final BedRecord record) {
-            records.add(record);
+        public boolean hsp(final HighScoringPair hsp) {
+            hsps.add(hsp);
             return true;
         }
 
         /**
-         * Return zero or more collected BED records.
+         * Return zero or more collected high-scoring segment pairs.
          *
-         * @return zero or more collected BED records
+         * @return zero or more collected high-scoring segment pairs
          */
-        Iterable<BedRecord> records() {
-            return records;
+        Iterable<HighScoringPair> hsps() {
+            return hsps;
         }
     }
 }

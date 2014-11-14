@@ -22,17 +22,16 @@
 */
 package org.nmdp.ngs.align;
 
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.Test;
-
 /**
- * Unit test for BedAdapter.
+ * High-scoring segment pair (HSP) listener.
  */
-public final class BedAdapterTest {
+public interface HspListener {
 
-    @Test
-    public void testExtension() {
-        assertNotNull(new BedAdapter() { });
-    }
+    /**
+     * Notify this high-scoring segment pair listener of a high-scoring segment pair.
+     *
+     * @param hsp high-scoring segment pair
+     * @return true to continue processing, false to stop
+     */
+    boolean hsp(HighScoringPair hsp);
 }

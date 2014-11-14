@@ -60,7 +60,7 @@ import org.dishevelled.commandline.Usage;
 import org.dishevelled.commandline.argument.FileArgument;
 import org.dishevelled.commandline.argument.StringArgument;
 
-import org.nmdp.ngs.align.BedAdapter;
+import org.nmdp.ngs.align.BedListener;
 import org.nmdp.ngs.align.BedReader;
 import org.nmdp.ngs.align.BedRecord;
 import org.nmdp.ngs.align.BedWriter;
@@ -155,10 +155,11 @@ public final class IntersectBed implements Runnable {
         public void intersectBed(final BufferedReader a, final BufferedReader b, final PrintWriter writer) throws IOException {
             // read all of b into memory, group by chromosome
             final ListMultimap<String, BedRecord> ref = ArrayListMultimap.create();
-            BedReader.stream(b, new BedAdapter() {
+            BedReader.stream(b, new BedListener() {
                 @Override
-                public void record(final BedRecord rec) {
+                public boolean record(final BedRecord rec) {
                     ref.put(rec.chrom(), rec);
+                    return true;
                 }
             });
 
@@ -179,13 +180,14 @@ public final class IntersectBed implements Runnable {
 
             // stream records from a, compare to b
             final PrintWriter w = writer;
-            BedReader.stream(a, new BedAdapter() {
+            BedReader.stream(a, new BedListener() {
                 @Override
-                public void record(final BedRecord rec) {
+                public boolean record(final BedRecord rec) {
                     String chr = rec.chrom();
                     if (coverage.containsKey(chr) && !coverage.get(chr).intersects(rec.toRange())) {
                         BedWriter.write(rec, w);
                     }
+                    return true;
                 }
             });
         }
@@ -197,27 +199,29 @@ public final class IntersectBed implements Runnable {
         public void intersectBed(final BufferedReader a, final BufferedReader b, final PrintWriter writer) throws IOException {
             // calculate coverage range sets by chromosome
             final Map<String, RangeSet<Long>> coverage = Maps.newHashMap();
-            BedReader.stream(b, new BedAdapter() {
+            BedReader.stream(b, new BedListener() {
                 @Override
-                public void record(final BedRecord rec) {
+                public boolean record(final BedRecord rec) {
                     String chr = rec.chrom();
                     if (!coverage.containsKey(chr)) {
                         RangeSet<Long> rangeSet = TreeRangeSet.create();
                         coverage.put(chr, rangeSet);
                     }
                     coverage.get(chr).add(rec.toRange());
+                    return true;
                 }
             });
 
             // stream records from a, compare to b
             final PrintWriter w = writer;
-            BedReader.stream(a, new BedAdapter() {
+            BedReader.stream(a, new BedListener() {
                 @Override
-                public void record(final BedRecord rec) {
+                public boolean record(final BedRecord rec) {
                     String chr = rec.chrom();
                     if (coverage.containsKey(chr) && coverage.get(chr).subRangeSet(rec.toRange()).isEmpty()) {
                         BedWriter.write(rec, w);
                     }
+                    return true;
                 }
             });
         }
@@ -229,10 +233,11 @@ public final class IntersectBed implements Runnable {
         public void intersectBed(final BufferedReader a, final BufferedReader b, final PrintWriter writer) throws IOException {
             // read all of b into memory, group by chromosome
             final ListMultimap<String, BedRecord> ref = ArrayListMultimap.create();
-            BedReader.stream(b, new BedAdapter() {
+            BedReader.stream(b, new BedListener() {
                 @Override
-                public void record(final BedRecord rec) {
+                public boolean record(final BedRecord rec) {
                     ref.put(rec.chrom(), rec);
+                    return true;
                 }
             });
 
@@ -253,13 +258,14 @@ public final class IntersectBed implements Runnable {
 
             // stream records from a, compare to b
             final PrintWriter w = writer;
-            BedReader.stream(a, new BedAdapter() {
+            BedReader.stream(a, new BedListener() {
                 @Override
-                public void record(final BedRecord rec) {
+                public boolean record(final BedRecord rec) {
                     String chr = rec.chrom();
                     if (coverage.containsKey(chr) && !coverage.get(chr).intersects(rec.toRange())) {
                         BedWriter.write(rec, w);
                     }
+                    return true;
                 }
             });
         }
@@ -272,27 +278,29 @@ public final class IntersectBed implements Runnable {
             // read all of b into memory, group by chromosome
             final Object key = new Object();
             final Map<String, RTree<Object>> coverage = Maps.newHashMap();
-            BedReader.stream(b, new BedAdapter() {
+            BedReader.stream(b, new BedListener() {
                 @Override
-                public void record(final BedRecord rec) {
+                public boolean record(final BedRecord rec) {
                     String chr = rec.chrom();
                     if (!coverage.containsKey(chr)) {
                         RTree rtree = RTree.maxChildren(12).create();
                         coverage.put(chr, rtree);
                     }
                     coverage.put(chr, coverage.get(chr).add(key, RangeGeometries.range(rec.toRange())));
+                    return true;
                 }
             });
 
             // stream records from a, compare to b
             final PrintWriter w = writer;
-            BedReader.stream(a, new BedAdapter() {
+            BedReader.stream(a, new BedListener() {
                 @Override
-                public void record(final BedRecord rec) {
+                public boolean record(final BedRecord rec) {
                     String chr = rec.chrom();
                     if (coverage.containsKey(chr) && isEmpty(coverage.get(chr).search(RangeGeometries.range(rec.toRange())))) {
                         BedWriter.write(rec, w);
                     }
+                    return true;
                 }
             });
         }
@@ -305,27 +313,29 @@ public final class IntersectBed implements Runnable {
             // read all of b into memory, group by chromosome
             final Object key = new Object();
             final Map<String, RTree<Object>> coverage = Maps.newHashMap();
-            BedReader.stream(b, new BedAdapter() {
+            BedReader.stream(b, new BedListener() {
                 @Override
-                public void record(final BedRecord rec) {
+                public boolean record(final BedRecord rec) {
                     String chr = rec.chrom();
                     if (!coverage.containsKey(chr)) {
                         RTree rtree = RTree.star().maxChildren(12).create();
                         coverage.put(chr, rtree);
                     }
                     coverage.put(chr, coverage.get(chr).add(key, RangeGeometries.range(rec.toRange())));
+                    return true;
                 }
             });
 
             // stream records from a, compare to b
             final PrintWriter w = writer;
-            BedReader.stream(a, new BedAdapter() {
+            BedReader.stream(a, new BedListener() {
                 @Override
-                public void record(final BedRecord rec) {
+                public boolean record(final BedRecord rec) {
                     String chr = rec.chrom();
                     if (coverage.containsKey(chr) && isEmpty(coverage.get(chr).search(RangeGeometries.range(rec.toRange())))) {
                         BedWriter.write(rec, w);
                     }
+                    return true;
                 }
             });
         }
