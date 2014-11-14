@@ -44,6 +44,9 @@ import org.dishevelled.commandline.argument.StringArgument;
 
 import org.nmdp.ngs.align.BedRecord;
 import org.nmdp.ngs.align.BedWriter;
+import org.nmdp.ngs.align.HighScoringPair;
+import org.nmdp.ngs.align.HspAdapter;
+import org.nmdp.ngs.align.HspReader;
 
 /**
  * Convert HSPs to BED format.
@@ -83,47 +86,13 @@ public final class HspToBed implements Runnable {
             reader = reader(hspFile);
             writer = writer(bedFile);
 
-            while (reader.ready()) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                if (line.startsWith("#")) {
-                    continue;
-                }
-
-                // todo: code similar to HSP parsing in o.n.n.align.Blastn
-                String[] tokens = line.split("\t");
-                String query = tokens[0];
-                String chr = tokens[1];
-                double identity = Double.parseDouble(tokens[2]);
-                int alignmentLength = Integer.parseInt(tokens[3]);
-                int mismatches = Integer.parseInt(tokens[4]);
-                int gapOpens = Integer.parseInt(tokens[5]);
-                long queryStart = Long.parseLong(tokens[6]);
-                long queryEnd = Long.parseLong(tokens[7]);
-                long start = Long.parseLong(tokens[8]);
-                long end = Long.parseLong(tokens[9]);
-                double evalue = Double.parseDouble(tokens[10]);
-                double bitscore = Double.parseDouble(tokens[11].trim());
-
-                if (reverse) {
-                    BedRecord rec = new BedRecord(displayName != null ? displayName : query,
-                                                  queryStart, queryEnd,
-                                                  Joiner.on(":").join(chr, start, end, (start <= end ? "+" : "-"), identity, alignmentLength, mismatches, gapOpens, evalue, bitscore),
-                                                  String.valueOf((transformEvalue ? transform(evalue) : evalue)),
-                                                  (queryStart <= queryEnd ? "+" : "-"));
-
-                    BedWriter.write(rec, writer);
-                }
-                else {
-                    BedRecord rec = new BedRecord(chr, start, end,
-                                                  Joiner.on(":").join((displayName != null ? displayName : query), queryStart, queryEnd, (queryStart <= queryEnd ? "+" : "-"), identity, alignmentLength, mismatches, gapOpens, evalue, bitscore),
-                                                  String.valueOf((transformEvalue ? transform(evalue) : evalue)),
-                                                  (start <= end ? "+" : "-"));
-                    BedWriter.write(rec, writer);
-                }
-            }
+            final PrintWriter w = writer;
+            HspReader.stream(reader, new HspAdapter() {
+                    @Override
+                    public void hsp(final HighScoringPair hsp) {
+                        BedWriter.write((reverse ? toReverseBedRecord(hsp) : toBedRecord(hsp)), w);
+                    }
+                });
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -143,6 +112,30 @@ public final class HspToBed implements Runnable {
                 // empty
             }
         }
+    }
+
+    private BedRecord toBedRecord(final HighScoringPair hsp) {
+        String chrom = hsp.target();
+        // hsps are 1-based, fully closed; bed records are 0-based, closed open
+        long start = hsp.targetStart() - 1L;
+        long end = hsp.targetEnd();
+        String name = Joiner.on(":").join((displayName != null ? displayName : hsp.source()), hsp.sourceStart(), hsp.sourceEnd(), (hsp.sourceStart() <= hsp.sourceEnd() ? "+" : "-"), hsp.percentIdentity(), hsp.alignmentLength(), hsp.mismatches(), hsp.gapOpens(), hsp.evalue(), hsp.bitScore());
+        String score = String.valueOf((transformEvalue ? transform(hsp.evalue()) : hsp.evalue()));
+        String strand = hsp.targetStart() <= hsp.targetEnd() ? "+" : "-";
+
+        return new BedRecord(chrom, start, end, name, score, strand);
+    }
+
+    private BedRecord toReverseBedRecord(final HighScoringPair hsp) {
+        String chrom = displayName != null ? displayName : hsp.source();
+        // hsps are 1-based, fully closed; bed records are 0-based, closed open
+        long start = hsp.sourceStart() - 1L;
+        long end = hsp.sourceEnd();
+        String name = Joiner.on(":").join(hsp.target(), hsp.targetStart(), hsp.targetEnd(), (hsp.targetStart() <= hsp.targetEnd() ? "+" : "-"), hsp.percentIdentity(), hsp.alignmentLength(), hsp.mismatches(), hsp.gapOpens(), hsp.evalue(), hsp.bitScore());
+        String score = String.valueOf((transformEvalue ? transform(hsp.evalue()) : hsp.evalue()));
+        String strand = hsp.sourceStart() <= hsp.sourceEnd() ? "+" : "-";
+
+        return new BedRecord(chrom, start, end, name, score, strand);
     }
 
     private static int transform(final double evalue) {
