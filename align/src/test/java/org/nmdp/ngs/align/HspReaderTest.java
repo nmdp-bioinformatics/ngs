@@ -59,13 +59,8 @@ public final class HspReaderTest {
     public void testStreamNullReadable() throws Exception {
         stream(null, new HspListener() {
                 @Override
-                public void hsp(final HighScoringPair hsp) {
-                    // empty
-                }
-
-                @Override
-                public boolean complete() {
-                    return false;
+                public boolean hsp(final HighScoringPair hsp) {
+                    return true;
                 }
             });
     }
@@ -79,13 +74,9 @@ public final class HspReaderTest {
     public void testStream() throws Exception {
         stream(readable, new HspListener() {
                 @Override
-                public void hsp(final HighScoringPair hsp) {
+                public boolean hsp(final HighScoringPair hsp) {
                     assertNotNull(hsp);
-                }
-
-                @Override
-                public boolean complete() {
-                    return false;
+                    return true;
                 }
             });
     }

@@ -59,13 +59,8 @@ public final class BedReaderTest {
     public void testStreamNullReadable() throws Exception {
         stream(null, new BedListener() {
                 @Override
-                public void record(final BedRecord record) {
-                    // empty
-                }
-
-                @Override
-                public boolean complete() {
-                    return false;
+                public boolean record(final BedRecord record) {
+                    return true;
                 }
             });
     }
@@ -79,13 +74,9 @@ public final class BedReaderTest {
     public void testStream() throws Exception {
         stream(readable, new BedListener() {
                 @Override
-                public void record(final BedRecord record) {
+                public boolean record(final BedRecord record) {
                     assertNotNull(record);
-                }
-
-                @Override
-                public boolean complete() {
-                    return false;
+                    return true;
                 }
             });
     }
