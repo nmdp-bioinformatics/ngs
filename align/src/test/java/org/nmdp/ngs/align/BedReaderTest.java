@@ -27,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.nmdp.ngs.align.BedReader.read;
 import static org.nmdp.ngs.align.BedReader.stream;
 
+import java.io.IOException;
 import java.io.StringReader;
 
 import org.junit.Before;
@@ -53,6 +54,11 @@ public final class BedReaderTest {
         for (BedRecord record : read(readable)) {
             assertNotNull(record);
         }
+    }
+
+    @Test(expected=IOException.class)
+    public void testReadInvalid() throws Exception {
+        read(new StringReader("invalid"));
     }
 
     @Test(expected=NullPointerException.class)

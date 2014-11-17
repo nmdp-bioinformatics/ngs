@@ -23,6 +23,8 @@
 package org.nmdp.ngs.align;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import static org.nmdp.ngs.align.BedRecord.valueOf;
 
@@ -73,6 +75,21 @@ public final class BedRecordTest {
     }
 
     @Test(expected=IllegalArgumentException.class)
+    public void testValueOfThickStartLessThanZero() {
+        valueOf("chr1\t11873\t14409\tuc001aaa.3\t0\t+\t-1\t11873\t0\t3\t354,109,1189,\t0,739,1347,");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testValueOfThickEndLessThanZero() {
+        valueOf("chr1\t11873\t14409\tuc001aaa.3\t0\t+\t11873\t-1\t0\t3\t354,109,1189,\t0,739,1347,");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testValueOfThickEndLessThanThickStart() {
+        valueOf("chr1\t11873\t14409\tuc001aaa.3\t0\t+\t11873\t11872\t0\t3\t354,109,1189,\t0,739,1347,");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
     public void testValueOfInvalidStrand() {
         valueOf("chr1\t11873\t14409\tuc001aaa.3\t0\t1");
     }
@@ -103,6 +120,17 @@ public final class BedRecordTest {
     }
 
     @Test
+    public void testEquals() {
+        BedRecord record1 = valueOf("chr1\t11873\t14409");
+        BedRecord record2 = valueOf("chr1\t11873\t14409\tuc001aaa.3");
+        assertTrue(record1.equals(record1));
+        assertTrue(record2.equals(record2));
+        assertFalse(record1.equals(record2));
+        assertFalse(record2.equals(record1));
+        assertFalse(record1.equals(new Object()));
+    }
+
+    @Test
     public void testValueOfBED3() {
         BedRecord record = valueOf("chr1\t11873\t14409");
         assertEquals("chr1", record.chrom());
@@ -110,6 +138,7 @@ public final class BedRecordTest {
         assertEquals(14409L, record.end());
         assertEquals(Format.BED3, record.format());
         assertEquals(Range.closedOpen(11873L, 14409L), record.toRange());
+        assertEquals("chr1\t11873\t14409", record.toString());
     }
 
     @Test
@@ -121,6 +150,7 @@ public final class BedRecordTest {
         assertEquals("uc001aaa.3", record.name());
         assertEquals(Format.BED4, record.format());
         assertEquals(Range.closedOpen(11873L, 14409L), record.toRange());
+        assertEquals("chr1\t11873\t14409\tuc001aaa.3", record.toString());
     }
 
     @Test
@@ -133,6 +163,7 @@ public final class BedRecordTest {
         assertEquals("0", record.score());
         assertEquals(Format.BED5, record.format());
         assertEquals(Range.closedOpen(11873L, 14409L), record.toRange());
+        assertEquals("chr1\t11873\t14409\tuc001aaa.3\t0", record.toString());
     }
 
     @Test
@@ -146,6 +177,7 @@ public final class BedRecordTest {
         assertEquals("+", record.strand());
         assertEquals(Format.BED6, record.format());
         assertEquals(Range.closedOpen(11873L, 14409L), record.toRange());
+        assertEquals("chr1\t11873\t14409\tuc001aaa.3\t0\t+", record.toString());
     }
 
     @Test
@@ -171,5 +203,6 @@ public final class BedRecordTest {
         assertEquals(1347L, record.blockStarts()[2]);
         assertEquals(Format.BED12, record.format());
         assertEquals(Range.closedOpen(11873L, 14409L), record.toRange());
+        assertEquals("chr1\t11873\t14409\tuc001aaa.3\t0\t+\t11873\t11873\t0\t3\t354,109,1189\t0,739,1347", record.toString());
     }
 }

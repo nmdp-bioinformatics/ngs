@@ -118,16 +118,16 @@ public final class GeneratePairedEndReads implements Runnable {
     private static final String USAGE = "ngs-generate-paired-end-reads -1 out_R1.fq.gz -2 out_R2.fq.gz [args]";
 
 
-    private GeneratePairedEndReads(final File referenceFile,
-                                   final File firstReadFile,
-                                   final File secondReadFile,
-                                   final RandomGenerator random,
-                                   final RealDistribution length,
-                                   final RealDistribution insertSize,
-                                   final QualityStrategy quality,
-                                   final CoverageStrategy coverage,
-                                   final double mutationRate,
-                                   final MutationStrategy mutation) {
+    GeneratePairedEndReads(final File referenceFile,
+                           final File firstReadFile,
+                           final File secondReadFile,
+                           final RandomGenerator random,
+                           final RealDistribution length,
+                           final RealDistribution insertSize,
+                           final QualityStrategy quality,
+                           final CoverageStrategy coverage,
+                           final double mutationRate,
+                           final MutationStrategy mutation) {
 
         checkNotNull(firstReadFile);
         checkNotNull(secondReadFile);
