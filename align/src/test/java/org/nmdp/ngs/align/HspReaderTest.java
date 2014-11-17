@@ -24,8 +24,8 @@ package org.nmdp.ngs.align;
 
 import static org.junit.Assert.assertNotNull;
 
-import static org.nmdp.ngs.align.BedReader.read;
-import static org.nmdp.ngs.align.BedReader.stream;
+import static org.nmdp.ngs.align.HspReader.read;
+import static org.nmdp.ngs.align.HspReader.stream;
 
 import java.io.StringReader;
 
@@ -33,14 +33,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit test for BedReader.
+ * Unit test for HspReader.
  */
-public final class BedReaderTest {
+public final class HspReaderTest {
     private Readable readable;
 
     @Before
     public void setUp() {
-        readable = new StringReader("chr1\t11873\t14409\tuc001aaa.3\t0\t+\t11873\t11873\t0\t3\t354,109,1189,\t0,739,1347,");
+        readable = new StringReader("source\ttarget\t99.0\t100\t1\t2\t1\t100\t2\t101\t0.1\t1.0");
     }
 
     @Test(expected=NullPointerException.class)
@@ -50,16 +50,16 @@ public final class BedReaderTest {
 
     @Test
     public void testRead() throws Exception {
-        for (BedRecord record : read(readable)) {
-            assertNotNull(record);
+        for (HighScoringPair hsp : read(readable)) {
+            assertNotNull(hsp);
         }
     }
 
     @Test(expected=NullPointerException.class)
     public void testStreamNullReadable() throws Exception {
-        stream(null, new BedListener() {
+        stream(null, new HspListener() {
                 @Override
-                public boolean record(final BedRecord record) {
+                public boolean hsp(final HighScoringPair hsp) {
                     return true;
                 }
             });
@@ -72,10 +72,10 @@ public final class BedReaderTest {
 
     @Test
     public void testStream() throws Exception {
-        stream(readable, new BedListener() {
+        stream(readable, new HspListener() {
                 @Override
-                public boolean record(final BedRecord record) {
-                    assertNotNull(record);
+                public boolean hsp(final HighScoringPair hsp) {
+                    assertNotNull(hsp);
                     return true;
                 }
             });

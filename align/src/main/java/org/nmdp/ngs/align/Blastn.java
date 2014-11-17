@@ -91,28 +91,8 @@ public final class Blastn {
         List<HighScoringPair> hsps = Lists.newLinkedList();
         try {
             reader = new BufferedReader(new FileReader(blastResult));
-            while (reader.ready()) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                String[] tokens = line.split("\t");
-                if (tokens.length == 12) {
-                    String source = tokens[0].trim();
-                    String target = tokens[1].trim();
-                    double percentIdentity = Double.parseDouble(tokens[2].trim());
-                    long alignmentLength = Long.parseLong(tokens[3].trim());
-                    int mismatches = Integer.parseInt(tokens[4].trim());
-                    int gapOpens = Integer.parseInt(tokens[5].trim());
-                    long sourceStart = Long.parseLong(tokens[6].trim());
-                    long sourceEnd = Long.parseLong(tokens[7].trim());
-                    long targetStart = Long.parseLong(tokens[8].trim());
-                    long targetEnd = Long.parseLong(tokens[9].trim());
-                    double evalue = Double.parseDouble(tokens[10].trim());
-                    double bitScore = Double.parseDouble(tokens[11].trim());
-
-                    hsps.add(new HighScoringPair(source, target, percentIdentity, alignmentLength, mismatches, gapOpens, sourceStart, sourceEnd, targetStart, targetEnd, evalue, bitScore));
-                }
+            for (HighScoringPair hsp : HspReader.read(reader)) {
+                hsps.add(hsp);
             }
         }
         finally {

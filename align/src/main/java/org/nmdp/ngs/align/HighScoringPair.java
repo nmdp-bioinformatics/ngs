@@ -22,7 +22,13 @@
 */
 package org.nmdp.ngs.align;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.List;
+
 import javax.annotation.concurrent.Immutable;
+
+import com.google.common.base.Splitter;
 
 /**
  * High-scoring segment pair (HSP).
@@ -222,6 +228,36 @@ public final class HighScoringPair {
         sb.append("\t");
         sb.append(bitScore);
         return sb.toString();
+    }
+
+    /**
+     * Return a new high scoring pair parsed from the specified value.
+     *
+     * @param value value to parse, must not be null
+     * @return a new high scoring pair parsed from the specified value
+     * @throws IllegalArgumentException if the value is not valid high scoring pair format
+     * @throws NumberFormatException if a number valued field cannot be parsed as a number
+     */
+    public static HighScoringPair valueOf(final String value) {
+        checkNotNull(value);
+        List<String> tokens = Splitter.on("\t").trimResults().splitToList(value);
+        if (tokens.size() != 12) {
+            throw new IllegalArgumentException("value must have twelve fields");
+        }
+        String source = tokens.get(0).trim();
+        String target = tokens.get(1).trim();
+        double percentIdentity = Double.parseDouble(tokens.get(2).trim());
+        long alignmentLength = Long.parseLong(tokens.get(3).trim());
+        int mismatches = Integer.parseInt(tokens.get(4).trim());
+        int gapOpens = Integer.parseInt(tokens.get(5).trim());
+        long sourceStart = Long.parseLong(tokens.get(6).trim());
+        long sourceEnd = Long.parseLong(tokens.get(7).trim());
+        long targetStart = Long.parseLong(tokens.get(8).trim());
+        long targetEnd = Long.parseLong(tokens.get(9).trim());
+        double evalue = Double.parseDouble(tokens.get(10).trim());
+        double bitScore = Double.parseDouble(tokens.get(11).trim());
+
+        return new HighScoringPair(source, target, percentIdentity, alignmentLength, mismatches, gapOpens, sourceStart, sourceEnd, targetStart, targetEnd, evalue, bitScore);
     }
 }
 

@@ -44,7 +44,7 @@ import org.dishevelled.commandline.Usage;
 
 import org.dishevelled.commandline.argument.FileArgument;
 
-import org.nmdp.ngs.align.BedAdapter;
+import org.nmdp.ngs.align.BedListener;
 import org.nmdp.ngs.align.BedReader;
 import org.nmdp.ngs.align.BedRecord;
 import org.nmdp.ngs.align.BedWriter;
@@ -84,9 +84,9 @@ public final class LiftoverBed implements Runnable {
 
             final PrintWriter w = writer;
             final Map<String, BedRecord> ref = readRefFile();
-            BedReader.stream(reader, new BedAdapter() {
+            BedReader.stream(reader, new BedListener() {
                     @Override
-                    public void record(final BedRecord source) {
+                    public boolean record(final BedRecord source) {
                         BedRecord target = ref.get(source.chrom());
 
                         if (target != null) {
@@ -97,7 +97,7 @@ public final class LiftoverBed implements Runnable {
 
                             BedWriter.write(lifted, w);
                         }
-                        // else warn
+                        return true;
                     }
                 });
         }
@@ -127,13 +127,14 @@ public final class LiftoverBed implements Runnable {
         try {
             reader = reader(refBedFile);
 
-            BedReader.stream(reader, new BedAdapter() {
+            BedReader.stream(reader, new BedListener() {
                     @Override
-                    public void record(final BedRecord rec) {
+                    public boolean record(final BedRecord rec) {
                         BedRecord prev = ref.put(rec.name(), rec);
                         if (prev != null) {
                             // warn non-unique mapping
                         }
+                        return true;
                     }
                 });
         }
