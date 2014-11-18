@@ -32,13 +32,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import java.util.concurrent.Callable;
+
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
-
-import org.biojava.bio.BioException;
 
 import org.biojava.bio.program.fastq.FastqVariant;
 import org.biojava.bio.program.fastq.SangerFastqWriter;
@@ -83,7 +83,7 @@ import org.nmdp.ngs.reads.quality.ScoreFunctions;
  * Generate paired-end next generation sequencing (NGS/HTS) reads.
  */
 @SuppressWarnings("deprecation")
-public final class GeneratePairedEndReads implements Runnable {
+public final class GeneratePairedEndReads implements Callable<Integer> {
     private final File referenceFile;
     private final File firstReadFile;
     private final File secondReadFile;
@@ -113,24 +113,44 @@ public final class GeneratePairedEndReads implements Runnable {
     private static final double DEFAULT_AMBIGUOUS_RATE = 0.0d;
     private static final double DEFAULT_MUTATION_RATE = 0.05d;
     private static final double NO_VARIATION = 1.0E-100;
-    private static final CoverageStrategy DEFAULT_COVERAGE = new MinimumCoverageStrategy(DEFAULT_MINIMUM_COVERAGE);
-    private static final MutationStrategy DEFAULT_MUTATION = new IdentityMutationStrategy();
+    static final CoverageStrategy DEFAULT_COVERAGE = new MinimumCoverageStrategy(DEFAULT_MINIMUM_COVERAGE);
+    static final MutationStrategy DEFAULT_MUTATION = new IdentityMutationStrategy();
     private static final String USAGE = "ngs-generate-paired-end-reads -1 out_R1.fq.gz -2 out_R2.fq.gz [args]";
 
 
-    GeneratePairedEndReads(final File referenceFile,
-                           final File firstReadFile,
-                           final File secondReadFile,
-                           final RandomGenerator random,
-                           final RealDistribution length,
-                           final RealDistribution insertSize,
-                           final QualityStrategy quality,
-                           final CoverageStrategy coverage,
-                           final double mutationRate,
-                           final MutationStrategy mutation) {
+    /**
+     * Generate paired-end next generation sequencing (NGS/HTS) reads.
+     *
+     * @param referenceFile reference file, if any
+     * @param firstReadFile first read file, must not be null
+     * @param secondReadFile second read file, must not be null
+     * @param random random generator, must not be null
+     * @param length length distribution, must not be null
+     * @param insertSize insert size distribution, mut not be null
+     * @param quality quality strategy, must not be null
+     * @param coverage coverage strategy, must not be null
+     * @param mutationRate mutation rate
+     * @param mutation mutation strategy, must not be null
+     */
+    public GeneratePairedEndReads(final File referenceFile,
+                                  final File firstReadFile,
+                                  final File secondReadFile,
+                                  final RandomGenerator random,
+                                  final RealDistribution length,
+                                  final RealDistribution insertSize,
+                                  final QualityStrategy quality,
+                                  final CoverageStrategy coverage,
+                                  final double mutationRate,
+                                  final MutationStrategy mutation) {
 
         checkNotNull(firstReadFile);
         checkNotNull(secondReadFile);
+        checkNotNull(random);
+        checkNotNull(length);
+        checkNotNull(insertSize);
+        checkNotNull(quality);
+        checkNotNull(coverage);
+        checkNotNull(mutation);
         this.referenceFile = referenceFile;
         this.firstReadFile = firstReadFile;
         this.secondReadFile = secondReadFile;
@@ -145,7 +165,7 @@ public final class GeneratePairedEndReads implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         PrintWriter firstWriter = null;
         PrintWriter secondWriter = null;
@@ -184,10 +204,8 @@ public final class GeneratePairedEndReads implements Runnable {
                     }
                 }
             }
-        }
-        catch (BioException | IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -252,6 +270,8 @@ public final class GeneratePairedEndReads implements Runnable {
                                                   substitutionRate, indelRate, ambiguousRate, mutationRate, seed);
 
         CommandLine commandLine = new CommandLine(args);
+
+        GeneratePairedEndReads generatePairedEndReads = null;
         try {
             CommandLineParser.parse(commandLine, arguments);
             if (about.wasFound()) {
@@ -318,7 +338,7 @@ public final class GeneratePairedEndReads implements Runnable {
                 }
             }
 
-            new GeneratePairedEndReads(referenceFile.getValue(), firstReadFile.getValue(), secondReadFile.getValue(), random, length, insertSize, quality, coverage, mutationRate.getValue(DEFAULT_MUTATION_RATE), mutation).run();
+            generatePairedEndReads = new GeneratePairedEndReads(referenceFile.getValue(), firstReadFile.getValue(), secondReadFile.getValue(), random, length, insertSize, quality, coverage, mutationRate.getValue(DEFAULT_MUTATION_RATE), mutation);
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
@@ -331,6 +351,13 @@ public final class GeneratePairedEndReads implements Runnable {
             }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(generatePairedEndReads.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

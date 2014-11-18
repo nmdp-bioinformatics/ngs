@@ -26,17 +26,20 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
+import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.distribution.RealDistribution;
+
+import org.apache.commons.math3.random.RandomGenerator;
+import org.apache.commons.math3.random.JDKRandomGenerator;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.commons.math3.distribution.RealDistribution;
-
-import org.apache.commons.math3.random.RandomGenerator;
-
 import org.nmdp.ngs.reads.CoverageStrategy;
 import org.nmdp.ngs.reads.MutationStrategy;
 import org.nmdp.ngs.reads.QualityStrategy;
+import org.nmdp.ngs.reads.quality.RealDistributionQualityStrategy;
 
 /**
  * Unit test for GeneratePairedEndReads.
@@ -57,6 +60,13 @@ public final class GeneratePairedEndReadsTest {
     public void setUp() throws Exception {
         firstReadFile = File.createTempFile("generatePairedEndReadsTest", "fq.gz");
         secondReadFile = File.createTempFile("generatePairedEndReadsTest", "fq.gz");
+        random = new JDKRandomGenerator();
+        length = new NormalDistribution();
+        insertSize = new NormalDistribution();
+        quality = new RealDistributionQualityStrategy(new NormalDistribution());
+        coverage = GeneratePairedEndReads.DEFAULT_COVERAGE;
+        mutationRate = 0.0d;
+        mutation = GeneratePairedEndReads.DEFAULT_MUTATION;
     }
 
     @After

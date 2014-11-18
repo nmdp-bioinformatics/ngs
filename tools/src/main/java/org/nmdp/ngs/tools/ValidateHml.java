@@ -26,7 +26,8 @@ import static org.dishevelled.compress.Readers.reader;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
+
+import java.util.concurrent.Callable;
 
 import org.dishevelled.commandline.ArgumentList;
 import org.dishevelled.commandline.CommandLine;
@@ -42,7 +43,7 @@ import org.nmdp.ngs.hml.HmlReader;
 /**
  * Validate the syntax of a file in HML format.
  */
-public final class ValidateHml implements Runnable {
+public final class ValidateHml implements Callable<Integer> {
     private final File inputHmlFile;
     private static final String USAGE = "ngs-validate-hml [args]";
 
@@ -58,15 +59,13 @@ public final class ValidateHml implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         try {
             reader = reader(inputHmlFile);
             HmlReader.read(reader);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+
+            return 0;
         }
         finally {
             try {
@@ -91,6 +90,8 @@ public final class ValidateHml implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, inputHmlFile);
         CommandLine commandLine = new CommandLine(args);
+
+        ValidateHml validateHml = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -102,11 +103,18 @@ public final class ValidateHml implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new ValidateHml(inputHmlFile.getValue()).run();
+            validateHml = new ValidateHml(inputHmlFile.getValue());
         }
         catch (CommandLineParseException | IllegalArgumentException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(validateHml.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

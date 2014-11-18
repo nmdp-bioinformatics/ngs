@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import java.util.concurrent.Callable;
+
 import com.google.common.collect.ContiguousSet;
 import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Lists;
@@ -66,7 +68,7 @@ import org.nmdp.ngs.align.HighScoringPair;
  * Evaluate assembly scaffolds against a reference sequence.
  */
 @SuppressWarnings("deprecation")
-public final class EvaluateScaffolds implements Runnable {
+public final class EvaluateScaffolds implements Callable<Integer> {
     private final File referenceFastaFile;
     private final File scaffoldsFastaFile;
     private final File evalFile;
@@ -90,7 +92,7 @@ public final class EvaluateScaffolds implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         PrintWriter writer = null;
         try {
             writer = writer(evalFile);
@@ -141,10 +143,8 @@ public final class EvaluateScaffolds implements Runnable {
             sb.append(normalizedBreadthOfCoverage);
             sb.append("\t");
             writer.println(sb.toString());
-        }
-        catch (IOException | BioException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -229,6 +229,8 @@ public final class EvaluateScaffolds implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, referenceFastaFile, scaffoldsFastaFile, evalFile);
         CommandLine commandLine = new CommandLine(args);
+
+        EvaluateScaffolds evaluateScaffolds = null;
         try {
             CommandLineParser.parse(commandLine, arguments);
             if (about.wasFound()) {
@@ -239,7 +241,7 @@ public final class EvaluateScaffolds implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new EvaluateScaffolds(referenceFastaFile.getValue(), scaffoldsFastaFile.getValue(), evalFile.getValue()).run();
+            evaluateScaffolds = new EvaluateScaffolds(referenceFastaFile.getValue(), scaffoldsFastaFile.getValue(), evalFile.getValue());
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
@@ -252,6 +254,13 @@ public final class EvaluateScaffolds implements Runnable {
             }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(evaluateScaffolds.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

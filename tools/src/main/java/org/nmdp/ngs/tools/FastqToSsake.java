@@ -30,10 +30,11 @@ import static org.dishevelled.compress.Writers.writer;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.io.IOException;
 
 import java.util.Collections;
 import java.util.List;
+
+import java.util.concurrent.Callable;
 
 import java.util.regex.Pattern;
 
@@ -57,7 +58,7 @@ import org.dishevelled.commandline.argument.IntegerArgument;
 /**
  * Convert sequences in FASTQ format to SSAKE import format.
  */
-public final class FastqToSsake implements Runnable {
+public final class FastqToSsake implements Callable<Integer> {
     private final int insertSize;
     private final File firstFastqFile;
     private final File secondFastqFile;
@@ -91,7 +92,7 @@ public final class FastqToSsake implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         PrintWriter ssakeWriter = null;
         PrintWriter unpairedWriter = null;
         try {
@@ -163,10 +164,7 @@ public final class FastqToSsake implements Runnable {
                     i++;
                 }
             }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+            return 0;
         }
         finally {
             try {
@@ -208,6 +206,8 @@ public final class FastqToSsake implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, firstFastqFile, secondFastqFile, ssakeFile, insertSize, unpairedFile);
         CommandLine commandLine = new CommandLine(args);
+
+        FastqToSsake fastqToSsake = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -219,7 +219,7 @@ public final class FastqToSsake implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new FastqToSsake(firstFastqFile.getValue(), secondFastqFile.getValue(), ssakeFile.getValue(), insertSize.getValue(DEFAULT_INSERT_SIZE), unpairedFile.getValue()).run();
+            fastqToSsake = new FastqToSsake(firstFastqFile.getValue(), secondFastqFile.getValue(), ssakeFile.getValue(), insertSize.getValue(DEFAULT_INSERT_SIZE), unpairedFile.getValue());
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
@@ -232,6 +232,13 @@ public final class FastqToSsake implements Runnable {
             }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(fastqToSsake.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

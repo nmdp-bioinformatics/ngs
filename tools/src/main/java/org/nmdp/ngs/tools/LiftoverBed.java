@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.concurrent.Callable;
+
 import org.dishevelled.commandline.ArgumentList;
 import org.dishevelled.commandline.CommandLine;
 import org.dishevelled.commandline.CommandLineParseException;
@@ -52,7 +54,7 @@ import org.nmdp.ngs.align.BedWriter;
 /**
  * Liftover BED file.
  */
-public final class LiftoverBed implements Runnable {
+public final class LiftoverBed implements Callable<Integer> {
     private final File refBedFile;
     private final File sourceBedFile;
     private final File targetBedFile;
@@ -75,7 +77,7 @@ public final class LiftoverBed implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         PrintWriter writer = null;
         try {
@@ -100,10 +102,8 @@ public final class LiftoverBed implements Runnable {
                         return true;
                     }
                 });
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -164,6 +164,8 @@ public final class LiftoverBed implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, refBedFile, sourceBedFile, targetBedFile);
         CommandLine commandLine = new CommandLine(args);
+
+        LiftoverBed liftoverBed = null;
         try {
             CommandLineParser.parse(commandLine, arguments);
             if (about.wasFound()) {
@@ -174,7 +176,7 @@ public final class LiftoverBed implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new LiftoverBed(refBedFile.getValue(), sourceBedFile.getValue(), targetBedFile.getValue()).run();
+            liftoverBed = new LiftoverBed(refBedFile.getValue(), sourceBedFile.getValue(), targetBedFile.getValue());
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
@@ -187,6 +189,13 @@ public final class LiftoverBed implements Runnable {
             }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(liftoverBed.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

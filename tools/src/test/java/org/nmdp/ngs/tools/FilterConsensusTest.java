@@ -127,10 +127,10 @@ public final class FilterConsensusTest {
     }
 
     @Test
-    public void testRun() throws Exception {
+    public void testCall() throws Exception {
         copyResource("hla-a.bam", inputBamFile);
         copyResource("hla-a.txt", inputGenomicFile);
-        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).run();
+        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).call();
     }
 
     private static void copyResource(final String name, final File file) throws Exception {
@@ -138,14 +138,14 @@ public final class FilterConsensusTest {
     }
     
     @Test
-    public void testRunPloidy() throws Exception {
+    public void testCallPloidy() throws Exception {
               // copy hla-a.bam resource to inputBamFile
         Files.write(Resources.toByteArray(getClass().getResource("testfile2.bam")), inputBamFile);
 
         // copy hla-a.txt to inputGenomicFile
         Files.write(Resources.toByteArray(getClass().getResource("hla-a.txt")), inputGenomicFile);
         
-        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).run();
+        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).call();
     
         int lines = 0;
         BufferedReader reader = new BufferedReader(new FileReader(outputFile));
@@ -157,7 +157,7 @@ public final class FilterConsensusTest {
         
         assertEquals(lines, 4);
         
-        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, 3).run();
+        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, 3).call();
     
         lines = 0;
         reader = new BufferedReader(new FileReader(outputFile));

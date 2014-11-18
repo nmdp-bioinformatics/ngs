@@ -35,7 +35,7 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.IOException;
 
-import org.biojava.bio.BioException;
+import java.util.concurrent.Callable;
 
 import org.biojava.bio.seq.Sequence;
 import org.biojava.bio.seq.SequenceIterator;
@@ -56,7 +56,7 @@ import org.nmdp.ngs.align.GenewiseExon;
 /**
  * Filter interpretable exons from assembly consensus sequences.
  */
-public final class FilterInterpretableExons implements Runnable {
+public final class FilterInterpretableExons implements Callable<Integer> {
     private final File aminoAcidHmm2File;
     private final File inputFastaFile;
     private final File outputFastaFile;
@@ -79,7 +79,7 @@ public final class FilterInterpretableExons implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         PrintWriter writer = null;
         try {
@@ -100,10 +100,8 @@ public final class FilterInterpretableExons implements Runnable {
                 writer.print("\n");
                 writer.println(sb.toString());
             }
-        }
-        catch (BioException | IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -151,6 +149,8 @@ public final class FilterInterpretableExons implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, aminoAcidHmm2File, inputFastaFile, outputFastaFile);
         CommandLine commandLine = new CommandLine(args);
+
+        FilterInterpretableExons filterInterpretableExons = null;
         try {
             CommandLineParser.parse(commandLine, arguments);
             if (about.wasFound()) {
@@ -161,7 +161,7 @@ public final class FilterInterpretableExons implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new FilterInterpretableExons(aminoAcidHmm2File.getValue(), inputFastaFile.getValue(), outputFastaFile.getValue()).run();
+            filterInterpretableExons = new FilterInterpretableExons(aminoAcidHmm2File.getValue(), inputFastaFile.getValue(), outputFastaFile.getValue());
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
@@ -178,6 +178,13 @@ public final class FilterInterpretableExons implements Runnable {
         catch (NullPointerException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(filterInterpretableExons.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

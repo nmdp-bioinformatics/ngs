@@ -32,12 +32,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
+
+import java.util.concurrent.Callable;
 
 import com.github.davidmoten.rtree.RTree;
 
@@ -74,9 +72,9 @@ import org.nmdp.ngs.range.rtree.RangeGeometries;
 import rx.Observable;
 
 /**
- * Similar to bedtools2 intersect.
+ * Similar to bedtools2 intersect -v.
  */
-public final class IntersectBed implements Runnable {
+public final class IntersectBed implements Callable<Integer> {
     private final File aInputFile;
     private final File bInputFile;
     private final File outputFile;
@@ -84,6 +82,15 @@ public final class IntersectBed implements Runnable {
     private static final String DEFAULT_STRATEGY = "range-set";
     private static final String USAGE = "ngs-intersect-bed -b b.bed.gz [args]";
 
+
+    /**
+     * Similar to bedtools2 intersect -v.
+     *
+     * @param aInputFile a input file, if any
+     * @param bInputFile b input file, must not be null
+     * @param outputFile output file, if any
+     * @param strategy strategy, must not be null
+     */
     public IntersectBed(final File aInputFile, final File bInputFile, final File outputFile, final Strategy strategy) {
         checkNotNull(bInputFile);
         checkNotNull(strategy);
@@ -95,7 +102,7 @@ public final class IntersectBed implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader a = null;
         BufferedReader b = null;
         PrintWriter writer = null;
@@ -106,10 +113,8 @@ public final class IntersectBed implements Runnable {
             writer = writer(outputFile);
 
             strategy.intersectBed(a, b, writer);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -360,6 +365,8 @@ public final class IntersectBed implements Runnable {
 
         ArgumentList arguments = new ArgumentList(help, aInputFile, bInputFile, outputFile, strategy);
         CommandLine commandLine = new CommandLine(args);
+
+        IntersectBed intersectBed = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -367,7 +374,7 @@ public final class IntersectBed implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new IntersectBed(aInputFile.getValue(), bInputFile.getValue(), outputFile.getValue(), strategies.get(strategy.getValue(DEFAULT_STRATEGY))).run();
+            intersectBed = new IntersectBed(aInputFile.getValue(), bInputFile.getValue(), outputFile.getValue(), strategies.get(strategy.getValue(DEFAULT_STRATEGY)));
         }
         catch (CommandLineParseException | NullPointerException e) {
             if (help.wasFound()) {
@@ -376,6 +383,13 @@ public final class IntersectBed implements Runnable {
             }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(intersectBed.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

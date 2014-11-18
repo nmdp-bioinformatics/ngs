@@ -30,6 +30,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
 
+import java.util.concurrent.Callable;
+
 import org.biojava.bio.program.fastq.Fastq;
 import org.biojava.bio.program.fastq.FastqReader;
 import org.biojava.bio.program.fastq.SangerFastqReader;
@@ -47,7 +49,7 @@ import org.dishevelled.commandline.argument.FileArgument;
 /**
  * Convert sequences in FASTQ format to FASTA format.
  */
-public final class FastqToFasta implements Runnable {
+public final class FastqToFasta implements Callable<Integer> {
     private final File fastqFile;
     private final File fastaFile;
     private final FastqReader fastqReader = new SangerFastqReader();
@@ -67,7 +69,7 @@ public final class FastqToFasta implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         PrintWriter writer = null;
         try {
@@ -87,10 +89,8 @@ public final class FastqToFasta implements Runnable {
                         w.println(sb.toString());
                     }
                 });
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+
+            return 0;
         }
         finally {
             try {
@@ -121,6 +121,8 @@ public final class FastqToFasta implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, fastqFile, fastaFile);
         CommandLine commandLine = new CommandLine(args);
+
+        FastqToFasta fastqToFasta = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -132,11 +134,18 @@ public final class FastqToFasta implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new FastqToFasta(fastqFile.getValue(), fastaFile.getValue()).run();
+            fastqToFasta = new FastqToFasta(fastqFile.getValue(), fastaFile.getValue());
         }
         catch (CommandLineParseException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(fastqToFasta.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

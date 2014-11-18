@@ -30,11 +30,10 @@ import static org.dishevelled.compress.Writers.writer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
-import java.io.IOException;
 
 import java.nio.file.Paths;
 
-import org.biojava.bio.BioException;
+import java.util.concurrent.Callable;
 
 import org.biojava.bio.seq.Sequence;
 import org.biojava.bio.seq.SequenceIterator;
@@ -55,7 +54,7 @@ import org.dishevelled.commandline.argument.StringArgument;
  * Split sequences in FASTA format and write to separate files in FASTA format.
  */
 @SuppressWarnings("deprecation")
-public final class SplitFasta implements Runnable {
+public final class SplitFasta implements Callable<Integer> {
     private final File fastaFile;
     private final String outputFilePrefix;
     private final String outputFileExtension;
@@ -87,7 +86,7 @@ public final class SplitFasta implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         try {
             reader = reader(fastaFile);
@@ -119,10 +118,8 @@ public final class SplitFasta implements Runnable {
                     }
                 }
             }
-        }
-        catch (BioException | IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -154,6 +151,8 @@ public final class SplitFasta implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, fastaFile, outputFilePrefix, outputFileExtension, outputDirectory);
         CommandLine commandLine = new CommandLine(args);
+
+        SplitFasta splitFasta = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -165,11 +164,18 @@ public final class SplitFasta implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new SplitFasta(fastaFile.getValue(), outputFilePrefix.getValue(DEFAULT_OUTPUT_FILE_PREFIX), outputFileExtension.getValue(DEFAULT_OUTPUT_FILE_EXTENSION), outputDirectory.getValue(DEFAULT_OUTPUT_DIRECTORY)).run();
+            splitFasta = new SplitFasta(fastaFile.getValue(), outputFilePrefix.getValue(DEFAULT_OUTPUT_FILE_PREFIX), outputFileExtension.getValue(DEFAULT_OUTPUT_FILE_EXTENSION), outputDirectory.getValue(DEFAULT_OUTPUT_DIRECTORY));
         }
         catch (CommandLineParseException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(splitFasta.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

@@ -28,7 +28,8 @@ import static org.dishevelled.compress.Writers.writer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
-import java.io.IOException;
+
+import java.util.concurrent.Callable;
 
 import com.google.common.base.Joiner;
 
@@ -51,7 +52,7 @@ import org.nmdp.ngs.align.HspReader;
 /**
  * Convert HSPs to BED format.
  */
-public final class HspToBed implements Runnable {
+public final class HspToBed implements Callable<Integer> {
     private final String displayName;
     private final File hspFile;
     private final File bedFile;
@@ -79,7 +80,7 @@ public final class HspToBed implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         PrintWriter writer = null;
         try {
@@ -94,10 +95,8 @@ public final class HspToBed implements Runnable {
                         return true;
                     }
                 });
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -169,6 +168,8 @@ public final class HspToBed implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, displayName, hspFile, bedFile, reverse, transformEvalue);
         CommandLine commandLine = new CommandLine(args);
+
+        HspToBed hspToBed = null;
         try {
             CommandLineParser.parse(commandLine, arguments);
             if (about.wasFound()) {
@@ -179,11 +180,18 @@ public final class HspToBed implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new HspToBed(displayName.getValue(), hspFile.getValue(), bedFile.getValue(), reverse.wasFound(), transformEvalue.wasFound()).run();
+            hspToBed = new HspToBed(displayName.getValue(), hspFile.getValue(), bedFile.getValue(), reverse.wasFound(), transformEvalue.wasFound());
         }
         catch (CommandLineParseException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(hspToBed.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

@@ -29,10 +29,11 @@ import static org.dishevelled.compress.Writers.writer;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import java.util.concurrent.Callable;
 
 import org.dishevelled.commandline.ArgumentList;
 import org.dishevelled.commandline.CommandLine;
@@ -54,7 +55,7 @@ import org.nmdp.ngs.variant.vcf.VcfStreamAdapter;
 /**
  * Filter variants in VCF format.
  */
-public final class FilterVcf implements Runnable {
+public final class FilterVcf implements Callable<Integer> {
     private final Filter filter;
     private final File inputVcfFile;
     private final File outputVcfFile;
@@ -77,7 +78,7 @@ public final class FilterVcf implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         PrintWriter writer = null;
         try {
             writer = writer(outputVcfFile);
@@ -111,10 +112,8 @@ public final class FilterVcf implements Runnable {
                         }
                     }
                 });
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -163,6 +162,8 @@ public final class FilterVcf implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, snpIdFilter, inputVcfFile, outputVcfFile);
         CommandLine commandLine = new CommandLine(args);
+
+        FilterVcf filterVcf = null;
         try {
             CommandLineParser.parse(commandLine, arguments);
             if (about.wasFound()) {
@@ -173,7 +174,7 @@ public final class FilterVcf implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new FilterVcf(new IdFilter(snpIdFilter.getValue()), inputVcfFile.getValue(), outputVcfFile.getValue()).run();
+            filterVcf = new FilterVcf(new IdFilter(snpIdFilter.getValue()), inputVcfFile.getValue(), outputVcfFile.getValue());
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
@@ -190,6 +191,13 @@ public final class FilterVcf implements Runnable {
         catch (NullPointerException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(filterVcf.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

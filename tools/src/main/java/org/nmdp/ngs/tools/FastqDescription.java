@@ -28,7 +28,8 @@ import static org.dishevelled.compress.Writers.writer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
-import java.io.IOException;
+
+import java.util.concurrent.Callable;
 
 import org.biojava.bio.program.fastq.Fastq;
 import org.biojava.bio.program.fastq.FastqReader;
@@ -47,7 +48,7 @@ import org.dishevelled.commandline.argument.FileArgument;
 /**
  * Output description lines from sequences in FASTQ format.
  */
-public final class FastqDescription implements Runnable {
+public final class FastqDescription implements Callable<Integer> {
     private final File fastqFile;
     private final File descriptionFile;
     private final FastqReader fastqReader = new SangerFastqReader();
@@ -67,7 +68,7 @@ public final class FastqDescription implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         PrintWriter writer = null;
         try {
@@ -82,10 +83,8 @@ public final class FastqDescription implements Runnable {
                         w.println(fastq.getDescription());
                     }
                 });
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+
+            return 0;
         }
         finally {
             try {
@@ -116,6 +115,8 @@ public final class FastqDescription implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, fastqFile, descriptionFile);
         CommandLine commandLine = new CommandLine(args);
+
+        FastqDescription fastqDescription = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -127,11 +128,18 @@ public final class FastqDescription implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(-2);
             }
-            new FastqDescription(fastqFile.getValue(), descriptionFile.getValue()).run();
+            fastqDescription = new FastqDescription(fastqFile.getValue(), descriptionFile.getValue());
         }
         catch (CommandLineParseException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(fastqDescription.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }
