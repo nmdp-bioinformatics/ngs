@@ -28,9 +28,8 @@ import static org.dishevelled.compress.Writers.writer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
-import java.io.IOException;
 
-import org.biojava.bio.BioException;
+import java.util.concurrent.Callable;
 
 import org.biojava.bio.seq.DNATools;
 import org.biojava.bio.seq.Sequence;
@@ -56,7 +55,7 @@ import org.nmdp.ngs.align.BedWriter;
  * Convert hard-masked regions in a FASTA file to BED format.
  */
 @SuppressWarnings("deprecation")
-public final class MaskedToBed implements Runnable {
+public final class MaskedToBed implements Callable<Integer> {
     private final File fastaFile;
     private final File bedFile;
     private static final String USAGE = "ngs-masked-to-bed [args]";
@@ -75,7 +74,7 @@ public final class MaskedToBed implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         PrintWriter writer = null;
         try {
@@ -110,10 +109,8 @@ public final class MaskedToBed implements Runnable {
                     }
                 }
             }
-        }
-        catch (BioException | IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -145,6 +142,8 @@ public final class MaskedToBed implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, fastaFile, bedFile);
         CommandLine commandLine = new CommandLine(args);
+
+        MaskedToBed maskedToBed = null;
         try {
             CommandLineParser.parse(commandLine, arguments);
             if (about.wasFound()) {
@@ -155,11 +154,18 @@ public final class MaskedToBed implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new MaskedToBed(fastaFile.getValue(), bedFile.getValue()).run();
+            maskedToBed = new MaskedToBed(fastaFile.getValue(), bedFile.getValue());
         }
         catch (CommandLineParseException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(maskedToBed.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

@@ -33,6 +33,8 @@ import java.io.IOException;
 
 import java.util.List;
 
+import java.util.concurrent.Callable;
+
 import com.google.common.collect.ImmutableList;
 
 import org.biojava.bio.program.fastq.Fastq;
@@ -54,7 +56,7 @@ import org.dishevelled.commandline.argument.FileListArgument;
 /**
  * Merge two or more files in FASTQ format.
  */
-public final class MergeFastq implements Runnable {
+public final class MergeFastq implements Callable<Integer> {
     private final List<File> inputFastqFiles;
     private final File outputFastqFile;
     private final FastqWriter fastqWriter = new SangerFastqWriter();
@@ -75,7 +77,7 @@ public final class MergeFastq implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         PrintWriter writer = null;
         try {
             writer = writer(outputFastqFile);
@@ -85,10 +87,8 @@ public final class MergeFastq implements Runnable {
             for (File inputFastqFile : inputFastqFiles) {
                 fastqReader.stream(reader(inputFastqFile), append);
             }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+
+            return 0;
         }
         finally {
             try {
@@ -137,6 +137,8 @@ public final class MergeFastq implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, inputFastqFiles, outputFastqFile);
         CommandLine commandLine = new CommandLine(args);
+
+        MergeFastq mergeFastq = null;
         try {
             CommandLineParser.parse(commandLine, arguments);
             if (about.wasFound()) {
@@ -147,7 +149,7 @@ public final class MergeFastq implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new MergeFastq(inputFastqFiles.getValue(), outputFastqFile.getValue()).run();
+            mergeFastq = new MergeFastq(inputFastqFiles.getValue(), outputFastqFile.getValue());
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
@@ -160,6 +162,13 @@ public final class MergeFastq implements Runnable {
             }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(mergeFastq.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

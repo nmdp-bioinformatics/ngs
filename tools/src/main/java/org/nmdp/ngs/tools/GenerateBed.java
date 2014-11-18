@@ -28,8 +28,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.dishevelled.compress.Writers.writer;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
+
+import java.util.concurrent.Callable;
 
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
@@ -57,7 +58,7 @@ import org.nmdp.ngs.align.BedWriter;
 /**
  * Generate records in BED format.
  */
-public final class GenerateBed implements Runnable {
+public final class GenerateBed implements Callable<Integer> {
     private final File bedFile;
     private final int n;
     private final int size;
@@ -103,7 +104,7 @@ public final class GenerateBed implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         PrintWriter writer = null;
         try {
             writer = writer(bedFile);
@@ -120,10 +121,8 @@ public final class GenerateBed implements Runnable {
                 // and write
                 BedWriter.write(new BedRecord(chrom, adjStart, adjEnd, "record" + i, "0", "+"), writer);
             }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -154,6 +153,8 @@ public final class GenerateBed implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, bedFile, n, size, chrom, meanLength, lengthVariation, seed);
         CommandLine commandLine = new CommandLine(args);
+
+        GenerateBed generateBed = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -170,11 +171,18 @@ public final class GenerateBed implements Runnable {
             double lv = Math.max(NO_VARIATION, lengthVariation.getValue(DEFAULT_LENGTH_VARIATION));
             RealDistribution length = new NormalDistribution(random, meanLength.getValue(DEFAULT_MEAN_LENGTH), lv, NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
 
-            new GenerateBed(bedFile.getValue(), n.getValue(DEFAULT_N), size.getValue(DEFAULT_SIZE), chrom.getValue(DEFAULT_CHROM), random, length).run();
+            generateBed = new GenerateBed(bedFile.getValue(), n.getValue(DEFAULT_N), size.getValue(DEFAULT_SIZE), chrom.getValue(DEFAULT_CHROM), random, length);
         }
         catch (CommandLineParseException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(generateBed.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

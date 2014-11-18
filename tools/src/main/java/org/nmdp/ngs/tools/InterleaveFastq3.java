@@ -32,6 +32,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
 
+import java.util.concurrent.Callable;
+
 import org.biojava.bio.program.fastq.Fastq;
 import org.biojava.bio.program.fastq.FastqWriter;
 import org.biojava.bio.program.fastq.SangerFastqWriter;
@@ -51,7 +53,7 @@ import org.nmdp.ngs.reads.paired.PairedEndFastqReader;
 /**
  * Convert first and second sequence files in FASTQ format to interleaved FASTQ format.
  */
-public final class InterleaveFastq3 implements Runnable {
+public final class InterleaveFastq3 implements Callable<Integer> {
     private final File firstFastqFile;
     private final File secondFastqFile;
     private final File pairedFile;
@@ -80,7 +82,7 @@ public final class InterleaveFastq3 implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader firstReader = null;
         BufferedReader secondReader = null;
         PrintWriter pairedWriter = null;
@@ -119,14 +121,8 @@ public final class InterleaveFastq3 implements Runnable {
                         }
                     }
                 });
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        catch (RuntimeException e) {
-            e.printStackTrace();
-            System.exit(2);
+
+            return 0;
         }
         finally {
             try {
@@ -172,6 +168,8 @@ public final class InterleaveFastq3 implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, firstFastqFile, secondFastqFile, pairedFile, unpairedFile);
         CommandLine commandLine = new CommandLine(args);
+
+        InterleaveFastq3 interleaveFastq3 = null;
         try {
             CommandLineParser.parse(commandLine, arguments);
             if (about.wasFound()) {
@@ -182,7 +180,7 @@ public final class InterleaveFastq3 implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new InterleaveFastq3(firstFastqFile.getValue(), secondFastqFile.getValue(), pairedFile.getValue(), unpairedFile.getValue()).run();
+            interleaveFastq3 = new InterleaveFastq3(firstFastqFile.getValue(), secondFastqFile.getValue(), pairedFile.getValue(), unpairedFile.getValue());
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
@@ -195,6 +193,13 @@ public final class InterleaveFastq3 implements Runnable {
             }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(interleaveFastq3.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

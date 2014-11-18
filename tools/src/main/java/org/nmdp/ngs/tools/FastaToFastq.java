@@ -30,11 +30,10 @@ import static org.dishevelled.compress.Writers.writer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
-import java.io.IOException;
 
 import java.util.Iterator;
 
-import org.biojava.bio.BioException;
+import java.util.concurrent.Callable;
 
 import org.biojava.bio.program.fastq.Fastq;
 import org.biojava.bio.program.fastq.FastqBuilder;
@@ -64,7 +63,7 @@ import org.dishevelled.commandline.argument.IntegerArgument;
  * Convert sequences in FASTA format to FASTQ format.
  */
 @SuppressWarnings("deprecation")
-public final class FastaToFastq implements Runnable {
+public final class FastaToFastq implements Callable<Integer> {
     private final int quality;
     private final File fastaFile;
     private final File fastqFile;
@@ -88,7 +87,7 @@ public final class FastaToFastq implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         PrintWriter writer = null;
         try {
@@ -116,10 +115,8 @@ public final class FastaToFastq implements Runnable {
 
                 fastqWriter.append(writer, fastq);
             }
-        }
-        catch (IOException | BioException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -151,6 +148,8 @@ public final class FastaToFastq implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, fastaFile, fastqFile, quality);
         CommandLine commandLine = new CommandLine(args);
+
+        FastaToFastq fastaToFastq = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -162,11 +161,18 @@ public final class FastaToFastq implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new FastaToFastq(fastaFile.getValue(), fastqFile.getValue(), quality.getValue(DEFAULT_QUALITY)).run();
+            fastaToFastq = new FastaToFastq(fastaFile.getValue(), fastqFile.getValue(), quality.getValue(DEFAULT_QUALITY));
         }
         catch (CommandLineParseException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(fastaToFastq.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

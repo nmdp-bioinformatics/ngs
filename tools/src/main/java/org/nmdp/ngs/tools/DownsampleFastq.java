@@ -32,6 +32,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.IOException;
 
+import java.util.concurrent.Callable;
+
 import org.apache.commons.math3.distribution.BinomialDistribution;
 
 import org.apache.commons.math3.random.MersenneTwister;
@@ -58,7 +60,7 @@ import org.dishevelled.commandline.argument.IntegerArgument;
 /**
  * Downsample sequences from files in FASTQ format.
  */
-public final class DownsampleFastq implements Runnable {
+public final class DownsampleFastq implements Callable<Integer> {
     private final File inputFastqFile;
     private final File outputFastqFile;
     private final BinomialDistribution distribution;
@@ -83,7 +85,7 @@ public final class DownsampleFastq implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         PrintWriter writer = null;
         try {
@@ -104,10 +106,8 @@ public final class DownsampleFastq implements Runnable {
                         }
                     }
                 });
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+
+            return 0;
         }
         finally {
             try {
@@ -140,6 +140,8 @@ public final class DownsampleFastq implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, inputFastqFile, outputFastqFile, probability, seed);
         CommandLine commandLine = new CommandLine(args);
+
+        DownsampleFastq downsampleFastq = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -155,7 +157,7 @@ public final class DownsampleFastq implements Runnable {
             RandomGenerator random = seed.wasFound() ? new MersenneTwister(seed.getValue()) : new MersenneTwister();
             BinomialDistribution distribution = new BinomialDistribution(random, 1, probability.getValue());
 
-            new DownsampleFastq(inputFastqFile.getValue(), outputFastqFile.getValue(), distribution).run();
+            downsampleFastq = new DownsampleFastq(inputFastqFile.getValue(), outputFastqFile.getValue(), distribution);
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
@@ -172,6 +174,13 @@ public final class DownsampleFastq implements Runnable {
         catch (IllegalArgumentException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(downsampleFastq.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

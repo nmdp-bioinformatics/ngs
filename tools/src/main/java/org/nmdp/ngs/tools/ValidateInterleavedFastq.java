@@ -27,6 +27,8 @@ import static org.dishevelled.compress.Readers.reader;
 import java.io.BufferedReader;
 import java.io.File;
 
+import java.util.concurrent.Callable;
+
 import org.dishevelled.commandline.ArgumentList;
 import org.dishevelled.commandline.CommandLine;
 import org.dishevelled.commandline.CommandLineParseException;
@@ -42,7 +44,7 @@ import org.nmdp.ngs.reads.paired.PairedEndFastqReader;
 /**
  * Validate a file in interleaved FASTQ format.
  */
-public final class ValidateInterleavedFastq implements Runnable {
+public final class ValidateInterleavedFastq implements Callable<Integer> {
     private final File inputFastqFile;
     private static final String USAGE = "ngs-validate-interleaved-fastq [args]";
 
@@ -58,15 +60,13 @@ public final class ValidateInterleavedFastq implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         try {
             reader = reader(inputFastqFile);
-            PairedEndFastqReader.streamInterleaved(reader, new PairedEndAdapter());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            PairedEndFastqReader.streamInterleaved((Readable) reader, new PairedEndAdapter());
+
+            return 0;
         }
         finally {
             try {
@@ -91,6 +91,8 @@ public final class ValidateInterleavedFastq implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, inputFastqFile);
         CommandLine commandLine = new CommandLine(args);
+
+        ValidateInterleavedFastq validateInterleavedFastq = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -102,11 +104,18 @@ public final class ValidateInterleavedFastq implements Runnable {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            new ValidateInterleavedFastq(inputFastqFile.getValue()).run();
+            validateInterleavedFastq = new ValidateInterleavedFastq(inputFastqFile.getValue());
         }
         catch (CommandLineParseException | IllegalArgumentException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(validateInterleavedFastq.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

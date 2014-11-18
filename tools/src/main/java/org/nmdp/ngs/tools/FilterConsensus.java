@@ -40,6 +40,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.concurrent.Callable;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
@@ -72,15 +74,13 @@ import htsjdk.samtools.CigarElement;
 import org.biojava.bio.seq.DNATools;
 
 import org.biojava.bio.symbol.Edit;
-import org.biojava.bio.symbol.Location;
 import org.biojava.bio.symbol.IllegalSymbolException;
 import org.biojava.bio.symbol.SymbolList;
-import org.biojava.bio.symbol.IllegalAlphabetException;
 
 /**
  * Filter consensus sequences into subregions of research or clinical interest.
  */
-public final class FilterConsensus implements Runnable {
+public final class FilterConsensus implements Callable<Integer> {
     private final File inputBamFile;
     private final File inputGenomicFile;
     private final File outputFile;
@@ -132,7 +132,7 @@ public final class FilterConsensus implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         PrintWriter writer = null;
         try {
             writer = writer(outputFile);
@@ -258,10 +258,8 @@ public final class FilterConsensus implements Runnable {
                   writer.println(entry.getKey() + "\n" + entry.getValue());
                 }
             }
-        }
-        catch (IOException | AlleleException | IllegalAlphabetException | IllegalSymbolException e) {
-            e.printStackTrace();
-            System.exit(1);
+
+            return 0;
         }
         finally {
             try {
@@ -358,6 +356,8 @@ public final class FilterConsensus implements Runnable {
 
         ArgumentList arguments = new ArgumentList(about, help, inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy);
         CommandLine commandLine = new CommandLine(args);
+
+        FilterConsensus filterConsensus = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -377,14 +377,14 @@ public final class FilterConsensus implements Runnable {
                 throw new IllegalArgumentException("-x, --input-genomic-range-file must be a file that exists");
             }
 
-            new FilterConsensus(inputBamFile.getValue(),
-                                inputGenomicFile.getValue(),
-                                outputFile.getValue(),
-                                gene.getValue(),
-                                cdna.wasFound(),
-                                removeGaps.wasFound(),
-                                minimumBreadth.getValue(DEFAULT_MINIMUM_BREADTH),
-                                expectedPloidy.getValue(DEFAULT_EXPECTED_PLOIDY)).run();
+            filterConsensus = new FilterConsensus(inputBamFile.getValue(),
+                                                  inputGenomicFile.getValue(),
+                                                  outputFile.getValue(),
+                                                  gene.getValue(),
+                                                  cdna.wasFound(),
+                                                  removeGaps.wasFound(),
+                                                  minimumBreadth.getValue(DEFAULT_MINIMUM_BREADTH),
+                                                  expectedPloidy.getValue(DEFAULT_EXPECTED_PLOIDY));
         }
         catch (CommandLineParseException | IllegalArgumentException e) {
             if (about.wasFound()) {
@@ -397,6 +397,13 @@ public final class FilterConsensus implements Runnable {
             }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(filterConsensus.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

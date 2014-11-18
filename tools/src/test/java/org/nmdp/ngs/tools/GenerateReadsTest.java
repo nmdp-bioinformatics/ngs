@@ -26,15 +26,19 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
-import org.junit.Test;
-
+import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 
+import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import org.nmdp.ngs.reads.CoverageStrategy;
 import org.nmdp.ngs.reads.MutationStrategy;
 import org.nmdp.ngs.reads.QualityStrategy;
+import org.nmdp.ngs.reads.quality.RealDistributionQualityStrategy;
 
 /**
  * Unit test for GenerateReads.
@@ -48,6 +52,16 @@ public final class GenerateReadsTest {
     private CoverageStrategy coverage;
     private double mutationRate;
     private MutationStrategy mutation;
+
+    @Before
+    public void setUp() throws Exception {
+        random = new JDKRandomGenerator();
+        length = new NormalDistribution();
+        quality = new RealDistributionQualityStrategy(new NormalDistribution());
+        coverage = GenerateReads.DEFAULT_COVERAGE;
+        mutationRate = 0.0d;
+        mutation = GenerateReads.DEFAULT_MUTATION;
+    }
 
     @Test
     public void testConstructor() {

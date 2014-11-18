@@ -22,6 +22,8 @@
 */
 package org.nmdp.ngs.tools;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import static org.dishevelled.compress.Readers.reader;
 import static org.dishevelled.compress.Writers.writer;
 
@@ -30,13 +32,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import java.util.concurrent.Callable;
+
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
-
-import org.biojava.bio.BioException;
 
 import org.biojava.bio.program.fastq.FastqVariant;
 import org.biojava.bio.program.fastq.SangerFastqWriter;
@@ -81,7 +83,7 @@ import org.nmdp.ngs.reads.quality.ScoreFunctions;
  * Generate next generation sequencing (NGS/HTS) reads.
  */
 @SuppressWarnings("deprecation")
-public final class GenerateReads implements Runnable {
+public final class GenerateReads implements Callable<Integer> {
     private final File referenceFile;
     private final File readFile;
     private final RandomGenerator random;
@@ -107,20 +109,37 @@ public final class GenerateReads implements Runnable {
     private static final double DEFAULT_AMBIGUOUS_RATE = 0.0d;
     private static final double DEFAULT_MUTATION_RATE = 0.05d;
     private static final double NO_VARIATION = 1.0E-100;
-    private static final CoverageStrategy DEFAULT_COVERAGE = new MinimumCoverageStrategy(DEFAULT_MINIMUM_COVERAGE);
-    private static final MutationStrategy DEFAULT_MUTATION = new IdentityMutationStrategy();
+    static final CoverageStrategy DEFAULT_COVERAGE = new MinimumCoverageStrategy(DEFAULT_MINIMUM_COVERAGE);
+    static final MutationStrategy DEFAULT_MUTATION = new IdentityMutationStrategy();
     private static final String USAGE = "ngs-generate-reads [args]";
 
 
-    GenerateReads(final File referenceFile,
-                  final File readFile,
-                  final RandomGenerator random,
-                  final RealDistribution length,
-                  final QualityStrategy quality,
-                  final CoverageStrategy coverage,
-                  final double mutationRate,
-                  final MutationStrategy mutation) {
+    /**
+     * Generate next generation sequencing (NGS/HTS) reads.
+     *
+     * @param referenceFile reference file, if any
+     * @param readFile read file, if any
+     * @param random random generator, must not be null
+     * @param length length distribution, must not be null
+     * @param quality quality strategy, must not be null
+     * @param coverage coverage strategy, must not be null
+     * @param mutationRate mutation rate
+     * @param mutation mutation strategy, must not be null
+     */
+    public GenerateReads(final File referenceFile,
+                         final File readFile,
+                         final RandomGenerator random,
+                         final RealDistribution length,
+                         final QualityStrategy quality,
+                         final CoverageStrategy coverage,
+                         final double mutationRate,
+                         final MutationStrategy mutation) {
 
+        checkNotNull(random);
+        checkNotNull(length);
+        checkNotNull(quality);
+        checkNotNull(coverage);
+        checkNotNull(mutation);
         this.referenceFile = referenceFile;
         this.readFile = readFile;
         this.random = random;
@@ -133,7 +152,7 @@ public final class GenerateReads implements Runnable {
 
 
     @Override
-    public void run() {
+    public Integer call() throws Exception {
         BufferedReader reader = null;
         PrintWriter writer = null;
         try {
@@ -159,10 +178,8 @@ public final class GenerateReads implements Runnable {
                     }
                 }
             }
-        }
-        catch (BioException | IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
+
+            return 0;
         }
         finally {
             try {
@@ -218,6 +235,8 @@ public final class GenerateReads implements Runnable {
                                                   substitutionRate, indelRate, ambiguousRate, mutationRate, seed);
 
         CommandLine commandLine = new CommandLine(args);
+
+        GenerateReads generateReads = null;
         try {
             CommandLineParser.parse(commandLine, arguments);
             if (about.wasFound()) {
@@ -281,7 +300,7 @@ public final class GenerateReads implements Runnable {
                 }
             }
 
-            new GenerateReads(referenceFile.getValue(), readFile.getValue(), random, length, quality, coverage, mutationRate.getValue(DEFAULT_MUTATION_RATE), mutation).run();
+            generateReads = new GenerateReads(referenceFile.getValue(), readFile.getValue(), random, length, quality, coverage, mutationRate.getValue(DEFAULT_MUTATION_RATE), mutation);
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
@@ -294,6 +313,13 @@ public final class GenerateReads implements Runnable {
             }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
+        }
+        try {
+            System.exit(generateReads.call());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }
