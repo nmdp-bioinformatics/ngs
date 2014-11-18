@@ -20,6 +20,7 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
+
 /**
  * Next generation sequencing (NGS/HTS) command line tools.
  */

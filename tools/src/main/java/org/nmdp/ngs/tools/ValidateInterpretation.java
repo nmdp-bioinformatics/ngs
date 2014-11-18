@@ -264,11 +264,19 @@ public final class ValidateInterpretation implements Callable<Integer> {
             }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             validateInterpretation = new ValidateInterpretation(expectedFile.getValue(), observedFile.getValue(), outputFile.getValue(), resolution.getValue(DEFAULT_RESOLUTION), printSummary.wasFound());
         }
         catch (CommandLineParseException e) {
+            if (about.wasFound()) {
+                About.about(System.out);
+                System.exit(0);
+            }
+            if (help.wasFound()) {
+                Usage.usage(USAGE, null, commandLine, arguments, System.out);
+                System.exit(0);
+            }
             Usage.usage(USAGE, e, commandLine, arguments, System.err);
             System.exit(-1);
         }

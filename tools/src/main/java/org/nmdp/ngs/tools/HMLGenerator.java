@@ -95,7 +95,7 @@ public class HMLGenerator {
         String temp = this.displaySimpleOption("Enter a project name like 'LAB'", "LAB");
         getHML().setProjectName(temp);
 
-        temp = this.displaySimpleOption("Enter HML version", "0.9.6");
+        temp = this.displaySimpleOption("Enter HML version", "0.9.7");
         getHML().setVersion(temp);
 
         temp = this.displaySimpleOption("Enter NMDP reporting center code like '567'", null);
