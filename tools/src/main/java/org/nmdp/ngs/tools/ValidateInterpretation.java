@@ -35,7 +35,6 @@ import java.io.PrintWriter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import java.util.concurrent.Callable;
 
@@ -95,27 +94,27 @@ public final class ValidateInterpretation implements Callable<Integer> {
         int failures = 0;
         try {
             writer = writer(outputFile);
-
             ListMultimap<String, String> expected = readExpected(expectedFile);
             ListMultimap<String, String> observed = readObserved(observedFile);	
+
             for (String sample : expected.keySet()) {
                 List<String> alleles = expected.get(sample);
                 List<String> interpretations = observed.get(sample);
 
                 for (String expectedAllele : alleles) {
                     boolean result = false;
-		    for (String interpretation : interpretations) {
-                        List<String> interpretedAlleles = Splitter.on(Pattern.compile("[/|]+")).splitToList(interpretation);   
-			List<String> found = new ArrayList<String>();
-                        for (String interpretedAllele : interpretedAlleles) {    
-                            if (matchByField(expectedAllele, interpretedAllele) >= resolution) {		
-				found.add(interpretedAllele);
+                    for (String interpretation : interpretations) {
+                        List<String> interpretedAlleles = Splitter.onPattern("[/|]+").splitToList(interpretation);
+                        List<String> found = new ArrayList<String>();
+                        for (String interpretedAllele : interpretedAlleles) {
+                            if (matchByField(expectedAllele, interpretedAllele) >= resolution) {
+                                found.add(interpretedAllele);
                             }
                         }
-                        
-			if(!found.isEmpty()) {
-			    result = true;
-			}
+
+                        if (!found.isEmpty()) {
+                            result = true;
+                        }
                     }
 
                     if (result) {
@@ -154,14 +153,14 @@ public final class ValidateInterpretation implements Callable<Integer> {
         try {
             reader = reader(expectedFile);
 
-            int lineNumber = 0;
+            int lineNumber = 1;
             while (reader.ready()) {
                 String line = reader.readLine();
                 if (line == null) {
                     break;
                 }
 		
-                List<String> tokens = Splitter.on(Pattern.compile("\\s+")).splitToList(line);
+                List<String> tokens = Splitter.onPattern("\\s+").splitToList(line);
                 if (tokens.size() != 6) {
                     throw new IOException("invalid expected file format at line " + lineNumber);
                 }
@@ -196,14 +195,14 @@ public final class ValidateInterpretation implements Callable<Integer> {
         try {
             reader = reader(observedFile);
 
-            int lineNumber = 0;
+            int lineNumber = 1;
             while (reader.ready()) {
                 String line = reader.readLine();
                 if (line == null) {
                     break;
                 }
 
-                List<String> tokens = Splitter.on(Pattern.compile("\\s+")).splitToList(line);
+                List<String> tokens = Splitter.onPattern("\\s+").splitToList(line);
                 if (tokens.size() != 2) {
                     throw new IOException("invalid observed file format at line " + lineNumber);
                 }
@@ -228,6 +227,8 @@ public final class ValidateInterpretation implements Callable<Integer> {
     }
 
     static int matchByField(final String firstAllele, final String secondAllele) {
+        checkNotNull(firstAllele);
+        checkNotNull(secondAllele);
         List<String> firstAlleleParts = Splitter.on(":").splitToList(firstAllele);
         List<String> secondAlleleParts = Splitter.on(":").splitToList(secondAllele);
         int smallest = firstAlleleParts.size() < secondAlleleParts.size() ? firstAlleleParts.size() : secondAlleleParts.size();
