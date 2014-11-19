@@ -35,6 +35,7 @@ import java.io.PrintWriter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import java.util.concurrent.Callable;
 
@@ -96,23 +97,25 @@ public final class ValidateInterpretation implements Callable<Integer> {
             writer = writer(outputFile);
 
             ListMultimap<String, String> expected = readExpected(expectedFile);
-            ListMultimap<String, String> observed = readObserved(observedFile);
-
+            ListMultimap<String, String> observed = readObserved(observedFile);	
             for (String sample : expected.keySet()) {
                 List<String> alleles = expected.get(sample);
                 List<String> interpretations = observed.get(sample);
 
-                boolean result = false;
                 for (String expectedAllele : alleles) {
-                    for (String interpretation : interpretations) {
-                        List<String> interpretedAlleles = Splitter.on("[/|]+").splitToList(interpretation);
-                        List<String> found = new ArrayList<String>();
-                        for (String interpretedAllele : interpretedAlleles) {
-                            if (matchByField(expectedAllele, interpretedAllele) >= resolution) {
-                                found.add(interpretedAllele);
+                    boolean result = false;
+		    for (String interpretation : interpretations) {
+                        List<String> interpretedAlleles = Splitter.on(Pattern.compile("[/|]+")).splitToList(interpretation);   
+			List<String> found = new ArrayList<String>();
+                        for (String interpretedAllele : interpretedAlleles) {    
+                            if (matchByField(expectedAllele, interpretedAllele) >= resolution) {		
+				found.add(interpretedAllele);
                             }
                         }
-                        result = !found.isEmpty();
+                        
+			if(!found.isEmpty()) {
+			    result = true;
+			}
                     }
 
                     if (result) {
@@ -154,11 +157,11 @@ public final class ValidateInterpretation implements Callable<Integer> {
             int lineNumber = 0;
             while (reader.ready()) {
                 String line = reader.readLine();
-                if (line != null) {
+                if (line == null) {
                     break;
                 }
-
-                List<String> tokens = Splitter.on("\\s+").splitToList(line);
+		
+                List<String> tokens = Splitter.on(Pattern.compile("\\s+")).splitToList(line);
                 if (tokens.size() != 6) {
                     throw new IOException("invalid expected file format at line " + lineNumber);
                 }
@@ -196,11 +199,11 @@ public final class ValidateInterpretation implements Callable<Integer> {
             int lineNumber = 0;
             while (reader.ready()) {
                 String line = reader.readLine();
-                if (line != null) {
+                if (line == null) {
                     break;
                 }
 
-                List<String> tokens = Splitter.on("\\s+").splitToList(line);
+                List<String> tokens = Splitter.on(Pattern.compile("\\s+")).splitToList(line);
                 if (tokens.size() != 2) {
                     throw new IOException("invalid observed file format at line " + lineNumber);
                 }
