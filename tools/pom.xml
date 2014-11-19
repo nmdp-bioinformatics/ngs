@@ -310,6 +310,10 @@
               <id>ngs-validate-interleaved-fastq</id>
               <mainClass>org.nmdp.ngs.tools.ValidateInterleavedFastq</mainClass>
             </program>
+            <program>
+              <id>ngs-validate-interpretation</id>
+              <mainClass>org.nmdp.ngs.tools.ValidateInterpretation</mainClass>
+            </program>
           </programs>
         </configuration>
         <executions>

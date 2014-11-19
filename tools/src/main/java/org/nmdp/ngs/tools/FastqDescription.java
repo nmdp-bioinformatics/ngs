@@ -126,7 +126,7 @@ public final class FastqDescription implements Callable<Integer> {
             }
             if (help.wasFound()) {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
-                System.exit(-2);
+                System.exit(0);
             }
             fastqDescription = new FastqDescription(fastqFile.getValue(), descriptionFile.getValue());
         }
