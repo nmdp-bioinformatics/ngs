@@ -1,0 +1,4 @@
+sample0 interpretation0-0
+sample0 interpretation0-1
+sample1 interpretation1-0
+sample1 interpretation1-1
