@@ -20,7 +20,7 @@ E.g.
 ```
 
  * [Maven Central artifact search](http://search.maven.org/#search|ga|1|g%3A%22org.nmdp.ngs%22)
- * [Javadoc documentation for latest release](http://nmdp-bioinformatics.github.io/ngs/apidocs/1.4.1)
+ * [Javadoc documentation for latest release](http://nmdp-bioinformatics.github.io/ngs/apidocs)
 
 
 ###Using ngs-tools
