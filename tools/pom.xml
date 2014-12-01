@@ -227,6 +227,10 @@
               <mainClass>org.nmdp.ngs.tools.EvaluateScaffolds</mainClass>
             </program>
             <program>
+              <id>ngs-extract-consensus</id>
+              <mainClass>org.nmdp.ngs.tools.ExtractConsensus</mainClass>
+            </program>
+            <program>
               <id>ngs-generate-bed</id>
               <mainClass>org.nmdp.ngs.tools.GenerateBed</mainClass>
             </program>
