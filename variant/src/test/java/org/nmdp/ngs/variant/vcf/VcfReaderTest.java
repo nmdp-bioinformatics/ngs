@@ -25,6 +25,7 @@ package org.nmdp.ngs.variant.vcf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import static org.nmdp.ngs.variant.vcf.VcfReader.parse;
@@ -418,6 +419,14 @@ public final class VcfReaderTest {
         assertNotNull(record);
         assertNotNull(record.getId());
         assertEquals(0, record.getId().length);
+    }
+
+    @Test
+    public void testCephGatkHaplotypeJoint() throws Exception {
+        VcfRecord record = records(createInputStream("ceph-bwa-j-gatk-haplotype-joint.excerpt.vcf")).iterator().next();
+        assertNull(record.getGenotypes().get("NA12878-3").getGt());
+        assertEquals("0/1", record.getGenotypes().get("NA12891-3").getGt());
+        assertEquals("0/0", record.getGenotypes().get("NA12892-3").getGt());
     }
 
     private static void validateHeader(final VcfHeader header) {

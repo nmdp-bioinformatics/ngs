@@ -150,10 +150,12 @@ public final class VcfGenotype {
          */
         public VcfGenotype build() {
             // check GT cardinality constraint
-            if (fields.containsKey("GT") && fields.get("GT").size() > 1) {
+            if (fields.containsKey("GT")) {
                 String gt = fields.get("GT").get(0);
                 fields.removeAll("GT");
-                fields.put("GT", gt);
+                if (gt != null) {
+                    fields.put("GT", gt);
+                }
             }
             return new VcfGenotype(fields);
         }
