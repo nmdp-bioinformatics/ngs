@@ -40,6 +40,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 
 import java.nio.CharBuffer;
@@ -419,6 +420,45 @@ public final class VcfReaderTest {
         assertNotNull(record);
         assertNotNull(record.getId());
         assertEquals(0, record.getId().length);
+    }
+
+    @Test
+    public void testGatkGvcf() throws Exception {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(createInputStream("gatk-example.gvcf")))) {
+            stream(reader, new VcfStreamListener() {
+                @Override
+                public void header(final VcfHeader header) {
+                    validateHeader(header);
+                    int count = 0;
+                    for (String meta : header.getMeta()) {
+                        if (meta.startsWith("##GVCFBlock")) {
+                            count++;
+                        }
+                    }
+                    assertEquals(4, count);
+                }
+
+                @Override
+                public void sample(final VcfSample sample) {
+                    assertTrue("NA12878".equals(sample.getId()));
+                }
+
+                @Override
+                public void record(final VcfRecord record) {
+                    if (record.getPos() == 10000212) {
+                        assertEquals("A", record.getRef());
+                        assertEquals(1, record.getAlt().length);
+                        assertEquals("<NON_REF>", record.getAlt()[0]);
+                    }
+                    else if (record.getPos() == 10001298) {
+                        assertEquals("T", record.getRef());
+                        assertEquals(2, record.getAlt().length);
+                        assertEquals("A", record.getAlt()[0]);
+                        assertEquals("<NON_REF>", record.getAlt()[1]);
+                    }
+                }
+            });
+        }
     }
 
     @Test
