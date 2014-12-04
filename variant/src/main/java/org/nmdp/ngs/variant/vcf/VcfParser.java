@@ -173,10 +173,17 @@ public final class VcfParser {
                     for (int column = 9, columns = tokens.length; column < columns; column++) {
                         String[] genotypeTokens = tokens[column].split(":");
 
-                        if (genotypeTokens.length != formatTokens.length) {
-                            throw new IOException("invalid genotype fields at line number " + lineNumber);
+                        if (genotypeTokens.length > formatTokens.length) {
+                            throw new IOException("invalid genotype fields at line number " + lineNumber + ", too many genotype fields");
                         }
-                        for (int i = 0, size = formatTokens.length; i < size; i++) {
+                        if (formatTokens.length > 0 && "GT".equals(formatTokens[0])) {
+                            if (genotypeTokens.length == 0) {
+                                throw new IOException("invalid genotype fields at line number " + lineNumber + ", missing genotype (GT) field");
+                            }
+                            String gt = genotypeTokens[0];
+                            listener.genotype(samples.get(column), "GT", isMissingGenotypeValue(gt) ? null : gt);
+                        }
+                        for (int i = 1, size = Math.min(formatTokens.length, genotypeTokens.length); i < size; i++) {
                             if (!isMissingValue(genotypeTokens[i])) {
                                 listener.genotype(samples.get(column), formatTokens[i], genotypeTokens[i].split(","));
                             }
@@ -200,6 +207,18 @@ public final class VcfParser {
      */
     static boolean isMissingValue(final String value) {
         return ".".equals(value);
+    }
+
+    /**
+     * Return true if the specified value is the missing value (<code>"."</code>) or a genotype (GT) of only
+     * missing values (e.g. <code>"./."</code> for diploid).
+     *
+     * @param value value
+     * @return true if the specified value is the missing value (<code>"."</code>) or a genotype (GT) of only
+     *   missing values (e.g. <code>"./."</code> for diploid)
+     */
+    static boolean isMissingGenotypeValue(final String value) {
+        return isMissingValue(value) || "./.".equals(value);
     }
 
     /**
