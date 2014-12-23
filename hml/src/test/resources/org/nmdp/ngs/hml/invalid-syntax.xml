@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-    hml  Histoimmunogenetics Markup Language (HML)
+    Histoimmunogenetics Markup Language (HML)
     Copyright (c) 2014 National Marrow Donor Program (NMDP)
 
     This specification is free software; you can redistribute it and/or modify it
@@ -24,11 +24,10 @@
 
 <!-- NOTE: This is a brief example of a DRAFT version of HML in action. It is not intended to be an accurate genotyping result. -->
 
-<hml xmlns="http://schemas.nmdp.org/spec/hml/0.9.7" 
-     xmlns:hml="http://schemas.nmdp.org/spec/hml/0.9.7" 
+<hml xmlns="http://schemas.nmdp.org/spec/hml/1.0" 
+     xmlns:hml="http://schemas.nmdp.org/spec/hml/1.0" 
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-     xsi:schemaLocation="http://schemas.nmdp.org/spec/hml/0.9.7 http://schemas.nmdp.org/spec/hml/0.9.7/hml-0.9.7.xsd"
-     reporting-center="789"
+     xsi:schemaLocation="http://schemas.nmdp.org/spec/hml/1.0 http://schemas.nmdp.org/spec/hml/1.0/hml-1.0.xsd"
      project-name="LAB"
-     version="0.9.7">
+     version="1.0">
 <!-- missing hml closing tag -->

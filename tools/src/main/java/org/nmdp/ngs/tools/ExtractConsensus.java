@@ -49,10 +49,10 @@ import org.dishevelled.commandline.argument.FileArgument;
 import org.nmdp.ngs.hml.HmlReader;
 
 import org.nmdp.ngs.hml.jaxb.ConsensusSequence;
+import org.nmdp.ngs.hml.jaxb.ConsensusSequenceBlock;
 import org.nmdp.ngs.hml.jaxb.Hml;
-import org.nmdp.ngs.hml.jaxb.Region;
+import org.nmdp.ngs.hml.jaxb.ReferenceDatabase;
 import org.nmdp.ngs.hml.jaxb.Sample;
-import org.nmdp.ngs.hml.jaxb.SbtNgs;
 import org.nmdp.ngs.hml.jaxb.Sequence;
 import org.nmdp.ngs.hml.jaxb.Typing;
 
@@ -82,37 +82,38 @@ public final class ExtractConsensus implements Callable<Integer> {
             Hml hml = HmlReader.read(reader);
             for (Sample sample : hml.getSample()) {
                 String id = sample.getId();
-
                 for (Typing typing : sample.getTyping()) {
-                    for (JAXBElement<?> element : typing.getTypingMethod()) {
-                        if (element.getValue() instanceof SbtNgs) {
-                            SbtNgs sbtNgs = (SbtNgs) element.getValue();
-                            String locus = sbtNgs.getLocus();
-                            for (ConsensusSequence consensusSequence : sbtNgs.getConsensusSequence()) {
-                                Region region = consensusSequence.getRegion();
+                    for (ConsensusSequence consensusSequence : typing.getConsensusSequence()) {
+                        int cons = 0;
+                        try (PrintWriter writer = writer(new File(id + "_" + cons + ".fa.gz"))) {
+                            int blocks = 0;
+                            for (ConsensusSequenceBlock consensusSequenceBlock : consensusSequence.getConsensusSequenceBlock()) {
+                                StringBuilder sb = new StringBuilder(1200);
+                                sb.append(">");
+                                sb.append(blocks);
+                                sb.append("|");
+                                sb.append(((ReferenceDatabase.ReferenceSequence) consensusSequenceBlock.getReferenceSequenceId()).getId());
+                                sb.append("|");
+                                sb.append(consensusSequenceBlock.getStart() == null ? "" : consensusSequenceBlock.getStart());
+                                sb.append("|");
+                                sb.append(consensusSequenceBlock.getPhasingGroup() == null ? "" : consensusSequenceBlock.getPhasingGroup());
+                                sb.append("|");
+                                sb.append(consensusSequenceBlock.getExpectedCopyNumber() == null ? "" : consensusSequenceBlock.getExpectedCopyNumber());
+                                sb.append("|");
+                                sb.append(consensusSequenceBlock.getVariant().isEmpty() ? "1" : "0");
+                                sb.append("|");
+                                sb.append((consensusSequenceBlock.isContinuity() != null && consensusSequenceBlock.isContinuity().booleanValue()) ? "1" : "0");
+                                sb.append("\n");
 
-                                int count = 0;
-                                try (PrintWriter writer = writer(new File(id + "_" + locus + ".fa.gz"))) {
-                                    for (Sequence sequence : consensusSequence.getSequence()) {
-                                        StringBuilder sb = new StringBuilder(1200);
-                                        sb.append(">");
-                                        sb.append(id);
-                                        sb.append(" ");
-                                        sb.append(locus);
-                                        sb.append(" ");
-                                        sb.append(count);
-                                        sb.append("\n");
+                                // todo: move to HlaUtils
+                                SymbolList symbolList = DNATools.createDNA(consensusSequenceBlock.getSequence().getValue().replaceAll("\\s+", ""));
+                                sb.append(symbolList.seqString());
+                                writer.println(sb.toString());
 
-                                        // todo: move to HlaUtils
-                                        SymbolList symbolList = DNATools.createDNA(sequence.getValue().replaceAll("\\s+", ""));
-                                        sb.append(symbolList.seqString());
-                                        writer.println(sb.toString());
-
-                                        count++;
-                                    }
-                                }
+                                blocks++;
                             }
                         }
+                        cons++;
                     }
                 }
             }
