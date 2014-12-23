@@ -45,12 +45,12 @@ import javax.xml.namespace.QName;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.nmdp.ngs.hml.jaxb.ConsensusSequence;
 import org.nmdp.ngs.hml.jaxb.Hml;
+import org.nmdp.ngs.hml.jaxb.ReportingCenter;
 import org.nmdp.ngs.hml.jaxb.Sample;
 import org.nmdp.ngs.hml.jaxb.SbtNgs;
-import org.nmdp.ngs.hml.jaxb.Region;
 import org.nmdp.ngs.hml.jaxb.Typing;
+import org.nmdp.ngs.hml.jaxb.TypingMethod;
 
 /**
  * Unit test for HmlWriter.
@@ -61,9 +61,12 @@ public final class HmlWriterTest {
     @Before
     public void setUp() throws Exception {
         data = new Hml();
-        data.setVersion("0.9.7");
+        data.setVersion("1.0");
         data.setProjectName("LAB");
-        data.setReportingCenter("789");
+
+        ReportingCenter reportingCenter = new ReportingCenter();
+        reportingCenter.setReportingCenterId("789");
+        data.setReportingCenter(reportingCenter);
 
         Sample sample = new Sample();
         sample.setId("123456789");
@@ -73,17 +76,15 @@ public final class HmlWriterTest {
         typing.setDate(createXmlGregorianCalendar());
         typing.setGeneFamily("HLA");
 
+        TypingMethod typingMethod = new TypingMethod();
+
         SbtNgs sbtNgs = new SbtNgs();
         sbtNgs.setLocus("HLA-A");
         sbtNgs.setTestId("GTR000000000.0");
         sbtNgs.setTestIdSource("NCBI-GTR");
 
-        ConsensusSequence consensusSequence = new ConsensusSequence();
-        Region region = HmlUtils.createRegion("GRCh38", "6", 2L, 42L);
-
-        consensusSequence.setRegion(region);
-        sbtNgs.getConsensusSequence().add(consensusSequence);
-        typing.getTypingMethod().add(new JAXBElement<SbtNgs>(new QName("http://schemas.nmdp.org/spec/hml/0.9.7", "sbt-ngs"), SbtNgs.class, sbtNgs));
+        typingMethod.getSsoAndSspAndSbtSanger().add(sbtNgs);
+        typing.setTypingMethod(typingMethod);
         sample.getTyping().add(typing);
         data.getSample().add(sample);        
     }

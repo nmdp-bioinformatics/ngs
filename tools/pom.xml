@@ -271,10 +271,6 @@
               <mainClass>org.nmdp.ngs.tools.FilterVcf</mainClass>
             </program>
             <program>
-              <id>ngs-hml-generator</id>
-              <mainClass>org.nmdp.ngs.tools.HMLGenerator</mainClass>
-            </program>
-            <program>
               <id>ngs-hsp-to-bed</id>
               <mainClass>org.nmdp.ngs.tools.HspToBed</mainClass>
             </program>

@@ -22,7 +22,6 @@
 */
 package org.nmdp.ngs.hml;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.net.URL;
@@ -44,18 +43,11 @@ import com.google.common.io.Resources;
 import org.biojava.bio.BioException;
 
 import org.biojava.bio.seq.DNATools;
-import org.biojava.bio.seq.RNATools;
 import org.biojava.bio.seq.SequenceIterator;
-
-import org.biojava.bio.symbol.IllegalSymbolException;
-import org.biojava.bio.symbol.SymbolList;
 
 import org.biojava.bio.seq.io.SeqIOTools;
 
-import org.nmdp.ngs.feature.Locus;
-
 import org.nmdp.ngs.hml.jaxb.Sequence;
-import org.nmdp.ngs.hml.jaxb.Region;
 
 /**
  * Static utility methods for creating HML model classes.
@@ -65,52 +57,17 @@ public final class HmlUtils {
     /**
      * Create and return a new HML Sequence from the specified sequence.
      *
-     * @param sequence sequence, must not be null, and alphabet must be one of { DNA, RNA }
+     * @param sequence sequence, must not be null, and alphabet must be one of DNA
      * @return a new HML Sequence created from the specified sequence.
      */
     public static Sequence createSequence(final org.biojava.bio.seq.Sequence sequence) {
         checkNotNull(sequence);
 
         Sequence s = new Sequence();
-        if (DNATools.getDNA().equals(sequence.getAlphabet())) {
-            s.setAlphabet("DNA");
-        }
-        else if (RNATools.getRNA().equals(sequence.getAlphabet())) {
-            s.setAlphabet("RNA");
-        }
-        else {
-            throw new IllegalArgumentException("alphabet must be one of { DNA, RNA }");
+        if (!DNATools.getDNA().equals(sequence.getAlphabet())) {
+            throw new IllegalArgumentException("alphabet must be one of DNA");
         }
         s.setValue(sequence.seqString());
-        return s;
-    }
-
-    /**
-     * Create and return a new HML Sequence with the specified alphabet and sequence.
-     *
-     * @param alphabet alphabet, must be one of { DNA, RNA }
-     * @param sequence sequence, must not be null
-     * @return a new HML Sequence with the specified alphabet and sequence
-     * @throws IllegalSymbolException if <code>sequence</code> contains an illegal symbol
-     */
-    public static Sequence createSequence(final String alphabet, final String sequence) throws IllegalSymbolException {
-        checkNotNull(alphabet);
-        checkNotNull(sequence);
-
-        Sequence s = new Sequence();
-        s.setAlphabet(alphabet.toUpperCase());
-
-        SymbolList symbolList = null;
-        if ("dna".equalsIgnoreCase(alphabet)) {
-            symbolList = DNATools.createDNA(sequence);
-        }
-        else if ("rna".equalsIgnoreCase(alphabet)) {
-            symbolList = RNATools.createRNA(sequence);
-        }
-        else {
-            throw new IllegalArgumentException("alphabet must be one of { DNA, RNA }");
-        }
-        s.setValue(symbolList.seqString());
         return s;
     }
 
@@ -121,7 +78,7 @@ public final class HmlUtils {
      * @return zero or more DNA HML Sequences read from the specified reader in FASTA format
      * @throws IOException if an I/O error occurs
      */
-    public static Iterable<Sequence> createDnaSequences(final BufferedReader reader) throws IOException {
+    public static Iterable<Sequence> createSequences(final BufferedReader reader) throws IOException {
         checkNotNull(reader);
         List<Sequence> sequences = new ArrayList<Sequence>();
         for (SequenceIterator it = SeqIOTools.readFastaDNA(reader); it.hasNext(); ) {
@@ -143,10 +100,10 @@ public final class HmlUtils {
      * @return zero or more DNA HML Sequences read from the specified file in FASTA format
      * @throws IOException if an I/O error occurs
      */
-    public static Iterable<Sequence> createDnaSequences(final File file) throws IOException {
+    public static Iterable<Sequence> createSequences(final File file) throws IOException {
         checkNotNull(file);
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            return createDnaSequences(reader);
+            return createSequences(reader);
         }
     }
 
@@ -157,10 +114,10 @@ public final class HmlUtils {
      * @return zero or more DNA HML Sequences read from the specified URL in FASTA format
      * @throws IOException if an I/O error occurs
      */
-    public static Iterable<Sequence> createDnaSequences(final URL url) throws IOException {
+    public static Iterable<Sequence> createSequences(final URL url) throws IOException {
         checkNotNull(url);
         try (BufferedReader reader = Resources.asCharSource(url, Charsets.UTF_8).openBufferedStream()) {
-            return createDnaSequences(reader);
+            return createSequences(reader);
         }
     }
 
@@ -171,165 +128,10 @@ public final class HmlUtils {
      * @return zero or more DNA HML Sequences read from the specified input stream in FASTA format
      * @throws IOException if an I/O error occurs
      */
-    public static Iterable<Sequence> createDnaSequences(final InputStream inputStream) throws IOException {
+    public static Iterable<Sequence> createSequences(final InputStream inputStream) throws IOException {
         checkNotNull(inputStream);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            return createDnaSequences(reader);
+            return createSequences(reader);
         }
-    }
-
-
-    /**
-     * Create and return zero or more RNA HML Sequences read from the specified reader in FASTA format.
-     *
-     * @param reader reader to read from, must not be null
-     * @return zero or more RNA HML Sequences read from the specified reader in FASTA format
-     * @throws IOException if an I/O error occurs
-     */
-    public static Iterable<Sequence> createRnaSequences(final BufferedReader reader) throws IOException {
-        checkNotNull(reader);
-        List<Sequence> sequences = new ArrayList<Sequence>();
-        for (SequenceIterator it = SeqIOTools.readFastaRNA(reader); it.hasNext(); ) {
-            try {
-                sequences.add(createSequence(it.nextSequence()));
-            }
-            catch (BioException e) {
-                throw new IOException("could not read RNA sequences", e);
-            }
-        }
-        return sequences;
-    }
-
-    /**
-     * Create and return zero or more RNA HML Sequences read from the specified file in FASTA format.
-     *
-     * @param file file to read from, must not be null
-     * @return zero or more RNA HML Sequences read from the specified file in FASTA format
-     * @throws IOException if an I/O error occurs
-     */
-    public static Iterable<Sequence> createRnaSequences(final File file) throws IOException {
-        checkNotNull(file);
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            return createRnaSequences(reader);
-        }
-    }
-
-    /**
-     * Create and return zero or more RNA HML Sequences read from the specified URL in FASTA format.
-     *
-     * @param url URL to read from, must not be null
-     * @return zero or more RNA HML Sequences read from the specified URL in FASTA format
-     * @throws IOException if an I/O error occurs
-     */
-    public static Iterable<Sequence> createRnaSequences(final URL url) throws IOException {
-        checkNotNull(url);
-        try (BufferedReader reader = Resources.asCharSource(url, Charsets.UTF_8).openBufferedStream()) {
-            return createRnaSequences(reader);
-        }
-    }
-
-    /**
-     * Create and return zero or more RNA HML Sequences read from the specified input stream in FASTA format.
-     *
-     * @param inputStream input stream to read from, must not be null
-     * @return zero or more RNA HML Sequences read from the specified input stream in FASTA format
-     * @throws IOException if an I/O error occurs
-     */
-    public static Iterable<Sequence> createRnaSequences(final InputStream inputStream) throws IOException {
-        checkNotNull(inputStream);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            return createRnaSequences(reader);
-        }
-    }
-
-
-    /**
-     * Create and return a new HML Region with the specified parameters.
-     *
-     * @param assembly assembly, must not be null, should be a major or minor
-     *    version of the GRC human assembly, e.g. GRCh38
-     * @param contig contig, must not be null, should be a contig present in
-     *    the specified assembly
-     * @param start start, 0-based coordinate system, closed-open range, must
-     *    be at least <code>0L</code>
-     * @param end end, 0-based coordinate system, closed-open range, must
-     *    be at least <code>0L</code>
-     * @return a new HML Region with the specified parameters
-     */
-    public static Region createRegion(final String assembly,
-                                                      final String contig,
-                                                      final long start,
-                                                      final long end) {
-        checkNotNull(assembly);
-        checkNotNull(contig);
-        checkArgument(start >= 0L, "start must be at least 0L");
-        checkArgument(end >= 0L, "end must be at least 0L");
-
-        Region region = new Region();
-        region.setAssembly(assembly);
-        region.setContig(contig);
-        region.setStart(start);
-        region.setEnd(end);
-        return region;
-    }
-
-    /**
-     * Create and return a new HML Region with the specified parameters.
-     *
-     * @param assembly assembly, must not be null, should be a major or minor
-     *    version of the GRC human assembly, e.g. GRCh38
-     * @param contig contig, must not be null, should be a contig present in
-     *    the specified assembly
-     * @param start start, 0-based coordinate system, closed-open range, must
-     *    be at least <code>0L</code>
-     * @param end end, 0-based coordinate system, closed-open range, must
-     *    be at least <code>0L</code>
-     * @param strand strand, if provided must be one of { 1, -1, +, - }
-     * @param id id
-     * @param description description
-     * @return a new HML Region with the specified parameters
-     */
-    public static Region createRegion(final String assembly,
-                                                      final String contig,
-                                                      final long start,
-                                                      final long end,
-                                                      final String strand,
-                                                      final String id,
-                                                      final String description) {
-        checkNotNull(assembly);
-        checkNotNull(contig);
-        checkArgument(start >= 0L, "start must be at least 0L");
-        checkArgument(end >= 0L, "end must be at least 0L");
-
-        if (strand != null) {
-            checkArgument("1".equals(strand)
-                          || "-1".equals(strand)
-                          || "+".equals(strand)
-                          || "-".equals(strand), "if provided, strand must be one of { 1, -1, +, - }");
-        }
-
-        Region region = new Region();
-        region.setAssembly(assembly);
-        region.setContig(contig);
-        region.setStart(start);
-        region.setEnd(end);
-        region.setStrand(strand);
-        region.setId(id);
-        region.setDescription(description);
-        return region;
-    }
-
-    /**
-     * Create and return a new HML Region with the specified assembly and locus.
-     *
-     * @param assembly assembly, must not be null, should be a major or minor
-     *    version of the GRC human assembly, e.g. GRCh38
-     * @param locus locus, must not be null
-     * @return a new HML Region with the specified assembly and locus
-     */
-    public static Region createRegion(final String assembly, final Locus locus) {
-        checkNotNull(assembly);
-        checkNotNull(locus);
-        return createRegion(assembly, locus.getContig(), locus.getStart() - 1L, locus.getEnd());
     }
 }
