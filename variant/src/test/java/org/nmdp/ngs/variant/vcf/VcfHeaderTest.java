@@ -60,4 +60,11 @@ public final class VcfHeaderTest {
         assertEquals("VCFv4.2", header.getFileFormat());
         assertEquals(meta, header.getMeta());
     }
+
+    @Test
+    public void testBuilder() {
+        VcfHeader header = VcfHeader.builder().withFileFormat(fileFormat).withMeta(meta).build();
+        assertEquals("VCFv4.2", header.getFileFormat());
+        assertEquals(meta, header.getMeta());
+    }
 }
