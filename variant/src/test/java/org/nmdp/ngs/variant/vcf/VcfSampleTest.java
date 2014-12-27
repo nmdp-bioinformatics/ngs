@@ -63,4 +63,17 @@ public final class VcfSampleTest {
         assertEquals(1.0d, genome.getMixture(), 0.1d);
         assertEquals("Description", genome.getDescription());
     }
+
+    @Test
+    public void testBuilder() {
+        VcfSample sample = VcfSample.builder().withId("id").withGenome(new VcfGenome("genomeId", 1.0d, "Description")).build();
+        assertNotNull(sample);
+        assertEquals("id", sample.getId());
+        assertNotNull(sample.getGenomes());
+        assertEquals(1, sample.getGenomes().length);
+        VcfGenome genome = sample.getGenomes()[0];
+        assertEquals("genomeId", genome.getId());
+        assertEquals(1.0d, genome.getMixture(), 0.1d);
+        assertEquals("Description", genome.getDescription());
+    }
 }

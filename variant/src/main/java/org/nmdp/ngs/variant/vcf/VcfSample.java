@@ -24,6 +24,9 @@ package org.nmdp.ngs.variant.vcf;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -68,5 +71,106 @@ public final class VcfSample {
      */
     public VcfGenome[] getGenomes() {
         return genomes;
+    }
+
+
+    /**
+     * Create and return a new VCF sample builder.
+     *
+     * @return a new VCF sample builder
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * VCF sample builder.
+     */
+    public static final class Builder {
+        /** Id. */
+        private String id;
+
+        /** List of VCF genomes. */
+        private final List<VcfGenome> genomes = new ArrayList<VcfGenome>();
+
+
+        /**
+         * Private no-arg constructor.
+         */
+        private Builder() {
+            // empty
+        }
+
+
+        /**
+         * Return this VCF sample builder configured with the specified id.
+         *
+         * @param id id
+         * @return this VCF sample builder configured with the specified id
+         */
+        public Builder withId(final String id) {
+            this.id = id;
+            return this;
+        }
+
+        /**
+         * Return this VCF sample builder configured with the specified VCF genome.
+         *
+         * @param genome VCF genome, must not be null
+         * @return this VCF sample builder configured with the specified VCF genome
+         */
+        public Builder withGenome(final VcfGenome genome) {
+            checkNotNull(genome);
+            genomes.add(genome);
+            return this;
+        }
+
+        /**
+         * Return this VCF sample builder configured with the specified VCF genomes.
+         *
+         * @param genome one or more VCF genomes, must not contain null
+         * @return this VCF sample builder configured with the specified VCF genomes
+         */
+        public Builder withGenomes(final VcfGenome... genomes) {
+            checkNotNull(genomes);
+            for (VcfGenome genome : genomes) {
+                withGenome(genome);
+            }
+            return this;
+        }
+
+        /**
+         * Return this VCF sample builder configured with the specified VCF genomes.
+         *
+         * @param genome one or more VCF genomes, must not be null and must not contain null values
+         * @return this VCF sample builder configured with the specified VCF genomes
+         */
+        public Builder withGenomes(final List<VcfGenome> genomes) {
+            checkNotNull(genomes);
+            for (VcfGenome genome : genomes) {
+                withGenome(genome);
+            }
+            return this;
+        }
+
+        /**
+         * Reset this VCF sample builder.
+         *
+         * @return this VCF sample builder
+         */
+        public Builder reset() {
+            id = null;
+            genomes.clear();
+            return this;
+        }
+
+        /**
+         * Create and return a new VCF sample populated from the configuration of this VCF sample builder.
+         *
+         * @return a new VCF sample populated from the configuration of this VCF sample builder
+         */
+        public VcfSample build() {
+            return new VcfSample(id, genomes.toArray(new VcfGenome[genomes.size()]));
+        }
     }
 }
