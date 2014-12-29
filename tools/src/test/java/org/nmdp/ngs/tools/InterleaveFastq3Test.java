@@ -22,17 +22,20 @@
 */
 package org.nmdp.ngs.tools;
 
+import static org.dishevelled.compress.Readers.reader;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
+import com.google.common.io.Files;
+import com.google.common.io.Resources;
 
 import org.biojava.bio.program.fastq.Fastq;
-import org.biojava.bio.program.fastq.FastqBuilder;
+import org.biojava.bio.program.fastq.FastqReader;
+import org.biojava.bio.program.fastq.SangerFastqReader;
 
 import org.junit.After;
 import org.junit.Before;
@@ -46,17 +49,11 @@ public final class InterleaveFastq3Test {
     private File secondFastqFile;
     private File pairedFile;
     private File unpairedFile;
-    private static final Fastq left = new FastqBuilder().withDescription("foo 1").appendSequence("a").appendQuality("-").build();
-    private static final Fastq right = new FastqBuilder().withDescription("foo 2").appendSequence("a").appendQuality("-").build();
-    private static final Fastq invalid = new FastqBuilder().withDescription("invalid").appendSequence("a").appendQuality("-").build();
-    private static final List<Fastq> LEFT = ImmutableList.of(left);
-    private static final List<Fastq> RIGHT = ImmutableList.of(right);
-    private static final List<Fastq> INVALID = ImmutableList.of(invalid);
 
     @Before
     public void setUp() throws IOException {
-        firstFastqFile = File.createTempFile("interleaveFastqTest", ".fq");
-        secondFastqFile = File.createTempFile("interleaveFastqTest", ".fq");
+        firstFastqFile = File.createTempFile("interleaveFastqTest", ".fq.gz");
+        secondFastqFile = File.createTempFile("interleaveFastqTest", ".fq.gz");
         pairedFile = File.createTempFile("interleaveFastqTest", ".fq");
         unpairedFile = File.createTempFile("interleaveFastqTest", ".fq");
     }
@@ -92,5 +89,38 @@ public final class InterleaveFastq3Test {
     @Test
     public void testConstructor() {
         assertNotNull(new InterleaveFastq3(firstFastqFile, secondFastqFile, pairedFile, unpairedFile));
+    }
+
+    @Test
+    public void testInterleaveFastq() throws Exception {
+        copyResource("paired_R1.fq.gz", firstFastqFile);
+        copyResource("paired_R2.fq.gz", secondFastqFile);
+        new InterleaveFastq3(firstFastqFile, secondFastqFile, pairedFile, unpairedFile).call();
+
+        assertEquals(8, countFastq(pairedFile));
+        assertEquals(0, countFastq(unpairedFile));
+    }
+
+    @Test
+    public void testInterleaveFastqUnpaired() throws Exception {
+        copyResource("unpaired_R1.fq.gz", firstFastqFile);
+        copyResource("unpaired_R2.fq.gz", secondFastqFile);
+        new InterleaveFastq3(firstFastqFile, secondFastqFile, pairedFile, unpairedFile).call();
+
+        assertEquals(4, countFastq(pairedFile));
+        assertEquals(2, countFastq(unpairedFile));
+    }
+
+    private static int countFastq(final File file) throws Exception {
+        FastqReader fastqReader = new SangerFastqReader();
+        int count = 0;
+        for (Fastq fastq : fastqReader.read(file)) {
+            count++;
+        }
+        return count;
+    }
+
+    private static void copyResource(final String name, final File file) throws Exception {
+        Files.write(Resources.toByteArray(InterleaveFastq3Test.class.getResource(name)), file);
     }
 }
