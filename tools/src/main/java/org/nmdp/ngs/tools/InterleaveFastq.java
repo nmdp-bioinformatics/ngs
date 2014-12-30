@@ -58,7 +58,7 @@ public final class InterleaveFastq implements Callable<Integer> {
     private final File secondFastqFile;
     private final File pairedFile;
     private final File unpairedFile;
-    private static final String USAGE = "ngs-interleave-fastq -1 foo_1.fq.gz -2 foo_2.fq.gz --paired foo.paired.fq.gz --unpaired foo.unpaired.fq.gz\n\n   Note:  the contents of both FASTQ files are read into RAM.\n   Increase RAM to the JVM using e.g. -Xms2g -Xmx8g if necessary.";
+    private static final String USAGE = "ngs-interleave-fastq -1 foo_1.fq.gz -2 foo_2.fq.gz --paired foo.paired.fq.gz --unpaired foo.unpaired.fq.gz";
 
 
     /**
@@ -67,7 +67,7 @@ public final class InterleaveFastq implements Callable<Integer> {
      * @param firstFastqFile first FASTQ input file, must not be null
      * @param secondFastqFile second FASTQ input file, must not be null
      * @param pairedFile output interleaved paired FASTQ file, must not be null
-     * @param unpairedFile output interleaved unpaired FASTQ file, must not be null
+     * @param unpairedFile output unpaired FASTQ file, must not be null
      */
     public InterleaveFastq(final File firstFastqFile, final File secondFastqFile, final File pairedFile, final File unpairedFile) {
         checkNotNull(firstFastqFile);
@@ -99,7 +99,7 @@ public final class InterleaveFastq implements Callable<Integer> {
             final FastqWriter pairedFastqWriter = new SangerFastqWriter();
             final FastqWriter unpairedFastqWriter = new SangerFastqWriter();
 
-            PairedEndFastqReader.readPaired(firstReader, secondReader, new PairedEndAdapter() {
+            PairedEndFastqReader.streamPaired(firstReader, secondReader, new PairedEndAdapter() {
                     @Override
                     public void paired(final Fastq left, final Fastq right) {
                         try {
@@ -164,7 +164,7 @@ public final class InterleaveFastq implements Callable<Integer> {
         FileArgument firstFastqFile = new FileArgument("1", "first-fastq-file", "first FASTQ input file", true);
         FileArgument secondFastqFile = new FileArgument("2", "second-fastq-file", "second FASTQ input file", true);
         FileArgument pairedFile = new FileArgument("p", "paired-file", "output interleaved paired FASTQ file", true);
-        FileArgument unpairedFile = new FileArgument("u", "unpaired-file", "output interleaved unpaired FASTQ file", true);
+        FileArgument unpairedFile = new FileArgument("u", "unpaired-file", "output unpaired FASTQ file", true);
 
         ArgumentList arguments = new ArgumentList(about, help, firstFastqFile, secondFastqFile, pairedFile, unpairedFile);
         CommandLine commandLine = new CommandLine(args);

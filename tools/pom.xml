@@ -279,10 +279,6 @@
               <mainClass>org.nmdp.ngs.tools.InterleaveFastq</mainClass>
             </program>
             <program>
-              <id>ngs-interleave-fastq3</id>
-              <mainClass>org.nmdp.ngs.tools.InterleaveFastq3</mainClass>
-            </program>
-            <program>
               <id>ngs-intersect-bed</id>
               <mainClass>org.nmdp.ngs.tools.IntersectBed</mainClass>
             </program>
