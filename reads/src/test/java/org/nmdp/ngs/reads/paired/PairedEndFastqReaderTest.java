@@ -54,6 +54,7 @@ public final class PairedEndFastqReaderTest {
     private Fastq left;
     private Fastq right;
     private Fastq invalidPrefix;
+    private Fastq mismatchPrefix;
     private Reader firstReader;
     private Reader secondReader;
     private Reader reader;
@@ -63,7 +64,9 @@ public final class PairedEndFastqReaderTest {
     public void setUp() throws Exception {
         left = Fastq.builder().withDescription("prefix 1").withSequence("aaaaatttttcccccggggg").withQuality("44444222224444422222").build();
         right = Fastq.builder().withDescription("prefix 2").withSequence("aaaaatttttcccccggggg").withQuality("44444222224444422222").build();
+
         invalidPrefix = Fastq.builder().withDescription("no-space").withSequence("aaaaa").withQuality("44444").build();
+        mismatchPrefix = Fastq.builder().withDescription("mismatch 2").withSequence("aaaaatttttcccccggggg").withQuality("44444222224444422222").build();
 
         ByteArrayOutputStream first = new ByteArrayOutputStream();
         new SangerFastqWriter().write(first, left);
@@ -229,6 +232,25 @@ public final class PairedEndFastqReaderTest {
         streamPaired(firstReader, invalidPrefixReader, listener);
     }
 
+    @Test
+    public void testStreamPairedMismatchPrefix() throws Exception {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        new SangerFastqWriter().write(outputStream, mismatchPrefix);
+        Reader mismatchPrefixReader = new StringReader(outputStream.toString());
+
+        streamPaired(firstReader, mismatchPrefixReader, new PairedEndAdapter() {
+                @Override
+                public void paired(final Fastq left, final Fastq right) {
+                    fail("paired " + left + " " + right);
+                }
+
+                @Override
+                public void unpaired(final Fastq unpaired) {
+                    assertTrue(left.getDescription().equals(unpaired.getDescription()) ||
+                               mismatchPrefix.getDescription().equals(unpaired.getDescription()));
+                }
+            });
+    }
 
     @Test(expected=NullPointerException.class)
     public void testStreamInterleavedNullReader() throws Exception {
@@ -327,5 +349,14 @@ public final class PairedEndFastqReaderTest {
         Reader duplicateRightReader = new StringReader(interleaved.toString());
 
         streamInterleaved(duplicateRightReader, listener);
+    }
+
+    @Test(expected=IOException.class)
+    public void testStreamInterleavedMismatchPrefix() throws Exception {
+        ByteArrayOutputStream interleaved = new ByteArrayOutputStream();
+        new SangerFastqWriter().write(interleaved, ImmutableList.of(left, mismatchPrefix));
+        Reader mismatchPrefixReader = new StringReader(interleaved.toString());
+
+        streamInterleaved(mismatchPrefixReader, listener);
     }
 }

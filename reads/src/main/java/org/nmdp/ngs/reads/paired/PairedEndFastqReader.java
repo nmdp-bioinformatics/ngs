@@ -93,6 +93,7 @@ public final class PairedEndFastqReader {
      * @param secondReadable second readable, must not be null
      * @param listener paired end listener, must not be null
      * @throws IOException if an I/O error occurs
+     * @deprecated by {@link #streamPaired(Readable,Readable,PairedEndListener)}, will be removed in version 2.0
      */
     public static void readPaired(final Readable firstReadable,
                                   final Readable secondReadable,
@@ -136,6 +137,7 @@ public final class PairedEndFastqReader {
 
             if (isLeft(left)) {
                 if (isRight(right)) {
+                    // todo:  assert prefixes match
                     listener.paired(left, right);
                     i += 2;
                 }
@@ -272,7 +274,7 @@ public final class PairedEndFastqReader {
                     if (isLeft(fastq) && (left == null)) {
                         left = fastq;
                     }
-                    else if (isRight(fastq) && (left != null)) {
+                    else if (isRight(fastq) && (left != null) && (prefix(left).equals(prefix(fastq)))) {
                         Fastq right = fastq;
                         listener.paired(left, right);
                         left = null;
@@ -306,7 +308,7 @@ public final class PairedEndFastqReader {
      * Return true if the specified fastq is the right or second read of a paired end read.
      *
      * @param fastq fastq, must not be null
-     * @return true if the specified fastq is the right or second8 read of a paired end read
+     * @return true if the specified fastq is the right or second read of a paired end read
      */
     static boolean isRight(final Fastq fastq) {
         checkNotNull(fastq);

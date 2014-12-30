@@ -58,7 +58,7 @@ public final class InterleaveFastq implements Callable<Integer> {
     private final File secondFastqFile;
     private final File pairedFile;
     private final File unpairedFile;
-    private static final String USAGE = "ngs-interleave-fastq -1 foo_1.fq.gz -2 foo_2.fq.gz --paired foo.paired.fq.gz --unpaired foo.unpaired.fq.gz\n\n   Note:  the contents of both FASTQ files are read into RAM.\n   Increase RAM to the JVM using e.g. -Xms2g -Xmx8g if necessary.";
+    private static final String USAGE = "ngs-interleave-fastq -1 foo_1.fq.gz -2 foo_2.fq.gz --paired foo.paired.fq.gz --unpaired foo.unpaired.fq.gz";
 
 
     /**
@@ -99,7 +99,7 @@ public final class InterleaveFastq implements Callable<Integer> {
             final FastqWriter pairedFastqWriter = new SangerFastqWriter();
             final FastqWriter unpairedFastqWriter = new SangerFastqWriter();
 
-            PairedEndFastqReader.readPaired(firstReader, secondReader, new PairedEndAdapter() {
+            PairedEndFastqReader.streamPaired(firstReader, secondReader, new PairedEndAdapter() {
                     @Override
                     public void paired(final Fastq left, final Fastq right) {
                         try {
