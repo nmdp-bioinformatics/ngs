@@ -67,7 +67,7 @@ public final class InterleaveFastq implements Callable<Integer> {
      * @param firstFastqFile first FASTQ input file, must not be null
      * @param secondFastqFile second FASTQ input file, must not be null
      * @param pairedFile output interleaved paired FASTQ file, must not be null
-     * @param unpairedFile output interleaved unpaired FASTQ file, must not be null
+     * @param unpairedFile output unpaired FASTQ file, must not be null
      */
     public InterleaveFastq(final File firstFastqFile, final File secondFastqFile, final File pairedFile, final File unpairedFile) {
         checkNotNull(firstFastqFile);
@@ -164,7 +164,7 @@ public final class InterleaveFastq implements Callable<Integer> {
         FileArgument firstFastqFile = new FileArgument("1", "first-fastq-file", "first FASTQ input file", true);
         FileArgument secondFastqFile = new FileArgument("2", "second-fastq-file", "second FASTQ input file", true);
         FileArgument pairedFile = new FileArgument("p", "paired-file", "output interleaved paired FASTQ file", true);
-        FileArgument unpairedFile = new FileArgument("u", "unpaired-file", "output interleaved unpaired FASTQ file", true);
+        FileArgument unpairedFile = new FileArgument("u", "unpaired-file", "output unpaired FASTQ file", true);
 
         ArgumentList arguments = new ArgumentList(about, help, firstFastqFile, secondFastqFile, pairedFile, unpairedFile);
         CommandLine commandLine = new CommandLine(args);
