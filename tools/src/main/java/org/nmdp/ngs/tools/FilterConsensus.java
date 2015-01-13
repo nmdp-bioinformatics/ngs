@@ -147,10 +147,11 @@ public final class FilterConsensus implements Callable<Integer> {
             for (SAMRecord record : new SAMFileReader(inputBamFile)) {
                 List<Edit> edits = cigarToEditList(record);
 
+                String referenceName = record.getReferenceName();
                 int start = record.getAlignmentStart();
                 int end = record.getAlignmentEnd();
                 // todo:  don't hard code chr6 here
-                Locus alignment = new Locus("chr6", start, end);
+                Locus alignment = new Locus(referenceName, start, end);
                 SymbolList sequence = DNATools.createDNA(record.getReadString());
 
                 for (Edit edit : edits) {
@@ -159,7 +160,7 @@ public final class FilterConsensus implements Callable<Integer> {
 
                 String name = record.getReadName();
                 Allele contig = Allele.builder()
-                    .withContig("chr6")
+                    .withContig(referenceName)
                     .withStart(start)
                     .withEnd(end)
                     .withSequence(sequence)
