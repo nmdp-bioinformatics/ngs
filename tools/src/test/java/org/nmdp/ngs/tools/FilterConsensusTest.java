@@ -153,6 +153,17 @@ public final class FilterConsensusTest {
         new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, 3).call();
         assertEquals(6, countLines(outputFile));
     }
+    
+    @Test
+    public void testCallKirExons() throws Exception {
+        Files.write(Resources.toByteArray(getClass().getResource("2DL1_0020101.bwa.sorted.bam")), inputBamFile);
+        Files.write(Resources.toByteArray(getClass().getResource("kir-2dl1.exons.txt")), inputGenomicFile);
+        
+        cdna = false;
+        removeGaps = false;
+        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).call();
+        assertEquals(16, countLines(outputFile));
+    }
 
     private static int countLines(final File file) throws Exception {
         return Files.readLines(file, Charset.forName("UTF-8")).size();
