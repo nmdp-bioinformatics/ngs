@@ -150,7 +150,6 @@ public final class FilterConsensus implements Callable<Integer> {
                 String referenceName = record.getReferenceName();
                 int start = record.getAlignmentStart();
                 int end = record.getAlignmentEnd();
-                // todo:  don't hard code chr6 here
                 Locus alignment = new Locus(referenceName, start, end);
                 SymbolList sequence = DNATools.createDNA(record.getReadString());
 
