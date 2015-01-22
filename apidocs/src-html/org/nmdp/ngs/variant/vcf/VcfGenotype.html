@@ -158,15 +158,17 @@
 <span class="sourceLineNo">150</span>         */<a name="line.150"></a>
 <span class="sourceLineNo">151</span>        public VcfGenotype build() {<a name="line.151"></a>
 <span class="sourceLineNo">152</span>            // check GT cardinality constraint<a name="line.152"></a>
-<span class="sourceLineNo">153</span>            if (fields.containsKey("GT") &amp;&amp; fields.get("GT").size() &gt; 1) {<a name="line.153"></a>
+<span class="sourceLineNo">153</span>            if (fields.containsKey("GT")) {<a name="line.153"></a>
 <span class="sourceLineNo">154</span>                String gt = fields.get("GT").get(0);<a name="line.154"></a>
 <span class="sourceLineNo">155</span>                fields.removeAll("GT");<a name="line.155"></a>
-<span class="sourceLineNo">156</span>                fields.put("GT", gt);<a name="line.156"></a>
-<span class="sourceLineNo">157</span>            }<a name="line.157"></a>
-<span class="sourceLineNo">158</span>            return new VcfGenotype(fields);<a name="line.158"></a>
-<span class="sourceLineNo">159</span>        }<a name="line.159"></a>
-<span class="sourceLineNo">160</span>    }<a name="line.160"></a>
-<span class="sourceLineNo">161</span>}<a name="line.161"></a>
+<span class="sourceLineNo">156</span>                if (gt != null) {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                    fields.put("GT", gt);<a name="line.157"></a>
+<span class="sourceLineNo">158</span>                }<a name="line.158"></a>
+<span class="sourceLineNo">159</span>            }<a name="line.159"></a>
+<span class="sourceLineNo">160</span>            return new VcfGenotype(fields);<a name="line.160"></a>
+<span class="sourceLineNo">161</span>        }<a name="line.161"></a>
+<span class="sourceLineNo">162</span>    }<a name="line.162"></a>
+<span class="sourceLineNo">163</span>}<a name="line.163"></a>
 
 
 

@@ -85,7 +85,7 @@
 <span class="sourceLineNo">077</span>            JAXBContext context = JAXBContext.newInstance(Hml.class);<a name="line.77"></a>
 <span class="sourceLineNo">078</span>            Unmarshaller unmarshaller = context.createUnmarshaller();<a name="line.78"></a>
 <span class="sourceLineNo">079</span>            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);<a name="line.79"></a>
-<span class="sourceLineNo">080</span>            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-0.9.7.xsd");<a name="line.80"></a>
+<span class="sourceLineNo">080</span>            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-1.0.xsd");<a name="line.80"></a>
 <span class="sourceLineNo">081</span>            Schema schema = schemaFactory.newSchema(schemaURL);<a name="line.81"></a>
 <span class="sourceLineNo">082</span>            unmarshaller.setSchema(schema);<a name="line.82"></a>
 <span class="sourceLineNo">083</span>            return (Hml) unmarshaller.unmarshal(reader);<a name="line.83"></a>

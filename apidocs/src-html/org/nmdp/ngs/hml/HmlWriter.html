@@ -83,7 +83,7 @@
 <span class="sourceLineNo">075</span>            JAXBContext context = JAXBContext.newInstance(Hml.class);<a name="line.75"></a>
 <span class="sourceLineNo">076</span>            Marshaller marshaller = context.createMarshaller();<a name="line.76"></a>
 <span class="sourceLineNo">077</span>            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);<a name="line.77"></a>
-<span class="sourceLineNo">078</span>            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-0.9.7.xsd");<a name="line.78"></a>
+<span class="sourceLineNo">078</span>            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-1.0.xsd");<a name="line.78"></a>
 <span class="sourceLineNo">079</span>            Schema schema = schemaFactory.newSchema(schemaURL);<a name="line.79"></a>
 <span class="sourceLineNo">080</span>            marshaller.setSchema(schema);<a name="line.80"></a>
 <span class="sourceLineNo">081</span>            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);<a name="line.81"></a>

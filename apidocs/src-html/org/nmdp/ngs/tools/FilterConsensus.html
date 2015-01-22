@@ -155,10 +155,10 @@
 <span class="sourceLineNo">147</span>            for (SAMRecord record : new SAMFileReader(inputBamFile)) {<a name="line.147"></a>
 <span class="sourceLineNo">148</span>                List&lt;Edit&gt; edits = cigarToEditList(record);<a name="line.148"></a>
 <span class="sourceLineNo">149</span><a name="line.149"></a>
-<span class="sourceLineNo">150</span>                int start = record.getAlignmentStart();<a name="line.150"></a>
-<span class="sourceLineNo">151</span>                int end = record.getAlignmentEnd();<a name="line.151"></a>
-<span class="sourceLineNo">152</span>                // todo:  don't hard code chr6 here<a name="line.152"></a>
-<span class="sourceLineNo">153</span>                Locus alignment = new Locus("chr6", start, end);<a name="line.153"></a>
+<span class="sourceLineNo">150</span>                String referenceName = record.getReferenceName();<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                int start = record.getAlignmentStart();<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                int end = record.getAlignmentEnd();<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                Locus alignment = new Locus(referenceName, start, end);<a name="line.153"></a>
 <span class="sourceLineNo">154</span>                SymbolList sequence = DNATools.createDNA(record.getReadString());<a name="line.154"></a>
 <span class="sourceLineNo">155</span><a name="line.155"></a>
 <span class="sourceLineNo">156</span>                for (Edit edit : edits) {<a name="line.156"></a>
@@ -167,7 +167,7 @@
 <span class="sourceLineNo">159</span><a name="line.159"></a>
 <span class="sourceLineNo">160</span>                String name = record.getReadName();<a name="line.160"></a>
 <span class="sourceLineNo">161</span>                Allele contig = Allele.builder()<a name="line.161"></a>
-<span class="sourceLineNo">162</span>                    .withContig("chr6")<a name="line.162"></a>
+<span class="sourceLineNo">162</span>                    .withContig(referenceName)<a name="line.162"></a>
 <span class="sourceLineNo">163</span>                    .withStart(start)<a name="line.163"></a>
 <span class="sourceLineNo">164</span>                    .withEnd(end)<a name="line.164"></a>
 <span class="sourceLineNo">165</span>                    .withSequence(sequence)<a name="line.165"></a>
