@@ -159,12 +159,32 @@
         <version>1.118</version>
         <exclusions>
           <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-launcher</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.bcel</groupId>
+            <artifactId>bcel</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-jexl</artifactId>
+          </exclusion>
+          <exclusion>
             <groupId>org.seqdoop</groupId>
             <artifactId>cofoja</artifactId>
           </exclusion>
           <exclusion>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.xerial.snappy</groupId>
+            <artifactId>snappy-java</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
