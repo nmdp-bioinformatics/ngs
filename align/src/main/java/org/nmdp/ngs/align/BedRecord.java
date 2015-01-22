@@ -155,7 +155,6 @@ public final class BedRecord {
     /**
      * Create a new BED3 record.
      *
-     * @param format format, must not be null
      * @param chrom chrom, must not be null
      * @param start start, must be at least zero
      * @param end end, must be at least zero, and greater than or equal to start
