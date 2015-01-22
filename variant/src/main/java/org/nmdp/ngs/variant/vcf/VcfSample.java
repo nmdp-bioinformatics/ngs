@@ -128,7 +128,7 @@ public final class VcfSample {
         /**
          * Return this VCF sample builder configured with the specified VCF genomes.
          *
-         * @param genome one or more VCF genomes, must not contain null
+         * @param genomes one or more VCF genomes, must not contain null
          * @return this VCF sample builder configured with the specified VCF genomes
          */
         public Builder withGenomes(final VcfGenome... genomes) {
@@ -142,7 +142,7 @@ public final class VcfSample {
         /**
          * Return this VCF sample builder configured with the specified VCF genomes.
          *
-         * @param genome one or more VCF genomes, must not be null and must not contain null values
+         * @param genomes one or more VCF genomes, must not be null and must not contain null values
          * @return this VCF sample builder configured with the specified VCF genomes
          */
         public Builder withGenomes(final List<VcfGenome> genomes) {
