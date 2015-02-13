@@ -23,48 +23,16 @@
 
 package org.nmdp.ngs.fca;
 
-import java.util.List;
-import java.util.ArrayList;
-
-public class Pruner<L, W> {
-	protected Vertex parent;
-	protected List<L> labels;
-	protected List<W> weights;
-	
-	public Pruner()
-	{
-		labels = new ArrayList<L>();
-		weights = new ArrayList<W>();
-	}
-	
-	public void setLabels(final ArrayList<L> labels)
-	{
-		this.labels = labels;
-	}
-	
-	public void setWeights(final ArrayList<W> weights)
-	{
-		this.weights = weights;
-	}
-	
-	public boolean pruneVertex(Vertex vertex)
-	{
-		parent = vertex;
-		
-		if(labels.contains(vertex.getLabel()))
-		{
-			return true;
-		}
-		
+public class Writer<L, W> extends Pruner<L, W> {
+  @Override
+  public boolean pruneEdge(Vertex.Edge edge) {
+    if(super.pruneEdge(edge)) {
+      return true;
+    }
+    
+    System.out.println(parent.getLabel() + "->" + edge.target().getLabel() + "[" + edge.weight() + "]");
 		return false;
 	}
-	
-	public boolean pruneEdge(Vertex.Edge edge)
-	{
-		if(weights.contains(edge.weight()))
-		{
-			return true;
-		}
-		return false;
-	}
+  
+  
 }

@@ -140,7 +140,7 @@ public class ConnectedGraph<L, W extends Comparable> extends AbstractGraph<L, W>
         }
       } else if(kind == Kind.STAR) {
         while(graph.size() < size) {
-          graph.putVertex(graph.root(), graph.size(), 0);
+          graph.putVertex(graph.size(), 0);
         }
       } else if(kind == Kind.CYCLE) {
         Vertex source = graph.root();

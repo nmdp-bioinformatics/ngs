@@ -24,47 +24,39 @@
 package org.nmdp.ngs.fca;
 
 import java.util.List;
-import java.util.ArrayList;
 
-public class Pruner<L, W> {
-	protected Vertex parent;
-	protected List<L> labels;
-	protected List<W> weights;
-	
-	public Pruner()
-	{
-		labels = new ArrayList<L>();
-		weights = new ArrayList<W>();
-	}
-	
-	public void setLabels(final ArrayList<L> labels)
-	{
-		this.labels = labels;
-	}
-	
-	public void setWeights(final ArrayList<W> weights)
-	{
-		this.weights = weights;
-	}
-	
-	public boolean pruneVertex(Vertex vertex)
-	{
-		parent = vertex;
-		
-		if(labels.contains(vertex.getLabel()))
-		{
-			return true;
-		}
-		
+import java.lang.StringBuilder;
+
+public class LatticeWriter extends LatticePruner {
+  StringBuilder builder = new StringBuilder();
+
+  public LatticeWriter(Direction direction, List objects, List attributes) {
+    super(direction, objects, attributes);
+    builder.append("digraph").append(" {\n");
+  }
+  
+  @Override
+  public boolean pruneEdge(Vertex.Edge edge) {
+    if(super.pruneEdge(edge)) {
+      return true;
+    }
+    
+    Vertex<Concept, Long> source = parent;
+    Vertex<Concept, Long> target = edge.target();
+    builder.append("  \"")
+           .append(decodeIntent(source.getLabel()))
+           .append("\" -> \"")
+           .append(decodeIntent(target.getLabel()))
+           .append("\"[label=\"")
+           .append(edge.weight())
+           .append("\"];\n");
+    
 		return false;
 	}
-	
-	public boolean pruneEdge(Vertex.Edge edge)
-	{
-		if(weights.contains(edge.weight()))
-		{
-			return true;
-		}
-		return false;
-	}
+  
+  @Override
+  public String toString() {
+    return builder.append("}").toString();
+  }
+  
 }

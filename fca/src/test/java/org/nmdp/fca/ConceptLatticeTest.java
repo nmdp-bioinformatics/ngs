@@ -33,12 +33,33 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.util.BitSet;
+import java.util.Arrays;
 
 public final class ConceptLatticeTest {
   
   
   @Test
-  public void testSupremum() {
+  public void testInsert() {
+    String[] ab = {"a", "b"};
+    String[] bc = {"b", "c"};
+    String[] ac = {"a", "c"};
+    
+    String[] u = {"a", "b", "c"};
+    
+    ConceptLattice lattice = new ConceptLattice(Arrays.asList(u));
+
+    lattice.insert(0, Arrays.asList(ab));
+
+    lattice.insert(0, Arrays.asList(bc));
+
+    lattice.insert(0, Arrays.asList(ac));
+    
+    System.out.println("CONCEPT LATTICE");
+    System.out.println(lattice);
+    
+    System.out.println("WRITE");
+
+    System.out.println(lattice);
     
   }
   

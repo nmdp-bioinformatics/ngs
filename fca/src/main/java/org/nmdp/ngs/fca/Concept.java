@@ -69,4 +69,9 @@ public final class Concept implements Partial<Concept> {
     return this.order(right) == Partial.Order.LESS ||
            this.order(right) == Partial.Order.EQUAL;
   }
+  
+  @Override
+  public String toString() {
+    return intent.toString();
+  }
 }

@@ -28,6 +28,8 @@ import org.nmdp.ngs.fca.Vertex;
  *
  */
 public interface Graph<L, W> extends Iterable<Vertex> {
+  
+  public Vertex putVertex(L label, W weight);
           
   public Vertex putVertex(Vertex source, L label, W weight);
   

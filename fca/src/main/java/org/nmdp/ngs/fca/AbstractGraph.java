@@ -34,6 +34,11 @@ public abstract class AbstractGraph<Label, Weight extends Comparable> implements
   protected int color, size, order;
   
   @Override
+  public Vertex putVertex(Label label, Weight weight) {
+    return putVertex(root, label, weight);
+  }
+  
+  @Override
   public Vertex putVertex(Vertex source, Label label, Weight weight) {
     checkNotNull(label);
     checkNotNull(weight);

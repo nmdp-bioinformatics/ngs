@@ -132,14 +132,14 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
 	
 	public boolean adopt(Vertex target, W weight)
 	{
-		System.out.println(this + ".adopt(" + target + ", " + weight + ")");
+		// System.out.println(this + ".adopt(" + target + ", " + weight + ")");
 		boolean added = edges.add(new Edge<W>(target, weight));
     if(added) {
       outdegree++;
 		  target.indegree++;
     }
     
-    System.out.println("edges = " + edges);
+    // System.out.println("edges = " + edges);
     
     return added;
 		
@@ -187,7 +187,7 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
 			//System.out.println(label + " orphan " + edge.getTargetNode().getL());
 			if(edge.target().equals(query))
 			{
-				System.out.println("Yes");
+				// System.out.println("Yes");
 				orphan(edge);
 				return true; // found
 			}
