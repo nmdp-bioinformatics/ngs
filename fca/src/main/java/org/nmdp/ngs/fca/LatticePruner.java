@@ -26,29 +26,70 @@ package org.nmdp.ngs.fca;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.BitSet;
-
+/**
+ * 
+ * @param <O> object type for concepts
+ * @param <A> attribute type for concepts
+ */
 public class LatticePruner<O, A> extends Pruner<Concept, Long> {
-  List<O> objects;
-  List<A> attributes;
+  private List<O> objects;
+  private List<A> attributes;
+  private Lattice.Direction go;
   
-  public static enum Direction {
-    UP,
-    DOWN
+  protected static abstract class Init<O, A, T extends Init<O, A, T>> extends Pruner.Init<Concept, Long, T> {
+    private List<O> objects;
+    private List<A> attributes;
+    private Lattice.Direction go;
+    
+    public T go(Lattice.Direction go) {
+      this.go = go;
+      return self();
+    }
+    
+    public T withObjects(final List<O> objects) {
+      this.objects = objects;
+      return self();
+    }
+    
+    public T withAttributes(final List<A> attributes) {
+      this.attributes = attributes;
+      return self();
+    }
+    
+    public LatticePruner build() {
+      return new LatticePruner(this);
+    }
   }
   
-  private Direction go;
+  public static class Builder<O, A> extends Init<O, A, Builder<O, A>> {
+    @Override
+    protected Builder self() {
+      return this;
+    }
+  }
   
-  public LatticePruner(Direction direction, List<O> objects, List<A> attributes) {
+  protected LatticePruner(Init<O, A, ?> init) {
+    super(init);
+    this.attributes = init.attributes;
+    this.objects = init.objects;
+    this.go = init.go;
+  }
+  
+  protected LatticePruner(Lattice.Direction direction, List<O> objects, List<A> attributes) {
     super();
     this.go = direction;
     this.objects = objects;
     this.attributes = attributes;
   }
   
-  public Direction go() {
+  public Lattice.Direction go() {
     return go;
   }
-  
+  /**
+   * 
+   * @param concept to decode
+   * @return List of attributes indexed from the decoded concept's intent
+   */
   public List<A> decodeIntent(Concept concept) {
     List<A> attributes = new ArrayList<A>();
     
@@ -59,13 +100,17 @@ public class LatticePruner<O, A> extends Pruner<Concept, Long> {
     
     return attributes;
   }
-  
+  /**
+   * 
+   * @param edge
+   * @return 
+   */
   @Override
   public boolean pruneEdge(Vertex.Edge edge) {
     Vertex<Concept, Long> source = (Vertex<Concept, Long>) parent;
     Vertex<Concept, Long> target = (Vertex<Concept, Long>) edge.target();
     
-    if(go == Direction.DOWN) {
+    if(go == Lattice.Direction.DOWN) {
       if(source.getLabel().order(target.getLabel()) == Partial.Order.LESS) {
         return true;
       }
@@ -77,5 +122,4 @@ public class LatticePruner<O, A> extends Pruner<Concept, Long> {
     }
     return false;
 	}
-  
 }

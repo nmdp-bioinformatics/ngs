@@ -27,11 +27,37 @@ import java.util.List;
 
 import java.lang.StringBuilder;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class LatticeWriter extends LatticePruner {
   StringBuilder builder = new StringBuilder();
-
-  public LatticeWriter(Direction direction, List objects, List attributes) {
-    super(direction, objects, attributes);
+  private String filepath;
+  
+  protected static abstract class Init<O, A, T extends Init<O, A, T>> extends LatticePruner.Init<O, A, T> {
+    private String filepath;
+    
+    public T toFile(final String filepath) {
+      this.filepath = filepath;
+      return self();
+    }
+    
+    public LatticePruner build() {
+      return new LatticeWriter(this);
+    }
+  }
+  
+  public static class Builder<O, A> extends Init<O, A, Builder<O, A>> {
+    @Override
+    protected Builder self() {
+      return this;
+    }
+  }
+  
+  protected LatticeWriter(Init<?, ?, ?> init) {
+    super(init);
+    this.filepath = init.filepath;
     builder.append("digraph").append(" {\n");
   }
   
@@ -54,9 +80,14 @@ public class LatticeWriter extends LatticePruner {
 		return false;
 	}
   
+  public void write() throws IOException {
+    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filepath));
+    bufferedWriter.write(builder.append("}").toString());
+    bufferedWriter.close();
+  }
+  
   @Override
   public String toString() {
     return builder.append("}").toString();
   }
-  
 }

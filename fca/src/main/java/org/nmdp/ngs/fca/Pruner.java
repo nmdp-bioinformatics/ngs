@@ -26,27 +26,110 @@ package org.nmdp.ngs.fca;
 import java.util.List;
 import java.util.ArrayList;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+/**
+ * Class for pruning labeled vertexes and weighted edges.
+ * @param <L> label type for vertexes
+ * @param <W> weight type for edges
+ */
 public class Pruner<L, W> {
 	protected Vertex parent;
 	protected List<L> labels;
 	protected List<W> weights;
-	
+  /**
+   * Abstract class for constructing polymorphic pruners using the builder
+   * pattern.
+   * @param <L> label type for vertexes
+   * @param <W> weight type for edges
+   * @param <T> builder type for heritable pruning methods
+   */
+  protected static abstract class Init<L, W, T extends Init<L, W, T>> {
+    private List<L> labels;
+    private List<W> weights;
+    /**
+     * 
+     * @return initialized object 
+     */
+    protected abstract T self();
+    /**
+     * 
+     * @param labels for pruning vertexes
+     * @return object with set labels
+     */
+    public T withLabels(final List<L> labels) {
+      this.labels= labels;
+      return self();
+    }
+    /**
+     * 
+     * @param weights for pruning edges
+     * @return object with set weights
+     */
+    public T withWeights(final List<W> weights) {
+      this.weights = weights;
+      return self();
+    }
+    /**
+     * 
+     * @return new initialized pruner
+     */
+    public Pruner build() {
+      return new Pruner(this);
+    }
+  }
+  /**
+   * Instantiatable class for building pruners.
+   * @param <L> label type for vertexes
+   * @param <W> weight type for edges
+   */
+  public static class Builder<L, W> extends Init<L, W, Builder<L, W>> {
+    @Override
+    protected Builder self() {
+      return this;
+    }
+  }
+  /**
+   * Construct a new pruner from a initializer.
+   * @param init 
+   */
+  protected Pruner(Init<L, W, ?> init) {
+    this.labels = init.labels == null ? new ArrayList<L>() : init.labels;
+    this.weights = init.weights == null ? new ArrayList<W>() : init.weights;
+  }
+	/**
+   * Construct a default pruner with empty labels and weights.
+   */
 	public Pruner()
 	{
 		labels = new ArrayList<L>();
 		weights = new ArrayList<W>();
 	}
-	
-	public void setLabels(final ArrayList<L> labels)
-	{
-		this.labels = labels;
-	}
-	
-	public void setWeights(final ArrayList<W> weights)
-	{
-		this.weights = weights;
-	}
-	
+  /**
+   * Get the vertex currently visited by this pruner.
+   * @return parent vertex
+   */
+  public Vertex getParent() {
+    return parent;
+  }
+  /**
+   * Get the pruning labels.
+   * @return list of labels
+   */
+  public List<L> getLabels() {
+    return labels;
+  }
+  /**
+   * Get the pruning weights.
+   * @return list of weights
+   */
+  public List<W> getWeights() {
+    return weights;
+  }
+	/**
+   * 
+   * @param vertex considered for pruning
+   * @return true if vertex should be pruned
+   */
 	public boolean pruneVertex(Vertex vertex)
 	{
 		parent = vertex;
@@ -58,7 +141,11 @@ public class Pruner<L, W> {
 		
 		return false;
 	}
-	
+	/**
+   * 
+   * @param edge considered for pruning
+   * @return true if edge or target should be pruned
+   */
 	public boolean pruneEdge(Vertex.Edge edge)
 	{
 		if(weights.contains(edge.weight()))

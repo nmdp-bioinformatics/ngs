@@ -39,6 +39,11 @@ import java.util.Iterator;
 public final class ConnectedGraphTest {
   private Graph graph;
   
+  @Before
+  public void setUp() {
+    graph = new ConnectedGraph(false);
+  }
+  
   @Test
   public void testPath() {
     graph = builder().path(4).build();
@@ -71,5 +76,40 @@ public final class ConnectedGraphTest {
     assertEquals(graph.root().getOutDegree(), 2);
     
     System.out.println("CYCLE" + graph);
+  }
+  
+  @Test
+  public void isEmpty() {
+    assertTrue(graph.isEmpty());
+  }
+  
+  @Test
+  public void isLabeled() {
+    assertFalse(graph.isLabeled());
+  }
+  
+  @Test
+  public void  isWeighted() {
+    assertFalse(graph.isWeighted());
+  }
+
+  @Test
+  public void isDirected() {
+    assertFalse(graph.isDirected());
+  }
+  
+  @Test
+  public void isMulti() {
+    assertTrue(graph.isMulti());
+  }
+ 
+  @Test
+  public void isComplex() {
+    assertTrue(graph.isComplex());
+  }
+
+  @Test
+  public void isCyclic() {
+    assertTrue(graph.isCyclic());
   }
 }

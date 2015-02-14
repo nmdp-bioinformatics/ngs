@@ -34,6 +34,9 @@ import java.util.ArrayList;
  * Obiedkov, and Kourie. AddIntent: a new incremental algorithm for constructing
  * concept lattices. Lecture Notes in Computer Science Volume 2961, 2004, pp
  * 372-385.
+ * @author int33484
+ * @param <O> object type
+ * @param <A> attribute type
  */
 public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
   private List<O> objects;
@@ -208,13 +211,14 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
   
 
   
-  public void go(LatticePruner pruner) {
+  public void go(Pruner pruner) {
+    LatticePruner filter = (LatticePruner) pruner;
     Iterator it;
     
-    if(pruner.go() == LatticePruner.Direction.DOWN) {
-      it = top(pruner);
+    if(filter.go() == Lattice.Direction.DOWN) {
+      it = top(filter);
     } else {
-      it = bottom(pruner);
+      it = bottom(filter);
     }
     
     while(it.hasNext()) {
@@ -224,14 +228,15 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
   
   @Override
   public String toString() {
-    LatticeWriter writer = new LatticeWriter(LatticePruner.Direction.DOWN,
-                                             objects,
-                                             attributes);
-    
+    Pruner writer = new LatticeWriter.Builder()
+                                     .go(Lattice.Direction.DOWN)
+                                     .withObjects(objects)
+                                     .withAttributes(attributes)
+                                     .build();
+                                        
     go(writer);
     return writer.toString();
   }
-  
   /**
    * Each vertex is labeled with a Concept.
    * @return true

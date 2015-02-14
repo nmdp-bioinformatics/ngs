@@ -62,5 +62,35 @@ public final class ConceptLatticeTest {
     System.out.println(lattice);
     
   }
+  /**
+   * Example 3.15 taken from Davey and Priestly's "Introduction to Lattices
+   * and Order" second edition (p 77).
+   */
+  @Test
+  public void testNothing() {
+    String [] attributes = {"a", "b", "c", "d", "e", "f", "g"};
+    
+    String [] S = {"a", "b", "d", "f"};
+    String [] T = {"a", "b", "d", "e"};
+    String [] U = {"a", "b", "d", "e", "f", "g"};
+    String [] V = {"a", "c", "e", "f"};
+    String [] W = {"b", "d"};
+    String [] X = {"a", "f"};
+    
+    ConceptLattice lattice = new ConceptLattice(Arrays.asList(attributes));
+    
+    lattice.insert("S", Arrays.asList(S));
+    lattice.insert("T", Arrays.asList(T));
+    lattice.insert("U", Arrays.asList(U));
+    lattice.insert("V", Arrays.asList(V));
+    lattice.insert("W", Arrays.asList(W));
+    lattice.insert("X", Arrays.asList(X));
+    
+    assertEquals(lattice.size(), 12);
+    assertEquals(lattice.order(), 18);
+    
+    System.out.println(lattice);
+    
+  }
   
 }
