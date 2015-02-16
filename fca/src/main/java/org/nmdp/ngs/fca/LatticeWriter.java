@@ -32,7 +32,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class LatticeWriter extends LatticePruner {
-  StringBuilder builder = new StringBuilder();
+  StringBuilder builder;
   private String filepath;
   
   protected static abstract class Init<O, A, T extends Init<O, A, T>> extends LatticePruner.Init<O, A, T> {
@@ -43,7 +43,7 @@ public class LatticeWriter extends LatticePruner {
       return self();
     }
     
-    public LatticePruner build() {
+    public LatticeWriter build() {
       return new LatticeWriter(this);
     }
   }
@@ -58,6 +58,7 @@ public class LatticeWriter extends LatticePruner {
   protected LatticeWriter(Init<?, ?, ?> init) {
     super(init);
     this.filepath = init.filepath;
+    builder = new StringBuilder();
     builder.append("digraph").append(" {\n");
   }
   
@@ -70,9 +71,11 @@ public class LatticeWriter extends LatticePruner {
     Vertex<Concept, Long> source = parent;
     Vertex<Concept, Long> target = edge.target();
     builder.append("  \"")
-           .append(decodeIntent(source.getLabel()))
+           .append(Concept.decode(source.getLabel().extent(), objects))
+           .append(Concept.decode(source.getLabel().intent(), attributes))
            .append("\" -> \"")
-           .append(decodeIntent(target.getLabel()))
+           .append(Concept.decode(target.getLabel().extent(), objects))
+           .append(Concept.decode(target.getLabel().intent(), attributes))
            .append("\"[label=\"")
            .append(edge.weight())
            .append("\"];\n");

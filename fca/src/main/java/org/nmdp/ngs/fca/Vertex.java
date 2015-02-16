@@ -95,7 +95,7 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
     this.color = 0;
 		this.label = label;
 		this.edges = new ArrayList<Edge<W>>();
-    hashcode = Objects.hash(id, indegree, outdegree);
+    hashcode = Objects.hash(id, label);
 	}
   
 	/**
@@ -230,4 +230,7 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
                 
   }
   
+  Vertex shallowCopy() {
+    return new Vertex(id, label);
+  }
 }

@@ -6,15 +6,16 @@
 
 package org.nmdp.ngs.fca;
 
+import java.util.Iterator;
+
 /**
  *
  * @author int33484
  */
-public interface Lattice {
-  public static enum Direction {
-    UP,
-    DOWN
+public class Path extends ConnectedGraph {
+
+  public Path() {
+    super(true);
   }
   
-
 }

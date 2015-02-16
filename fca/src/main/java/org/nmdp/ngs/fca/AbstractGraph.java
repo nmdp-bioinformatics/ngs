@@ -174,6 +174,7 @@ public abstract class AbstractGraph<Label, Weight extends Comparable> implements
    * 
    * @return false
    */
+  @Override
   public boolean isLabeled() {
     return false;
   }
@@ -181,6 +182,7 @@ public abstract class AbstractGraph<Label, Weight extends Comparable> implements
    * 
    * @return false
    */
+  @Override
   public boolean isWeighted() {
     return false;
   }
@@ -188,6 +190,7 @@ public abstract class AbstractGraph<Label, Weight extends Comparable> implements
    * 
    * @return true if edges are directed
    */
+  @Override
   public boolean isDirected() {
     return directed;
   }
@@ -195,6 +198,7 @@ public abstract class AbstractGraph<Label, Weight extends Comparable> implements
    * 
    * @return true
    */
+  @Override
   public boolean isMulti() {
     return true;
   }
@@ -202,6 +206,7 @@ public abstract class AbstractGraph<Label, Weight extends Comparable> implements
    * 
    * @return true
    */
+  @Override
   public boolean isComplex() {
     return true;
   }
@@ -209,6 +214,7 @@ public abstract class AbstractGraph<Label, Weight extends Comparable> implements
    * 
    * @return true
    */
+  @Override
   public boolean isCyclic() {
     return true;
   }

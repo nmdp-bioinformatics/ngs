@@ -32,9 +32,9 @@ import java.util.BitSet;
  * @param <A> attribute type for concepts
  */
 public class LatticePruner<O, A> extends Pruner<Concept, Long> {
-  private List<O> objects;
-  private List<A> attributes;
-  private Lattice.Direction go;
+  protected List<O> objects;
+  protected List<A> attributes;
+  protected Lattice.Direction go;
   
   protected static abstract class Init<O, A, T extends Init<O, A, T>> extends Pruner.Init<Concept, Long, T> {
     private List<O> objects;
@@ -75,38 +75,21 @@ public class LatticePruner<O, A> extends Pruner<Concept, Long> {
     this.go = init.go;
   }
   
-  protected LatticePruner(Lattice.Direction direction, List<O> objects, List<A> attributes) {
-    super();
-    this.go = direction;
-    this.objects = objects;
-    this.attributes = attributes;
-  }
-  
   public Lattice.Direction go() {
     return go;
   }
+
   /**
-   * 
-   * @param concept to decode
-   * @return List of attributes indexed from the decoded concept's intent
-   */
-  public List<A> decodeIntent(Concept concept) {
-    List<A> attributes = new ArrayList<A>();
-    
-    BitSet bits = concept.intent();
-    for(int i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
-      attributes.add(this.attributes.get(i));
-    }
-    
-    return attributes;
-  }
-  /**
-   * 
+   * Overrides method to prune lattice edges.
    * @param edge
    * @return 
    */
   @Override
   public boolean pruneEdge(Vertex.Edge edge) {
+    if(super.pruneEdge(edge)) {
+      return true;
+    }
+    
     Vertex<Concept, Long> source = (Vertex<Concept, Long>) parent;
     Vertex<Concept, Long> target = (Vertex<Concept, Long>) edge.target();
     

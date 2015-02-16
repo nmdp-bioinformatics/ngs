@@ -28,12 +28,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 /**
- * A concept lattice is a directed acyclic graph (DAG) that results from
- * topologically sorting concepts according to their partial order. Concepts are
- * added to the lattice dynamically with algorithms described by van der Merwe,
- * Obiedkov, and Kourie. AddIntent: a new incremental algorithm for constructing
- * concept lattices. Lecture Notes in Computer Science Volume 2961, 2004, pp
- * 372-385.
+ * A class for concept lattices. Implementation is a directed acyclic graph
+ * (DAG) that results from topologically sorting concepts according to their
+ * partial order. Concepts are added to the lattice dynamically with algorithms
+ * described by van der Merwe, Obiedkov, and Kourie. AddIntent: a new
+ * incremental algorithm for constructing concept lattices. Lecture Notes in
+ * Computer Science Volume 2961, 2004, pp 372-385.
  * @author int33484
  * @param <O> object type
  * @param <A> attribute type
@@ -49,12 +49,11 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
     this.attributes = attributes;
     BitSet ones = new BitSet(this.attributes.size());
     ones.set(0, this.attributes.size());
-    super.putVertex(new Concept(null, ones), Long.MIN_VALUE);
+    super.putVertex(new Concept(new BitSet(), ones), Long.MIN_VALUE);
     bottom = root;
   }
-  
+
  private Vertex supremum(BitSet intent, Vertex<Concept, Long> generator) {
-		System.out.println("supremum: generator = " + generator.getLabel());
 		boolean max = true;
 		while(max) {
       
@@ -63,17 +62,14 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
       
 			while(edges.hasNext())
 			{
-        Vertex<Concept, Long> target = (Vertex<Concept, Long>) edges.next().target();
-				System.out.println("supremum: " + target.getLabel().toString() + ".gte(" + generator.getLabel().toString() + ") is " + (target.getLabel().gte(generator.getLabel()) ? "true" : "false"));
+        Vertex<Concept, Long> target = edges.next().target();
 				if(target.getLabel().gte(generator.getLabel())) {
           continue;
         }  
         
-				Concept proposed = new Concept(null, intent);
-        System.out.println("supremeum: " + target.getLabel().toString() + ".gte(" + proposed + ") is " + (target.getLabel().gte(proposed) ? "true" : "false"));
-				if(target.getLabel().gte(proposed)) {
+				Concept proposed = new Concept(new BitSet(), intent);
+        if(target.getLabel().gte(proposed)) {
 					generator = target;
-					System.out.println("supremum: generator = " + generator.getLabel().toString());
 					max = true;
 					break;
 				}
@@ -84,7 +80,6 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
 	}
  
  	private Vertex addIntent(BitSet intent, Vertex<Concept, Long> generator) {
-		System.out.println("addIntent(" + intent.toString() + ", " + generator.getLabel().toString() + ")");
 		generator = supremum(intent, generator);
 		
 
@@ -96,26 +91,19 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
     }
 		
 		List parents = new ArrayList<ConceptVertex>(); 
-		System.out.println("generator has " + generator.getOutDegree() + " out nodes");
 		Iterator<Vertex.Edge<Long>> edges = generator.iterator();
     while(edges.hasNext()) {
       Vertex<Concept, Long> target = edges.next().target();
-			System.out.println(target.getLabel().toString() + ".gte(" + generator.getLabel() + ") is " + (target.getLabel().gte(generator.getLabel()) ? "true" : "false"));
 			if(target.getLabel().gte(generator.getLabel())) {
-        System.out.println("continue");
-				continue;
+        continue;
 			}
 			
 			Vertex<Concept, Long> candidate = target;
-			System.out.println("!(" + candidate.getLabel() + ".gte(" + proposed + ") && !(" +
-              proposed + ".gte(" + candidate.getLabel());
-      if(!(candidate.getLabel().gte(proposed)) &&
+			if(!(candidate.getLabel().gte(proposed)) &&
          !(proposed.gte(candidate.getLabel()))) {
         
         BitSet meet = (BitSet) candidate.getLabel().intent().clone();
-        System.out.println(candidate.getLabel().intent() + "meet(" + intent + ") = " + meet);
         meet.and(intent);
-        System.out.println("recurse addIntent(" + meet + ", " + candidate);
         candidate = addIntent(meet, candidate);
 				//Locus intersect = (Locus) candidate.getLabel().intersect(locus);
 				
@@ -135,53 +123,45 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
 					add = false;
 					break;
         } else if(candidate.getLabel().gte(parent.getLabel())) {
-          System.out.println("doomed.add(" + parent.getLabel() + ")");
-					doomed.add(parent);
+          doomed.add(parent);
 				}
 			}
 			
       
       for (Iterator it = doomed.iterator(); it.hasNext();) {
         Vertex vertex = (Vertex) it.next();
-        System.out.println("parents.add(" + vertex.getLabel() + ")");
         parents.remove(vertex);
       }
 			
 			if(add)
 			{
-        System.out.println("parents.add(" + candidate.getLabel() + ")");
-				parents.add(candidate);
+        parents.add(candidate);
 			}
 		}
 		
 		//locus.addAll(((Locus) generator.getLabel()).getExtent());
     Long weight = new Long(0);
-    System.out.println("putVertex(" + generator.getLabel() + ", " + proposed + ")");
+    proposed.extent().or(generator.getLabel().extent());
 		Vertex<Concept, Long> child = super.putVertex(generator, proposed, weight);
 		bottom = bottom.getLabel().gte(child.getLabel()) ? child : bottom;
-    
-    System.out.println("bottom = " + bottom.getLabel());
-		
+
     for(Iterator it = parents.iterator(); it.hasNext();) {
       Vertex<Concept, Long> parent = (Vertex<Concept, Long>) it.next();
-			if(!parent.equals(generator))
-			{
-        System.out.println("deleteEdge(" + parent.getLabel() + ", " + generator.getLabel() + ")");
-				super.deleteEdge(parent, generator);
-        System.out.println("putEdge(" + parent.getLabel() + ", " + child.getLabel() + ")");
-				super.putEdge(parent, child, new Long(0));
+			if(!parent.equals(generator)) {
+        super.deleteEdge(parent, generator);
+        super.putEdge(parent, child, new Long(0));
 			}
 		}
 		
 		return child;
 	}
   
-  private GraphIterator top(Pruner pruner)
+  public GraphIterator top(Pruner pruner)
 	{ 
 		return super.iterator(pruner);
 	}
 	
-	private GraphIterator bottom(Pruner pruner)
+	public GraphIterator bottom(Pruner pruner)
 	{ 
 		return new GraphIterator(++color, pruner, bottom);
 	}
@@ -195,22 +175,57 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
   }
   
   public void insert(O object, List<A> attributes) {
-    System.out.println("insert(" + attributes + ")");
-    objects.add(object);
-    
-    BitSet intent = new BitSet(attributes.size());
-    for(int i = 0; i < this.attributes.size(); i++) {
-      if(attributes.contains(this.attributes.get(i))) {
-        intent.flip(i);
-      }
+    if(!objects.contains(object)) {
+      objects.add(object);
     }
+
+    BitSet intent = Concept.encode(attributes, this.attributes);
+    Pruner adder = new ExtentAdder.Builder().withObject(object).withObjects(objects).build();
+    GraphIterator inserted = new GraphIterator(++color, adder, addIntent(intent, root));
     
-    System.out.println("insert(" + intent + ")");
-    GraphIterator inserted = new GraphIterator(++color, new Pruner<Concept, Long>(), addIntent(intent, root)); 
+    while(inserted.hasNext()) {
+      inserted.next();
+    }
   }
   
-
+  public GraphIterator queryAttributes(final List<A> query) {
+    BitSet bits = Concept.encode(query, attributes);
+    return new GraphIterator(++color, new Pruner(), supremum(bits, root));
+  }
   
+  public final Concept leastUpperBound(final List<A> query) {
+    return (( Vertex<Concept, Long> ) queryAttributes(query).next()).getLabel();
+  }
+  
+  public GraphIterator queryAttributes(final List<A> p, final List<A> q) {
+    BitSet join = Concept.encode(p, attributes);
+    BitSet bits = Concept.encode(q, attributes);
+    join.or(bits);
+    return new GraphIterator(++color, new Pruner(), supremum(join, root));
+  }
+  
+  public final Concept leastUpperBound(final List<A> p, final List<A> q) {
+    return (( Vertex<Concept, Long> ) queryAttributes(p, q).next()).getLabel();
+  }
+  
+  public double marginal(final List<A> query) {
+    return (double) leastUpperBound(query).extent().cardinality() / objects.size();
+  }
+  
+  public double joint(final List<A> p, final List<A> q) {
+    return (double) leastUpperBound(p, q).extent().cardinality() / objects.size();
+  }
+  
+  public double conditional(final List<A> p, final List<A> q) {
+    return joint(p, q) / marginal(q);
+  }
+  /**
+   * Iterate over the lattice and do some work defined by pruner. If
+   * Lattice.Direction is DOWN traversal happens from top to bottom.
+   * If Lattice.Direction is UP traversal happens in reverse order across the
+   * lattice's dual from bottom to top.
+   * @param pruner 
+   */
   public void go(Pruner pruner) {
     LatticePruner filter = (LatticePruner) pruner;
     Iterator it;
@@ -241,6 +256,7 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
    * Each vertex is labeled with a Concept.
    * @return true
    */
+  @Override
   public boolean isLabeled() {
     return true;
   }
@@ -248,13 +264,23 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
    * Each edge is weighted with Long.
    * @return true
    */
+  @Override
   public boolean isWeighted() {
+    return true;
+  }
+  /**
+   * Edges are directed.
+   * @return true
+   */
+  @Override
+  public boolean isDirected() {
     return true;
   }
   /**
    * Multiple edges between vertexes are not present.
    * @return false
    */
+  @Override
   public boolean isMulti() {
     return false;
   }
@@ -262,6 +288,7 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
    * Loops are not present.
    * @return false
    */
+  @Override
   public boolean isComplex() {
     return false;
   }
@@ -269,6 +296,7 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
    * Cycles are not present. 
    * @return false
    */
+  @Override
   public boolean isCyclic() {
     return false;
   }

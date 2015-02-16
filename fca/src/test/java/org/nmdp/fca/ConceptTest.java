@@ -26,6 +26,9 @@ package org.nmdp.ngs.fca;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+import com.google.common.collect.ImmutableList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -35,25 +38,42 @@ import static org.junit.Assert.fail;
 import java.util.BitSet;
 
 public final class ConceptTest {
-  BitSet w, x, y, z;
-  Concept W, X, Y, Z;
+  private BitSet w, x, y, z;
+  private Concept W, X, Y, Z;
+  private List a, b, ab, empty;
   
   @Before
   public void setUp() {
-    w = new BitSet(2);
-    x = new BitSet(2);
-    y = new BitSet(2);
-    z = new BitSet(2);
-    
-    x.flip(0);
-    y.flip(1);
-    z.flip(0);
-    z.flip(1);
-    
+    w = new BitSet(2); // empty
+    x = new BitSet(2); x.flip(0); // a
+    y = new BitSet(2); y.flip(1); // b
+    z = new BitSet(2); z.flip(0); z.flip(1); // ab
+
     W = new Concept(null, w);
     X = new Concept(null, x);
     Y = new Concept(null, y);
     Z = new Concept(null, z);
+    
+    a = new ImmutableList.Builder<String>().add("A").build();
+    b = new ImmutableList.Builder<String>().add("B").build();
+    ab = new ImmutableList.Builder<String>().add("A").add("B").build();
+    empty = new ImmutableList.Builder<String>().build();
+  }
+  
+  @Test
+  public void testDecode() {
+    assertEquals(Concept.decode(w, b), empty);
+    assertEquals(Concept.decode(x, ab), a);
+    assertEquals(Concept.decode(y, ab), b);
+    assertEquals(Concept.decode(z, ab), ab);
+  }
+  
+  @Test
+  public void testEncode() {
+    assertEquals(Concept.encode(empty, ab), w);
+    assertEquals(Concept.encode(a, ab), x);
+    assertEquals(Concept.encode(b, ab), y);
+    assertEquals(Concept.encode(ImmutableList.copyOf(ab), ab), z);
   }
   
   @Test

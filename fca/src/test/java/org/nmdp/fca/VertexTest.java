@@ -199,4 +199,14 @@ public final class VertexTest {
     Vertex vertex = new Vertex(0, "X");
     assertEquals(vertex, x);
   }
+  
+  @Test
+  public void testShallowCopy() {
+    y.adopt(x, 0);
+    Vertex copy = y.shallowCopy();
+    assertEquals(copy.getId(), 1);
+    assertEquals(copy.getLabel(), "Y");
+    assertEquals(copy.getInDegree(), 0);
+    assertEquals(copy.getOutDegree(), 0);
+  }
 }

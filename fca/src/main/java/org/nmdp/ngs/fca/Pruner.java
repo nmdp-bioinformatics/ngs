@@ -25,19 +25,20 @@ package org.nmdp.ngs.fca;
 
 import java.util.List;
 import java.util.ArrayList;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 /**
- * Class for pruning labeled vertexes and weighted edges.
+ * Class for pruning labeled vertexes and weighted edges. Pruners are the main
+ * mechanism for performing read-only operations on graphs.
  * @param <L> label type for vertexes
  * @param <W> weight type for edges
  */
 public class Pruner<L, W> {
-	protected Vertex parent;
+  protected Path path;
+	protected Vertex parent, clone;
 	protected List<L> labels;
 	protected List<W> weights;
+  protected boolean remember;
   /**
-   * Abstract class for constructing polymorphic pruners using the builder
+   * Abstract class for constructing polymorphic pruners with a builder-like
    * pattern.
    * @param <L> label type for vertexes
    * @param <W> weight type for edges
@@ -46,31 +47,41 @@ public class Pruner<L, W> {
   protected static abstract class Init<L, W, T extends Init<L, W, T>> {
     private List<L> labels;
     private List<W> weights;
+    private boolean remember;
     /**
-     * 
-     * @return initialized object 
+     * Abstract method that returns the current object. Used instead of this in
+     * the normal builder pattern.
+     * @return instantiated, partially initialized builder
      */
     protected abstract T self();
     /**
-     * 
+     * Method to initialize labels assigned for pruning.
      * @param labels for pruning vertexes
-     * @return object with set labels
+     * @return builder with set labels
      */
     public T withLabels(final List<L> labels) {
       this.labels= labels;
       return self();
     }
     /**
-     * 
+     * Method to initialize weights assigned for pruning.
      * @param weights for pruning edges
-     * @return object with set weights
+     * @return builder with set weights
      */
     public T withWeights(final List<W> weights) {
       this.weights = weights;
       return self();
     }
     /**
-     * 
+     * Method to initialize traversed path memory.
+     * @return builder with memory set to true
+     */
+    public T rememberPath() {
+      this.remember = true;
+      return self();
+    }
+    /**
+     * Method to build a fully initialized pruner.
      * @return new initialized pruner
      */
     public Pruner build() {
@@ -89,44 +100,56 @@ public class Pruner<L, W> {
     }
   }
   /**
-   * Construct a new pruner from a initializer.
+   * Constructs a new pruner from a initializer.
    * @param init 
    */
   protected Pruner(Init<L, W, ?> init) {
-    this.labels = init.labels == null ? new ArrayList<L>() : init.labels;
-    this.weights = init.weights == null ? new ArrayList<W>() : init.weights;
+    this();
+    path = new Path();
+    this.remember = init.remember;
+    
+    if(init.labels != null) {
+      this.labels = init.labels;
+    }
+    
+    if(init.weights != null) {
+      this.weights = init.weights;
+    }
   }
 	/**
-   * Construct a default pruner with empty labels and weights.
+   * Constructs a default pruner that visits all vertexes and has no memory of
+   * its traversed path.
    */
 	public Pruner()
 	{
+    path = new Path();
+    remember = false;
 		labels = new ArrayList<L>();
 		weights = new ArrayList<W>();
 	}
   /**
-   * Get the vertex currently visited by this pruner.
+   * Get the vertex currently visited.
    * @return parent vertex
    */
   public Vertex getParent() {
     return parent;
   }
   /**
-   * Get the pruning labels.
+   * Get the assigned pruned labels.
    * @return list of labels
    */
   public List<L> getLabels() {
     return labels;
   }
   /**
-   * Get the pruning weights.
+   * Get the assigned pruned weights.
    * @return list of weights
    */
   public List<W> getWeights() {
     return weights;
   }
 	/**
-   * 
+   * Method for pruning visited vertexes.
    * @param vertex considered for pruning
    * @return true if vertex should be pruned
    */
@@ -138,11 +161,15 @@ public class Pruner<L, W> {
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
 	/**
-   * 
+   * Method for pruning edges and target vertexes. If the pruner is told it will
+   * remember its traversed path by creating a new connected graph from shallow
+   * copies of visited vertexes. Each new vertex is connected by edges to
+   * (unpruned) target vertexes with corresponding weights from the original
+   * graph.
    * @param edge considered for pruning
    * @return true if edge or target should be pruned
    */
@@ -152,6 +179,21 @@ public class Pruner<L, W> {
 		{
 			return true;
 		}
+    
+    if(remember) {
+      clone = parent.shallowCopy();
+      Vertex child = edge.target().shallowCopy();
+      path.putEdge(clone, child, edge.weight());
+    }
+    
 		return false;
 	}
+  /**
+   * Method for retrieving the traversed path.  If the pruner has no memory the
+   * result is a null graph with no vertexes and no edges.
+   * @return a connected graph representing the traversed path
+   */
+  public Graph path() {
+    return path;
+  }
 }

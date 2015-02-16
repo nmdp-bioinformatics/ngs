@@ -52,7 +52,7 @@ public final class ConnectedGraphTest {
     assertEquals(graph.root().getInDegree(), 1);
     assertEquals(graph.root().getOutDegree(), 1);
 
-    System.out.println(graph);
+    // System.out.println(graph);
   }
   
   @Test
@@ -64,7 +64,7 @@ public final class ConnectedGraphTest {
     assertEquals(graph.root().getOutDegree(), 3);
     
     
-    System.out.println(graph);
+    // System.out.println(graph);
   }
   
   @Test
@@ -75,7 +75,7 @@ public final class ConnectedGraphTest {
     assertEquals(graph.root().getInDegree(), 2);
     assertEquals(graph.root().getOutDegree(), 2);
     
-    System.out.println("CYCLE" + graph);
+    // System.out.println("CYCLE" + graph);
   }
   
   @Test

@@ -33,64 +33,162 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.util.BitSet;
-import java.util.Arrays;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 public final class ConceptLatticeTest {
-  
-  
+  ConceptLattice lattice;
+  private List abcdefg, abdefg, abde, abdf, acef, bd, af;
+  /**
+   * Example taken from Davey and Priestly's "Introduction to Lattices and
+   * Order" second edition (p 77).
+   */
+  @Before
+  public void setUp() {
+    abcdefg = new ImmutableList.Builder<String>()
+    .add("a").add("b").add("c").add("d").add("e").add("f").add("g").build();
+    
+    abdefg = new ImmutableList.Builder<String>()
+    .add("a").add("b").add("d").add("e").add("f").add("g").build();
+    
+    abde = new ImmutableList.Builder<String>()
+    .add("a").add("b").add("d").add("e").build();
+    
+    abdf = new ImmutableList.Builder<String>()
+    .add("a").add("b").add("d").add("f").build();
+    
+    acef = new ImmutableList.Builder<String>()
+    .add("a").add("c").add("e").add("f").build();
+    
+    bd = new ImmutableList.Builder<String>()
+    .add("b").add("d").build();
+    
+    af = new ImmutableList.Builder<String>()
+    .add("a").add("f").build(); 
+    
+    lattice = new ConceptLattice(abcdefg);
+  }
+
   @Test
   public void testInsert() {
-    String[] ab = {"a", "b"};
-    String[] bc = {"b", "c"};
-    String[] ac = {"a", "c"};
-    
-    String[] u = {"a", "b", "c"};
-    
-    ConceptLattice lattice = new ConceptLattice(Arrays.asList(u));
-
-    lattice.insert(0, Arrays.asList(ab));
-
-    lattice.insert(0, Arrays.asList(bc));
-
-    lattice.insert(0, Arrays.asList(ac));
-    
-    System.out.println("CONCEPT LATTICE");
-    System.out.println(lattice);
-    
-    System.out.println("WRITE");
-
-    System.out.println(lattice);
-    
-  }
-  /**
-   * Example 3.15 taken from Davey and Priestly's "Introduction to Lattices
-   * and Order" second edition (p 77).
-   */
-  @Test
-  public void testNothing() {
-    String [] attributes = {"a", "b", "c", "d", "e", "f", "g"};
-    
-    String [] S = {"a", "b", "d", "f"};
-    String [] T = {"a", "b", "d", "e"};
-    String [] U = {"a", "b", "d", "e", "f", "g"};
-    String [] V = {"a", "c", "e", "f"};
-    String [] W = {"b", "d"};
-    String [] X = {"a", "f"};
-    
-    ConceptLattice lattice = new ConceptLattice(Arrays.asList(attributes));
-    
-    lattice.insert("S", Arrays.asList(S));
-    lattice.insert("T", Arrays.asList(T));
-    lattice.insert("U", Arrays.asList(U));
-    lattice.insert("V", Arrays.asList(V));
-    lattice.insert("W", Arrays.asList(W));
-    lattice.insert("X", Arrays.asList(X));
+    lattice.insert("S", abdf);
+    lattice.insert("T", abde);
+    lattice.insert("U", abdefg);
+    lattice.insert("V", acef);
+    lattice.insert("W", bd);
+    lattice.insert("X", af);
     
     assertEquals(lattice.size(), 12);
     assertEquals(lattice.order(), 18);
+  }
+  
+  @Test
+  public void testLeastUpperBound() {
+    testInsert(); // build the example lattice
     
-    System.out.println(lattice);
+    BitSet bits = new BitSet();
+    
+    Concept concept = lattice.leastUpperBound(abcdefg);
+    
+    bits.clear(); // {}
+    assertEquals(concept.extent(), bits);
+    
+    bits.clear();
+    bits.set(0, 7); // {abcdefg}
+    assertEquals(concept.intent(), bits);
+    
+    concept = lattice.leastUpperBound(acef);
+    
+    bits.clear();
+    bits.flip(3); // {V}
+    assertEquals(concept.extent(), bits);
+    
+    bits.clear();
+    bits.flip(0); bits.flip(2); bits.flip(4); bits.flip(5); // {acef}
+    assertEquals(concept.intent(), bits);
+    
+    List ae = new ImmutableList.Builder<String>().add("a").add("e").build();
+    concept = lattice.leastUpperBound(ae);
+    
+    bits.clear();
+    bits.flip(1); bits.flip(2); bits.flip(3); // {TUV}
+    assertEquals(concept.extent(), bits);
+    
+    bits.clear();
+    bits.flip(0); bits.flip(4); // {ae}
+    assertEquals(concept.intent(), bits);
+    
+    List empty = new ImmutableList.Builder<String>().build();
+    concept = lattice.leastUpperBound(empty);
+    
+    bits.clear();
+    bits.set(0, 6); // {STUVWX}
+    assertEquals(concept.extent(), bits);
+    
+    bits.clear(); // {}
+    assertEquals(concept.intent(), bits);
+    
+    concept = lattice.leastUpperBound(bd, af);
+    
+    bits.clear();
+    bits.flip(0); bits.flip(2); // {SU}
+    assertEquals(concept.extent(), bits);
+    
+    bits.clear();
+    bits.flip(0); bits.flip(1); bits.flip(3); bits.flip(5); // {abdf}
+    assertEquals(concept.intent(), bits);
+  }
+  
+  @Test
+  public void testMarginal() {
+    testInsert(); // build the example lattice
+    
+    assertEquals(0.0, lattice.marginal(abcdefg), 0.0);
+
+    assertEquals(0.167, lattice.marginal(abdefg), 0.01);
+    
+    List abd = new ImmutableList.Builder<String>().add("a").add("b").add("d").build();
+    assertEquals(0.5, lattice.marginal(abd), 0.0);
+    
+    List empty = new ImmutableList.Builder<String>().build();
+    assertEquals(1.0, lattice.marginal(empty), 0.0);
+  }
+  
+  @Test
+  public void testJoint() {
+    testInsert(); // build the example lattice
+    
     
   }
   
+  @Test
+  public void testIsDirected() {
+    assertTrue(lattice.isDirected());
+  }
+  
+  @Test
+  public void testIsLabeled() {
+    assertTrue(lattice.isLabeled());
+  }
+
+  @Test
+  public void testIsWeighted() {
+    assertTrue(lattice.isWeighted());
+  }
+  
+  @Test
+  public void testIsMulti() {
+    assertFalse(lattice.isMulti());
+  }
+
+  @Test
+  public void isComplex() {
+    assertFalse(lattice.isComplex());
+  }
+  
+  @Test
+  public void isCyclic() {
+    assertFalse(lattice.isCyclic());
+  } 
 }

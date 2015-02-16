@@ -21,11 +21,10 @@
 
 */
 package org.nmdp.ngs.fca;
-
-import org.nmdp.ngs.fca.Vertex;
-
 /**
- *
+ * Interface for graphs.
+ * @param <L> label type
+ * @param <W> weight type
  */
 public interface Graph<L, W> extends Iterable<Vertex> {
   

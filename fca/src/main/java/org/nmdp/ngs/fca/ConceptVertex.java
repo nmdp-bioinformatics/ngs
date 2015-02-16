@@ -22,8 +22,6 @@
 */
 package org.nmdp.ngs.fca;
 
-import java.util.BitSet;
-
 public final class ConceptVertex extends Vertex<Concept, Long>
                                  implements Partial<ConceptVertex> {
 

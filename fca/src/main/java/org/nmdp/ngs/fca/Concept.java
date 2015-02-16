@@ -23,29 +23,81 @@
 package org.nmdp.ngs.fca;
 
 import java.util.BitSet;
-
+import java.util.List;
+import java.util.ArrayList;
+/**
+ * Class for representing formal concepts and their partial ordering.
+ * @author int33484
+ */
 public final class Concept implements Partial<Concept> {
-  private BitSet extent, intent;
-	
+  private final BitSet extent, intent;
+	/**
+   * Construct a concept with given objects (extent) and attributes (intent).
+   * @param extent objects
+   * @param intent attributes
+   */
 	public Concept(final BitSet extent, final BitSet intent) {
     this.extent = extent;
     this.intent = intent;
   }
-  
+  /**
+   * Method to retrieve a concept's shared objects.
+   * @return concept's extent
+   */
   public BitSet extent() {
     return extent;
   }
-  
+  /**
+   * Method to retrieve a concept's shared attributes.
+   * @return concept's intent
+   */
   public BitSet intent() {
     return intent;
   }
-
-  @Override
-  public Order order(Concept right) {
-    BitSet meet = (BitSet) this.intent.clone();
-    meet.and(right.intent);
+  /**
+   * Method to decode an object list from bits. 
+   * @param bits where each set bit represents membership in the given group
+   * @param group list of all members
+   * @return immutable list of members
+   */
+  public final static List decode(final BitSet bits, final List group) {
+    List members = new ArrayList();
     
-    if(this.intent.equals(right.intent)) {
+    for(int i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
+      members.add(group.get(i));
+    }
+    
+    return members;
+  }
+  /**
+   * Method to encode a bit membership from a list of objects.
+   * @param members to encode
+   * @param group list of all members
+   * @return bits where each set bit represents membership in the 
+   */
+  public static BitSet encode(final List members, final List group) {
+    BitSet bits = new BitSet();
+    
+    for(Object object : members) {
+      int index = group.indexOf(object);
+      if(index >= 0) {
+        bits.flip(index);
+      }
+    }
+    
+    return bits;
+  }
+  /**
+   * Method to determine the partial order of two concepts.
+   * @param that concept
+   * @return enumerated partial order for this and that concept
+   */
+  @Override
+  public Order order(Concept that) {
+    BitSet meet = (BitSet) this.intent.clone();
+    meet.and(that.intent);
+    
+    if(this.intent.equals(that.intent)) {
       return Partial.Order.EQUAL;
     }
     
@@ -53,21 +105,31 @@ public final class Concept implements Partial<Concept> {
       return Partial.Order.LESS;
     }
     
-    if(right.intent.equals(meet)) {
+    if(that.intent.equals(meet)) {
       return Partial.Order.GREATER;
     }
     
     return Partial.Order.NONCOMPARABLE;
   }
-  
-  public boolean gte(Concept right) {
-    return this.order(right) == Partial.Order.GREATER ||
-           this.order(right) == Partial.Order.EQUAL;
+  /**
+   * Utility method to determine greater-than-or-equal-to (gte) relationship of
+   * two concepts.
+   * @param that concept
+   * @return true if this concept is greater-than-or-equal-to that
+   */
+  public boolean gte(Concept that) {
+    return this.order(that) == Partial.Order.GREATER ||
+           this.order(that) == Partial.Order.EQUAL;
   }
-  
-  public boolean lte(Concept right) {
-    return this.order(right) == Partial.Order.LESS ||
-           this.order(right) == Partial.Order.EQUAL;
+  /**
+   * Utility method to determine less-than-or-equal-to (lte) relationship of two
+   * concepts.
+   * @param that concept
+   * @return true if this concept is less-than-or-equal-to that
+   */
+  public boolean lte(Concept that) {
+    return this.order(that) == Partial.Order.LESS ||
+           this.order(that) == Partial.Order.EQUAL;
   }
   
   @Override
