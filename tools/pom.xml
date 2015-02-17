@@ -262,6 +262,10 @@
               <mainClass>org.nmdp.ngs.tools.ValidateHml</mainClass>
             </program>
             <program>
+              <id>ngs-extract-expected</id>
+              <mainClass>org.nmdp.ngs.tools.ExtractExpected</mainClass>
+            </program>            
+            <program>
               <id>ngs-validate-interleaved-fastq</id>
               <mainClass>org.nmdp.ngs.tools.ValidateInterleavedFastq</mainClass>
             </program>
@@ -344,7 +348,6 @@
     </plugins>
   </build>
   <properties>
-    <maven.build.timestamp>${maven.build.timestamp}</maven.build.timestamp>
     <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
   </properties>
 </project>
