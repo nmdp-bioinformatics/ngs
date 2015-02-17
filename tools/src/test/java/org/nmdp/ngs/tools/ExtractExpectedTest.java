@@ -29,7 +29,7 @@ import java.io.File;
 import org.junit.Test;
 
 /**
- * Unit test for ExtractConsensus.
+ * Unit test for ExtractExpected.
  */
 
 public final class ExtractExpectedTest {
@@ -37,6 +37,6 @@ public final class ExtractExpectedTest {
 	
 	@Test
 	public void testConstructor() {
-	    assertNotNull(new ExtractConsensus(inputHmlFile));
+	    assertNotNull(new ExtractExpected(inputHmlFile));
 	}
 }
