@@ -156,10 +156,15 @@ public final class ConceptLatticeTest {
   }
   
   @Test
-  public void testJoint() {
+  public void testConditional() {
     testInsert(); // build the example lattice
     
+    assertEquals(0.0, lattice.conditional(acef, bd), 0.0);
+    assertEquals(0.0, lattice.conditional(bd, acef), 0.0);
     
+    List a = new ImmutableList.Builder<String>().add("a").build();
+    assertEquals(0.2, lattice.conditional(acef, a), 0.01);
+    assertEquals(1.0, lattice.conditional(a, acef), 0.0);
   }
   
   @Test

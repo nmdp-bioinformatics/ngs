@@ -20,65 +20,67 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-
 package org.nmdp.ngs.fca;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-
+/**
+ * A class to iterate over graphs.
+ */
 public class GraphIterator implements Iterator<Vertex> {
-	int color;
-	Pruner pruner;
-	private List<Vertex> path;
-	
-	public GraphIterator(int color, final Pruner pruner, final Vertex node)
+	private final int color;
+	private final Pruner pruner;
+	private final List<Vertex> path;
+	/**
+   * Constructor for graph iterators.
+   * @param color of the graph
+   * @param pruner used to prune vertexes
+   * @param vertex to start from
+   */
+	public GraphIterator(int color, final Pruner pruner, final Vertex vertex)
 	{
 		this.color = color;
 		this.pruner = pruner;
 		path = new ArrayList<Vertex>();
-		path.add(node);
+		path.add(vertex);
 	}
-
+  /**
+   * Method to retrieve the next vertex in the iteration path.
+   * @return true if the iteration path is not empty
+   */
+  @Override
 	public boolean hasNext() {
-		// TODO Auto-generated method stub
 		return !path.isEmpty();
 	}
-
+  /**
+   * Method to retrieve the next vertex in the iteration.
+   * @return true if another vertex exists in the iteration
+   */
+  @Override
 	public Vertex next() {
 		Vertex vertex = path.get(path.size() - 1);
 		path.remove(path.size() - 1);
-		
-		
-		
 		vertex.setColor(color);
-		
-		// System.out.println("node = " + node.toString() + " set color to " + color);
-		
-		if(!pruner.pruneVertex(vertex))
-		{
-			// System.out.println("don't prune node");
-      Iterator<Vertex.Edge> edges = vertex.iterator();
-			while(edges.hasNext())
-			{
-        Vertex.Edge edge = edges.next();
-				// System.out.println("edge target = " + edge.getTargetNode().toString());
-				if(!pruner.pruneEdge(edge))
-				{
-					// System.out.println("don't prune edge");
-					if(edge.target().getColor() != color)
-					{
-						
+
+		if(!pruner.pruneVertex(vertex)) {
+      
+			for(Iterator<Vertex.Edge> it = vertex.iterator(); it.hasNext();) {   
+        Vertex.Edge edge = it.next();	
+        if(!pruner.pruneEdge(edge)) {	
+          if(edge.target().getColor() != color) {
 						edge.target().setColor(color);
 						path.add(edge.target());
 					}
 				}
 			}
+      
 		}
-		
+    
 		return vertex;
 	}
 
+  @Override
 	public void remove() {
 		
 	}

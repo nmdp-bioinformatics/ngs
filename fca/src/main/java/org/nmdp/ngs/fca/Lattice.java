@@ -3,18 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.nmdp.ngs.fca;
-
 /**
- *
- * @author int33484
+ * An interface for lattices.
  */
 public interface Lattice {
+  /**
+   * Enumerated directions for lattice traversal.
+   */
   public static enum Direction {
+    /**
+     * Go up the lattice in order
+     */
     UP,
+    /**
+     * Go down the dual lattice in reverse order
+     */
     DOWN
   }
-  
-
 }

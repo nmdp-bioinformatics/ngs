@@ -20,7 +20,6 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-
 package org.nmdp.ngs.fca;
 
 import java.util.BitSet;
@@ -30,38 +29,41 @@ import java.util.ArrayList;
 /**
  * A class for concept lattices. Implementation is a directed acyclic graph
  * (DAG) that results from topologically sorting concepts according to their
- * partial order. Concepts are added to the lattice dynamically with algorithms
- * described by van der Merwe, Obiedkov, and Kourie. AddIntent: a new
- * incremental algorithm for constructing concept lattices. Lecture Notes in
- * Computer Science Volume 2961, 2004, pp 372-385.
- * @author int33484
+ * partial order.
  * @param <O> object type
  * @param <A> attribute type
  */
 public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
-  private List<O> objects;
-  private List<A> attributes;
+  private final List<O> objects;
+  private final List<A> attributes;
   private Vertex<Concept, Long> bottom;
-  
+  /**
+   * Construct a concept lattice from a list of attributes.
+   * @param attributes
+   */
   public ConceptLattice(List<A> attributes) {
     super(false);
-    objects = new ArrayList<O>();
+    objects = new ArrayList<>();
     this.attributes = attributes;
     BitSet ones = new BitSet(this.attributes.size());
     ones.set(0, this.attributes.size());
     super.putVertex(new Concept(new BitSet(), ones), Long.MIN_VALUE);
     bottom = root;
   }
-
+ /**
+  * Method to find the supremum or least upper bound.
+  * @param intent to find
+  * @param generator starting point and tracer
+  * @return vertex whose label-concept represents the supremum
+  */
  private Vertex supremum(BitSet intent, Vertex<Concept, Long> generator) {
-		boolean max = true;
+    boolean max = true;
 		while(max) {
       
 			max = false;
       Iterator<Vertex.Edge<Long>> edges = generator.iterator();
       
-			while(edges.hasNext())
-			{
+			while(edges.hasNext()) {
         Vertex<Concept, Long> target = edges.next().target();
 				if(target.getLabel().gte(generator.getLabel())) {
           continue;
@@ -78,11 +80,14 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
 		}
 		return generator;
 	}
- 
+  /**
+   * Method to add concepts dynamically. Algorithm originally described by van
+   * der Merwe, Obiedkov, and Kourie. AddIntent: a new incremental algorithm for
+   * constructing concept lattices. Lecture Notes in Computer Science Volume
+   * 2961, 2004, pp 372-385.
+   **/
  	private Vertex addIntent(BitSet intent, Vertex<Concept, Long> generator) {
 		generator = supremum(intent, generator);
-		
-
     Concept proposed = new Concept(new BitSet(), intent);
     
 		if(generator.getLabel().gte(proposed) &&
@@ -90,7 +95,7 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
       return generator;
     }
 		
-		List parents = new ArrayList<ConceptVertex>(); 
+		List parents = new ArrayList<>(); 
 		Iterator<Vertex.Edge<Long>> edges = generator.iterator();
     while(edges.hasNext()) {
       Vertex<Concept, Long> target = edges.next().target();
@@ -105,17 +110,10 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
         BitSet meet = (BitSet) candidate.getLabel().intent().clone();
         meet.and(intent);
         candidate = addIntent(meet, candidate);
-				//Locus intersect = (Locus) candidate.getLabel().intersect(locus);
-				
-				//if(intersect.isEmpty() || intersect.getLength() > 20)
-				//{
-					//candidate = push(intersect, candidate);
-				//}
-				
 			}
 			
 			boolean add = true;
-			List doomed = new ArrayList<ConceptVertex>();
+			List doomed = new ArrayList<>();
       for(Iterator it = parents.iterator(); it.hasNext();) {
         Vertex<Concept, Long> parent =  (Vertex<Concept, Long>) it.next();
         
@@ -126,59 +124,70 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
           doomed.add(parent);
 				}
 			}
-			
       
       for (Iterator it = doomed.iterator(); it.hasNext();) {
         Vertex vertex = (Vertex) it.next();
         parents.remove(vertex);
       }
 			
-			if(add)
-			{
+			if(add) {
         parents.add(candidate);
 			}
 		}
-		
-		//locus.addAll(((Locus) generator.getLabel()).getExtent());
-    Long weight = new Long(0);
+    
     proposed.extent().or(generator.getLabel().extent());
-		Vertex<Concept, Long> child = super.putVertex(generator, proposed, weight);
+		Vertex<Concept, Long> child = super.putVertex(generator, proposed, (long) 0);
 		bottom = bottom.getLabel().gte(child.getLabel()) ? child : bottom;
 
     for(Iterator it = parents.iterator(); it.hasNext();) {
       Vertex<Concept, Long> parent = (Vertex<Concept, Long>) it.next();
 			if(!parent.equals(generator)) {
         super.deleteEdge(parent, generator);
-        super.putEdge(parent, child, new Long(0));
+        super.putEdge(parent, child, (long) 0);
 			}
 		}
 		
 		return child;
 	}
-  
-  public GraphIterator top(Pruner pruner)
-	{ 
+  /**
+   * Method to retrieve the top vertex as a graph iterator.
+   * @param pruner
+   * @return an iterator to the top (root) vertex
+   */
+  public GraphIterator top(Pruner pruner) { 
 		return super.iterator(pruner);
 	}
-	
-	public GraphIterator bottom(Pruner pruner)
-	{ 
+	/**
+   * Method to retrieve the bottom vertex as a graph iterator.
+   * @param pruner
+   * @return an iterator to the bottom vertex
+   */
+	public GraphIterator bottom(Pruner pruner) { 
 		return new GraphIterator(++color, pruner, bottom);
 	}
-  
+  /**
+   * Method to retrieve all objects of this context (concept lattice).
+   * @return list of objects 
+   */
   public List<O> getObjects() {
     return objects;
   }
-  
+  /**
+   * Method to retrieve all attributes of this context (concept lattice).
+   * @return list of attributes
+   */
   public List<A> getAttributes() {
     return attributes;
   }
-  
+  /**
+   * Method to dynamically insert an object and its attributes into the lattice.
+   * Duplicate objects with identical attributes are okay and will be treated as
+   * distinct observations.
+   * @param object
+   * @param attributes list
+   */
   public void insert(O object, List<A> attributes) {
-    if(!objects.contains(object)) {
-      objects.add(object);
-    }
-
+    objects.add(object);
     BitSet intent = Concept.encode(attributes, this.attributes);
     Pruner adder = new ExtentAdder.Builder().withObject(object).withObjects(objects).build();
     GraphIterator inserted = new GraphIterator(++color, adder, addIntent(intent, root));
@@ -187,12 +196,26 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
       inserted.next();
     }
   }
-  
+  /**
+   * Method to find the concept with given attributes. This is a low-level
+   * retrieval method that enables iteration over the entire lattice starting at
+   * the queried vertex; however, access to the vertex label (concept) and its
+   * methods (intent and extent) require some tedious dereferencing. If your
+   * application doesn't require further query use the leastUpperBound method
+   * instead.
+   * @param query attributes
+   * @return an iterator to the found vertex
+   */
   public GraphIterator queryAttributes(final List<A> query) {
     BitSet bits = Concept.encode(query, attributes);
     return new GraphIterator(++color, new Pruner(), supremum(bits, root));
   }
-  
+  /**
+   * A utility method to find the concept with given attributes using built-in
+   * dereferencing.
+   * @param query attributes
+   * @return the found concept
+   */
   public final Concept leastUpperBound(final List<A> query) {
     return (( Vertex<Concept, Long> ) queryAttributes(query).next()).getLabel();
   }
@@ -207,15 +230,53 @@ public final class ConceptLattice<O, A> extends ConnectedGraph<Concept, Long> {
   public final Concept leastUpperBound(final List<A> p, final List<A> q) {
     return (( Vertex<Concept, Long> ) queryAttributes(p, q).next()).getLabel();
   }
-  
+  /**
+   * Method to retrieve the number of objects that have the query attributes.
+   * @param query attributes
+   * @return the number of objects with the given attributes
+   */
+  public int observed(final List<A> query) {
+    return leastUpperBound(query).extent().cardinality();
+  }
+  /**
+   * Method to retrieve the number of objects that have the combined query
+   * attributes.
+   * @param p first set of query attributes
+   * @param q second set of query attributes
+   * @return the number of objects with the query attributes
+   */
+  public int observed(final List<A> p, final List<A> q) {
+    return leastUpperBound(p, q).extent().cardinality();
+  }
+  /**
+   * Method to calculate the marginal frequency of the given attributes. 
+   * @param query attributes
+   * @return marginal frequency of observing the given attributes. Calculation
+   * is the number of times the given attributes are observed divided by the
+   * total number of observations (objects)
+   */
   public double marginal(final List<A> query) {
-    return (double) leastUpperBound(query).extent().cardinality() / objects.size();
+    return (double) observed(query) / objects.size();
   }
-  
+  /**
+   * Method to calculate the marginal frequency given two sets of attributes.
+   * @param p first set of query attributes
+   * @param q second set of query attributes
+   * @return the joint frequency of observing both sets of attributes.
+   * Calculation is the number of times the given attributes are observed
+   * together divided by the total number of observations (objects)
+   */
   public double joint(final List<A> p, final List<A> q) {
-    return (double) leastUpperBound(p, q).extent().cardinality() / objects.size();
+    return (double) observed(p, q) / objects.size();
   }
-  
+  /**
+   * Method to calculate the conditional frequency of one attribute set given
+   * another.
+   * @param p first set of query attributes
+   * @param q second set of query attributes
+   * @return the conditional frequency. Calculation is the joint divided by the
+   * prior
+   */
   public double conditional(final List<A> p, final List<A> q) {
     return joint(p, q) / marginal(q);
   }

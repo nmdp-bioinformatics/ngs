@@ -27,55 +27,62 @@ import java.util.Iterator;
 import java.lang.StringBuilder;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
-public abstract class AbstractGraph<Label, Weight extends Comparable> implements Graph<Label, Weight>, Iterable<Vertex> {
+/**
+ * Class for abstract graphs.
+ * @param <L> type for vertexes
+ * @param <W> type for edges
+ */
+public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L, W>, Iterable<Vertex> {
   protected Vertex root;
   protected boolean directed;
   protected int color, size, order;
-  
+  /**
+   * Method to add a new vertex connected to root.
+   * @param label assigned to vertex
+   * @param weight assigned to edge
+   * @return the new vertex
+   */
   @Override
-  public Vertex putVertex(Label label, Weight weight) {
+  public Vertex putVertex(L label, W weight) {
     return putVertex(root, label, weight);
   }
-  
+  /**
+   * Method to add a new vertex connected to source.
+   * @param source vertex
+   * @param label assigned to vertex
+   * @param weight assigned to edge
+   * @return the new vertex
+   */
   @Override
-  public Vertex putVertex(Vertex source, Label label, Weight weight) {
+  public Vertex putVertex(Vertex source, L label, W weight) {
     checkNotNull(label);
-    checkNotNull(weight);
-            
+    checkNotNull(weight);        
     
     Vertex target = new Vertex(color, label);
-		
-		//if(isEmpty())
-		//{
-			//root = target;
-		//}
-		//else
-		//{
 		putEdge(source, target, weight);
     ++size;
-      
-    
-		//}
-		
-		
+
 		return target;
   }
-  
+  /**
+   * Method to add a new edge between source and target vertexes.
+   * @param source vertex
+   * @param target vertex
+   * @param weight assigned to edge
+   * @return true if edge was added
+   */
   @Override
-  public boolean putEdge(Vertex source, Vertex target, Weight weight) {
+  public boolean putEdge(Vertex source, Vertex target, W weight) {
     checkNotNull(target);
     checkNotNull(weight);
     
-    if(source == root && root == null)
-    {
+    if(source == root && root == null) {
       root = target;
       return true;
     }
     
     if(source.adopt(target, weight)) {
-      if(!directed)
-			{
+      if(!directed) {
 				if(!target.adopt(source, weight)) {
           return false;
         }
@@ -83,18 +90,15 @@ public abstract class AbstractGraph<Label, Weight extends Comparable> implements
       ++order;
       return true;
     }
-			
 
-	
-		// System.out.println("order = " + order);
-		
-
-		
-		// System.out.println(source.toString() + " targeting " + target.toString() + " order = " + order);
-		
 		return false;
   }
-  
+  /**
+   * Method to delete edge between source and target vertexes.
+   * @param source vertex
+   * @param target vertex
+   * @return true if edge was deleted
+   */
   @Override
   public boolean deleteEdge(Vertex source, Vertex target) {
     checkNotNull(source);
@@ -102,53 +106,21 @@ public abstract class AbstractGraph<Label, Weight extends Comparable> implements
     
     boolean found = source.orphan(target);
 		
-		if(!directed)
-		{
+		if(!directed) {
 			target.orphan(source);
 		}
 		
-		if(!source.equals(target))
-		{	
-			if(root.equals(source))
-			{
+		if(!source.equals(target)) {	
+			if(root.equals(source)) {
 				root = target;
 			}
 		}
 		
-		if(found)
-		{
+		if(found) {
 			--order;
 		}
-		
-		
-		// System.out.println(source.toString() + " releasing " + target.toString() + " order = " + order);
-		
-		return found;
-  }
-  
-  @Override
-  public String toString() {
-    StringBuilder builder = new StringBuilder();
-    builder.append(directed ? "digraph" : "graph").append(" {\n");
-    
-    Iterator<Vertex> vertexes = iterator();
-    while(vertexes.hasNext()) {
-      
-      Vertex vertex = vertexes.next();
-      Iterator<Vertex.Edge> edges = vertex.iterator();
-      while(edges.hasNext()) {
-        Vertex.Edge edge = edges.next();
-        builder.append("  \"")
-               .append(vertex)
-               .append("\" -> \"")
-               .append(edge.target())
-               .append("\"[label=\"")
-               .append(edge.weight())
-               .append("\"];\n");
-      }
-    }
 
-    return builder.append("}").toString();
+		return found;
   }
   
   @Override
