@@ -100,7 +100,7 @@ public class Pruner<L, W> {
     }
   }
   /**
-   * Constructs a new pruner from a initializer.
+   * Constructs a new pruner from an initializer.
    * @param init 
    */
   protected Pruner(Init<L, W, ?> init) {

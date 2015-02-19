@@ -44,12 +44,18 @@ import static org.nmdp.ngs.fca.Pruner.Builder;
  */
 public class PrunerTest {
   Pruner pruner;
-  List<String> labels = new ArrayList<String>();
+  List labels;
+  List weights;
   
   @Before
   public void setUp() {
     pruner = new Pruner();
+    
+    labels = new ArrayList<String>();
     labels.add("a");
+    
+    weights = new ArrayList<String>();
+    weights.add("A");
   }
   
   @Test

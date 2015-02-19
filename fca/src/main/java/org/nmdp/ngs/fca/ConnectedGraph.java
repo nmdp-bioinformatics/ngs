@@ -20,7 +20,6 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-
 package org.nmdp.ngs.fca;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -128,6 +127,12 @@ public class ConnectedGraph<L, W extends Comparable> extends AbstractGraph<L, W>
       return this;
     }
     
+    public Builder complete(int size) {
+      this.size = size;
+      kind = Kind.COMPLETE;
+      directed = false;
+      return this;
+    }
 
       
     public Graph build() {
@@ -148,11 +153,16 @@ public class ConnectedGraph<L, W extends Comparable> extends AbstractGraph<L, W>
           source = graph.putVertex(source, graph.size(), 0);
         }
         graph.putEdge(graph.root(), source, 0);
+      } else if(kind == Kind.COMPLETE) {
+        Vertex[] vertexes = new Vertex[size];
+        for(int i = 0; i < size; i++) {
+          vertexes[i] = graph.putVertex(i, 0);
+          for(int j = 1; j < i; j++) {
+            graph.putEdge(vertexes[i], vertexes[j], 0);
+          }
+        }
       }
-      
-      
-      
-      
+         
       return graph;
     }
   }
