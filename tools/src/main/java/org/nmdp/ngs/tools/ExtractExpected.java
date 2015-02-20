@@ -23,10 +23,10 @@
 package org.nmdp.ngs.tools;
 
 import static org.dishevelled.compress.Readers.reader;
-import static org.dishevelled.compress.Writers.writer;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -39,6 +39,7 @@ import org.dishevelled.commandline.Usage;
 import org.dishevelled.commandline.argument.FileArgument;
 import org.nmdp.ngs.hml.HmlReader;
 import org.nmdp.ngs.hml.jaxb.Glstring;
+import org.nmdp.ngs.hml.jaxb.Haploid;
 import org.nmdp.ngs.hml.jaxb.AlleleAssignment;
 import org.nmdp.ngs.hml.jaxb.Hml;
 import org.nmdp.ngs.hml.jaxb.Sample;
@@ -51,6 +52,9 @@ import com.google.common.base.Splitter;
  */
 public final class ExtractExpected implements Callable<Integer> {
     private final File inputHmlFile;
+    private final boolean HaploidBoolean;
+    private final boolean GlstringBoolean;
+    static final int DEFAULT_FLAG = 0;
     private static final String USAGE = "ngs-extract-expected [args]";
 
 
@@ -59,8 +63,10 @@ public final class ExtractExpected implements Callable<Integer> {
      *
      * @param inputHmlFile input HML file, if any
      */
-    public ExtractExpected(final File inputHmlFile) {
+    public ExtractExpected(final File inputHmlFile, final boolean HaploidBoolean, final boolean GlstringBoolean) {
         this.inputHmlFile = inputHmlFile;
+        this.HaploidBoolean = HaploidBoolean;
+        this.GlstringBoolean = GlstringBoolean;        
     }
 
 
@@ -75,25 +81,60 @@ public final class ExtractExpected implements Callable<Integer> {
                 String id = sample.getId();
                 for (Typing typing : sample.getTyping()) {
                    for (AlleleAssignment alleleAssignment : typing.getAlleleAssignment()) {
+                	   
+                	   List<Haploid> HapList = new ArrayList<Haploid>();
                 	   for (Object glstring : alleleAssignment.getPropertyAndHaploidAndGenotypeList()){
 
-                          Glstring gl = (Glstring)glstring;
-                          List<String> Alleles = Splitter.onPattern("[+]+").splitToList(gl.getValue().replaceAll("[\n\r ]", ""));                          
-                          
-                          String locus = Alleles.get(0).substring(Alleles.get(0).indexOf("-") - 3, Alleles.get(0).indexOf("*"));
-                          int zygosity = (Alleles.get(0).equals(Alleles.get(1))) ? 1 : 2;
+                          String classType  = glstring.getClass().toString();
+                          String objectType = classType.substring(classType.indexOf("jaxb.") + 5,classType.length());
+                    
+                          if(objectType.equals("Haploid") && HaploidBoolean){
+                              Haploid hap = (Haploid)glstring;
+                              HapList.add(hap);
+                              
+                          }else if(objectType.equals("Glstring") && GlstringBoolean){
+                 
+	                          Glstring gl = (Glstring)glstring;
+	                        
+	                          List<String> Alleles = Splitter.onPattern("[+]+").splitToList(gl.getValue().replaceAll("[\n\r ]", ""));                          
+	                          
+	                          String locus = Alleles.get(0).substring(Alleles.get(0).indexOf("-") - 3, Alleles.get(0).indexOf("*"));
+	                          int zygosity = (Alleles.get(0).equals(Alleles.get(1))) ? 1 : 2;
+	                          
+	                          String ars = (locus.equals("HLA-A")) ? "./tutorial/regions/grch38/hla-a/hla-a.ars.txt" :
+	                        	  (locus.equals("HLA-B")) ? "./tutorial/regions/grch38/hla-b/hla-b.ars.txt" : 
+	                        	  (locus.equals("HLA-C")) ? "./tutorial/regions/grch38/hla-c/hla-a.ars.txt" : 	  
+	                              (locus.equals("HLA-DRB1")) ? "./tutorial/regions/grch38/hla-drb1/hla-drb1.ars.txt" : 	  
+	                              (locus.equals("HLA-DQB1")) ? "./tutorial/regions/grch38/hla-dqb1/hla-dqb1.ars.txt" : 
+	                              (locus.equals("HLA-DPB1")) ? "./tutorial/regions/grch38/hla-dpb1/hla-dpb1.ars.txt" : "N/A";                            	  
+	
+	                          System.out.print(id + ".fastq.contigs.bwa.sorted.bam\t" + locus + "\t" + ars + "\t" + zygosity + "\t" + Alleles.get(0) + "\t" + Alleles.get(1) + "\n");
+                          }
+                       
+                        }
+                	   
+                	   if(HaploidBoolean){
+                		   String hlaTyping1 = HapList.get(0).getLocus() + "*" +HapList.get(0).getType();
+                		   String hlaTyping2 = HapList.get(1).getLocus() + "*" +HapList.get(1).getType();             		  
+                		   String locus = HapList.get(0).getLocus();
+                		   
+                		   if(!HapList.get(0).getLocus().equals(HapList.get(1).getLocus())){
+                			   //error
+                		   }
+                		   
+                          int zygosity = (HapList.get(0).equals(HapList.get(1))) ? 1 : 2;
                           
                           String ars = (locus.equals("HLA-A")) ? "./tutorial/regions/grch38/hla-a/hla-a.ars.txt" :
                         	  (locus.equals("HLA-B")) ? "./tutorial/regions/grch38/hla-b/hla-b.ars.txt" : 
                         	  (locus.equals("HLA-C")) ? "./tutorial/regions/grch38/hla-c/hla-a.ars.txt" : 	  
                               (locus.equals("HLA-DRB1")) ? "./tutorial/regions/grch38/hla-drb1/hla-drb1.ars.txt" : 	  
                               (locus.equals("HLA-DQB1")) ? "./tutorial/regions/grch38/hla-dqb1/hla-dqb1.ars.txt" : 
-                              (locus.equals("HLA-DPB1")) ? "./tutorial/regions/grch38/hla-dpb1/hla-dpb1.ars.txt" : "N/A";                            	  
-
-                          System.out.print(id + ".fastq.contigs.bwa.sorted.bam\t" + locus + "\t" + ars + "\t" + zygosity + "\t" + Alleles.get(0) + "\t" + Alleles.get(1) + "\n");
-
-                          
-                        }
+                              (locus.equals("HLA-DPB1")) ? "./tutorial/regions/grch38/hla-dpb1/hla-dpb1.ars.txt" : "N/A";                    		   
+                		   
+                          System.out.print(id + ".fastq.contigs.bwa.sorted.bam\t" + locus + "\t" + ars + "\t" + zygosity + "\t" + hlaTyping1 + "\t" + hlaTyping2 + "\n");
+                	   }
+                	   
+                	   
                     }
                 }
             }
@@ -120,11 +161,13 @@ public final class ExtractExpected implements Callable<Integer> {
         Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         FileArgument inputHmlFile = new FileArgument("i", "input-hml-file", "input HML file, default stdin", false);
-
-        ArgumentList arguments = new ArgumentList(about, help, inputHmlFile);
+        Switch HaploidBoolean = new Switch("l", "haploid", "Flag for extracting Haploid data");        
+        Switch GlstringBoolean = new Switch("g", "glstring", "Flag for extracting Glstring data");  
+        
+        ArgumentList arguments = new ArgumentList(about, help, inputHmlFile, HaploidBoolean, GlstringBoolean);
         CommandLine commandLine = new CommandLine(args);
-
         ExtractExpected extractExpected = null;
+
         try
         {
             CommandLineParser.parse(commandLine, arguments);
@@ -136,7 +179,16 @@ public final class ExtractExpected implements Callable<Integer> {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            extractExpected = new ExtractExpected(inputHmlFile.getValue());
+            
+            System.out.println(HaploidBoolean.wasFound());
+            System.out.println(GlstringBoolean.wasFound());
+            
+            if((HaploidBoolean.wasFound() && GlstringBoolean.wasFound()) || (HaploidBoolean.wasFound()) && GlstringBoolean.wasFound()){
+                Usage.usage(USAGE, null, commandLine, arguments, System.err);
+                System.exit(-1);
+            }
+            
+            extractExpected = new ExtractExpected(inputHmlFile.getValue(),HaploidBoolean.wasFound(),GlstringBoolean.wasFound());
         }
         catch (CommandLineParseException | IllegalArgumentException e) {
             Usage.usage(USAGE, e, commandLine, arguments, System.err);

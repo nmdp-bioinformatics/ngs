@@ -37,6 +37,6 @@ public final class ExtractExpectedTest {
 	
 	@Test
 	public void testConstructor() {
-	    assertNotNull(new ExtractExpected(inputHmlFile));
+	    assertNotNull(new ExtractExpected(inputHmlFile,true,false));
 	}
 }
