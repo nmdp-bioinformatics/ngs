@@ -20,18 +20,18 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-
 package org.nmdp.ngs.fca;
 
+/**
+ * Writer.
+ */
 public class Writer<L, W> extends Pruner<L, W> {
-  @Override
-  public boolean pruneEdge(Vertex.Edge edge) {
-    if(super.pruneEdge(edge)) {
-      return true;
+    @Override
+    public boolean pruneEdge(final Vertex.Edge edge) {
+        if (super.pruneEdge(edge)) {
+            return true;
+        }
+        System.out.println(parent.getLabel() + "->" + edge.target().getLabel() + "[" + edge.weight() + "]");
+        return false;
     }
-    
-    System.out.println(parent.getLabel() + "->" + edge.target().getLabel() + "[" + edge.weight() + "]");
-		return false;
-	}
-  
 }

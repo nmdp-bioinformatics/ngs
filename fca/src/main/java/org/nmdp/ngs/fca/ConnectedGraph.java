@@ -23,148 +23,158 @@
 package org.nmdp.ngs.fca;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Iterator;
+
 /**
  * A connected graph where every vertex is connected to any other vertex through
  * at least one path.
+ *
  * @param <L> Label type of vertexes
  * @param <W> Weight type of edges
  */
 public class ConnectedGraph<L, W extends Comparable> extends AbstractGraph<L, W> {
-  /**
-   * Construct a connected graph.
-   * @param directed argument
-   */
-  public ConnectedGraph(boolean directed)
-	{
-		this.directed = directed;
-		root = null;
-		size = 0;
-    order = 0;
-	}
-  /**
-   * Default iterator performs a breadth first search without pruning.
-   * @return GraphIterator with default constructed Pruner
-   */
-  @Override
-  public GraphIterator iterator() {
-    return new GraphIterator(++color, new Pruner<L, W>(), root);
-  }
-  /**
-   * Iterator with customizable pruning.
-   * @param pruner argument
-   * @return GraphIterator with argument-defined Pruner
-   */
-  public GraphIterator iterator(Pruner pruner)
-	{
-		return new GraphIterator(++color, pruner, root);
-	}
-  /**
-   * 
-   * @return an empty builder ready to parameterize
-   */
-  public static Builder builder() {
-    return new Builder();
-  }
-  /**
-   * A class for building common kinds of graphs (mostly for testing). 
-   * @param <L> Label type for vertexes
-   * @param <W> weight type for edges
-   */
-  public static class Builder<L, W> {
-    public enum Kind {
-      /**
-       * A graph with no vertexes and no edges
-       */
-      NULL,
-      /**
-       * A linear graph with no branches (effectively a linked list of vertexes)
-       */
-      PATH,
-      /**
-       * A graph with one internal vertex (root) that connects the others
-       */
-      STAR,
-      /**
-       * A path graph where the head and tail vertexes are connected
-       */
-      CYCLE,
-      /**
-       * A graph where each and vertex is connected to all other vertexes
-       */
-      COMPLETE
+
+    /**
+     * Construct a connected graph.
+     *
+     * @param directed argument
+     */
+    public ConnectedGraph(final boolean directed) {
+        this.directed = directed;
+        root = null;
+        size = 0;
+        order = 0;
     }
 
-    private int size;
-    private Kind kind;
-    private boolean directed;
-    
-    public Builder directed() {
-      size = 0;
-      kind = Kind.NULL;
-      directed = true;
-      return this;
-    }
-    
-    public Builder path(int size) {
-      this.size = size;
-      kind = Kind.PATH;
-      directed = false;
-      return this;
-    }
-    
-    public Builder star(int size) {
-      this.size = size;
-      kind = Kind.STAR;
-      directed = false;
-      return this;
-    }
-    
-    public Builder cycle(int size) {
-      this.size = size;
-      kind = Kind.CYCLE;
-      directed = false;
-      return this;
-    }
-    
-    public Builder complete(int size) {
-      this.size = size;
-      kind = Kind.COMPLETE;
-      directed = false;
-      return this;
+    /**
+     * Default iterator performs a breadth first search without pruning.
+     * @return GraphIterator with default constructed Pruner
+     */
+    @Override
+    public GraphIterator iterator() {
+        return new GraphIterator(++color, new Pruner<L, W>(), root);
     }
 
-      
-    public Graph build() {
-      Graph graph = new ConnectedGraph(directed);
-      
-      if(kind == Kind.PATH) {
-        Vertex source = graph.root();
-        while(graph.size() < size) {
-          source = graph.putVertex(source, graph.size(), 0);
-        }
-      } else if(kind == Kind.STAR) {
-        while(graph.size() < size) {
-          graph.putVertex(graph.size(), 0);
-        }
-      } else if(kind == Kind.CYCLE) {
-        Vertex source = graph.root();
-        while(graph.size() < size) {
-          source = graph.putVertex(source, graph.size(), 0);
-        }
-        graph.putEdge(graph.root(), source, 0);
-      } else if(kind == Kind.COMPLETE) {
-        Vertex[] vertexes = new Vertex[size];
-        for(int i = 0; i < size; i++) {
-          vertexes[i] = graph.putVertex(i, 0);
-          for(int j = 1; j < i; j++) {
-            graph.putEdge(vertexes[i], vertexes[j], 0);
-          }
-        }
-      }
-         
-      return graph;
+    /**
+     * Iterator with customizable pruning.
+     * @param pruner argument
+     * @return GraphIterator with argument-defined Pruner
+     */
+    public GraphIterator iterator(final Pruner pruner) {
+        return new GraphIterator(++color, pruner, root);
     }
-  }
 
+    /**
+     * Return a new connected graph builder.
+     *
+     * @return an empty builder ready to parameterize
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * A class for building common kinds of graphs (mostly for testing).
+     *
+     * @param <L> Label type for vertexes
+     * @param <W> weight type for edges
+     */
+    public static class Builder<L, W> {
+        public enum Kind {
+            /**
+             * A graph with no vertexes and no edges
+             */
+            NULL,
+            /**
+             * A linear graph with no branches (effectively a linked list of vertexes)
+             */
+            PATH,
+            /**
+             * A graph with one internal vertex (root) that connects the others
+             */
+            STAR,
+            /**
+             * A path graph where the head and tail vertexes are connected
+             */
+            CYCLE,
+            /**
+             * A graph where each and vertex is connected to all other vertexes
+             */
+            COMPLETE
+        }
+
+        private int size;
+        private Kind kind;
+        private boolean directed;
+
+        public Builder directed() {
+            size = 0;
+            kind = Kind.NULL;
+            directed = true;
+            return this;
+        }
+
+        public Builder path(final int size) {
+            this.size = size;
+            kind = Kind.PATH;
+            directed = false;
+            return this;
+        }
+
+        public Builder star(final int size) {
+            this.size = size;
+            kind = Kind.STAR;
+            directed = false;
+            return this;
+        }
+
+        public Builder cycle(final int size) {
+            this.size = size;
+            kind = Kind.CYCLE;
+            directed = false;
+            return this;
+        }
+    
+        public Builder complete(final int size) {
+            this.size = size;
+            kind = Kind.COMPLETE;
+            directed = false;
+            return this;
+        }
+
+        public Graph build() {
+            Graph graph = new ConnectedGraph(directed);
+
+            if (kind == Kind.PATH) {
+                Vertex source = graph.root();
+                while (graph.size() < size) {
+                    source = graph.putVertex(source, graph.size(), 0);
+                }
+            }
+            else if (kind == Kind.STAR) {
+                while (graph.size() < size) {
+                    graph.putVertex(graph.size(), 0);
+                }
+            }
+            else if (kind == Kind.CYCLE) {
+                Vertex source = graph.root();
+                while (graph.size() < size) {
+                    source = graph.putVertex(source, graph.size(), 0);
+                }
+                graph.putEdge(graph.root(), source, 0);
+            }
+            else if (kind == Kind.COMPLETE) {
+                Vertex[] vertexes = new Vertex[size];
+                for (int i = 0; i < size; i++) {
+                    vertexes[i] = graph.putVertex(i, 0);
+                    for (int j = 1; j < i; j++) {
+                        graph.putEdge(vertexes[i], vertexes[j], 0);
+                    }
+                }
+            }
+
+            return graph;
+        }
+    }
 }

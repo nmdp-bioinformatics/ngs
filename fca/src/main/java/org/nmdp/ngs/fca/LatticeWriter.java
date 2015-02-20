@@ -20,77 +20,77 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-
 package org.nmdp.ngs.fca;
-
-import java.util.List;
-
-import java.lang.StringBuilder;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java.util.List;
+
+/**
+ * Lattice writer.
+ */
 public class LatticeWriter extends LatticePruner {
-  StringBuilder builder;
-  private String filepath;
-  
-  protected static abstract class Init<O, A, T extends Init<O, A, T>> extends LatticePruner.Init<O, A, T> {
+    StringBuilder builder;
     private String filepath;
-    
-    public T toFile(final String filepath) {
-      this.filepath = filepath;
-      return self();
+
+    protected static abstract class Init<O, A, T extends Init<O, A, T>> extends LatticePruner.Init<O, A, T> {
+        private String filepath;
+
+        public T toFile(final String filepath) {
+            this.filepath = filepath;
+            return self();
+        }
+
+        public LatticeWriter build() {
+            return new LatticeWriter(this);
+        }
     }
-    
-    public LatticeWriter build() {
-      return new LatticeWriter(this);
+
+    public static class Builder<O, A> extends Init<O, A, Builder<O, A>> {
+        @Override
+        protected Builder self() {
+            return this;
+        }
     }
-  }
-  
-  public static class Builder<O, A> extends Init<O, A, Builder<O, A>> {
+
+    protected LatticeWriter(final Init<?, ?, ?> init) {
+        super(init);
+        this.filepath = init.filepath;
+        builder = new StringBuilder();
+        builder.append("digraph").append(" {\n");
+    }
+
     @Override
-    protected Builder self() {
-      return this;
-    }
-  }
-  
-  protected LatticeWriter(Init<?, ?, ?> init) {
-    super(init);
-    this.filepath = init.filepath;
-    builder = new StringBuilder();
-    builder.append("digraph").append(" {\n");
-  }
-  
-  @Override
-  public boolean pruneEdge(Vertex.Edge edge) {
-    if(super.pruneEdge(edge)) {
-      return true;
+    public boolean pruneEdge(final Vertex.Edge edge) {
+        if (super.pruneEdge(edge)) {
+            return true;
+        }
+
+        Vertex<Concept, Long> source = parent;
+        Vertex<Concept, Long> target = edge.target();
+        builder.append("  \"")
+            .append(Concept.decode(source.getLabel().extent(), objects))
+            .append(Concept.decode(source.getLabel().intent(), attributes))
+            .append("\" -> \"")
+            .append(Concept.decode(target.getLabel().extent(), objects))
+            .append(Concept.decode(target.getLabel().intent(), attributes))
+            .append("\"[label=\"")
+            .append(edge.weight())
+            .append("\"];\n");
+
+        return false;
     }
     
-    Vertex<Concept, Long> source = parent;
-    Vertex<Concept, Long> target = edge.target();
-    builder.append("  \"")
-           .append(Concept.decode(source.getLabel().extent(), objects))
-           .append(Concept.decode(source.getLabel().intent(), attributes))
-           .append("\" -> \"")
-           .append(Concept.decode(target.getLabel().extent(), objects))
-           .append(Concept.decode(target.getLabel().intent(), attributes))
-           .append("\"[label=\"")
-           .append(edge.weight())
-           .append("\"];\n");
-    
-		return false;
-	}
-  
-  public void write() throws IOException {
-    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filepath));
-    bufferedWriter.write(builder.append("}").toString());
-    bufferedWriter.close();
-  }
-  
-  @Override
-  public String toString() {
-    return builder.append("}").toString();
-  }
+    public void write() throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filepath));
+        bufferedWriter.write(builder.append("}").toString());
+        bufferedWriter.close();
+    }
+
+    @Override
+    public String toString() {
+        return builder.append("}").toString();
+    }
 }

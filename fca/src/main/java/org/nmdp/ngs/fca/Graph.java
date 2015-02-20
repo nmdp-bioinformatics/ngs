@@ -21,92 +21,120 @@
 
 */
 package org.nmdp.ngs.fca;
+
 /**
  * Interface for graphs.
+ *
  * @param <L> label type for vertexes
  * @param <W> weight type for edges
  */
 public interface Graph<L, W> extends Iterable<Vertex> {
-   /**
-   * Method to add a new vertex connected to root.
-   * @param label assigned to vertex
-   * @param weight assigned to edge
-   * @return the new vertex
-   */
-  public Vertex putVertex(L label, W weight);
-  /**
-   * Method to add a new vertex connected to source.
-   * @param source vertex
-   * @param label assigned to vertex
-   * @param weight assigned to edge
-   * @return the new vertex
-   */   
-  public Vertex putVertex(Vertex source, L label, W weight);
-  /**
-   * Method to add a new vertex connected to source.
-   * @param source vertex
-   * @param label assigned to vertex
-   * @param weight assigned to edge
-   * @return the new vertex
-   */
-  public boolean putEdge(Vertex source, Vertex target, W weight);
-   /**
-   * Method to add a new edge between source and target vertexes.
-   * @param source vertex
-   * @param target vertex
-   * @param weight assigned to edge
-   * @return true if edge was added
-   */
-  public boolean deleteEdge(Vertex source, Vertex target);
-	/**
-   * Method to retrieve number of vertexes.
-   * @return graph size
-   */
-	public long size();
-	/**
-   * Method to retrieve the number of edges.
-   * @return graph order 
-   */
-	public long order();
-  /**
-   * Method to retrieve the root vertex.
-   * @return graph root
-   */
-  public Vertex root();
-	/**
-   * Method to determine if the graph is empty.
-   * @return true if the graph has no vertexes 
-   */
-	public boolean isEmpty();
-  /**
-   * Method to determine if the graph is labeled.
-   * @return true if vertexes have non-trivial labels 
-   */
-  public boolean isLabeled();
-  /**
-   * Method to determine if the graph is weighted.
-   * @return true if edges have non-trivial weights
-   */
-  public boolean isWeighted();
-  /**
-   * Method to determine if the graph is directed.
-   * @return true if edges are directed
-   */
-  public boolean isDirected();
-  /**
-   * Method to determine if this is a multigraph.
-   * @return true if multiple edges between vertexes are allowed
-   */
-  public boolean isMulti();
-  /**
-   * Method to determine if the graph is complex.
-   * @return true if self-edges (loops) between vertexes are allowed
-   */
-  public boolean isComplex();
-  /**
-   * Method to determine if the graph supports cycles.
-   * @return true if cycles are allowed
-   */
-  public boolean isCyclic();
-  
+
+    /**
+     * Add a new vertex connected to root.
+     *
+     * @param label assigned to vertex
+     * @param weight assigned to edge
+     * @return the new vertex
+     */
+    Vertex putVertex(L label, W weight);
+
+    /**
+     * Add a new vertex connected to source.
+     *
+     * @param source vertex
+     * @param label assigned to vertex
+     * @param weight assigned to edge
+     * @return the new vertex
+     */
+     Vertex putVertex(Vertex source, L label, W weight);
+
+     /**
+      * Add a new vertex connected to source.
+      *
+      * @param source vertex
+      * @param label assigned to vertex
+      * @param weight assigned to edge
+      * @return the new vertex
+      */
+     boolean putEdge(Vertex source, Vertex target, W weight);
+
+     /**
+      * Add a new edge between source and target vertexes.
+      *
+      * @param source vertex
+      * @param target vertex
+      * @return true if edge was added
+      */
+     boolean deleteEdge(Vertex source, Vertex target);
+
+     /**
+      * Retrieve number of vertexes.
+      *
+      * @return graph size
+      */
+     long size();
+
+     /**
+      * Retrieve the number of edges.
+      *
+      * @return graph order 
+      */
+     long order();
+
+     /**
+      * Retrieve the root vertex.
+      *
+      * @return graph root
+      */
+     Vertex root();
+
+     /**
+      * Determine if the graph is empty.
+      *
+      * @return true if the graph has no vertexes 
+      */
+     boolean isEmpty();
+
+     /**
+      * Determine if the graph is labeled.
+      *
+      * @return true if vertexes have non-trivial labels 
+      */
+     boolean isLabeled();
+
+     /**
+      * Determine if the graph is weighted.
+      *
+      * @return true if edges have non-trivial weights
+      */
+     boolean isWeighted();
+
+     /**
+      * Determine if the graph is directed.
+      *
+      * @return true if edges are directed
+      */
+     boolean isDirected();
+
+     /**
+      * Determine if this is a multigraph.
+      *
+      * @return true if multiple edges between vertexes are allowed
+      */
+     boolean isMulti();
+
+     /**
+      * Determine if the graph is complex.
+      *
+      * @return true if self-edges (loops) between vertexes are allowed
+      */
+     boolean isComplex();
+
+     /**
+      * Determine if the graph supports cycles.
+      *
+      * @return true if cycles are allowed
+      */
+     boolean isCyclic();
 }

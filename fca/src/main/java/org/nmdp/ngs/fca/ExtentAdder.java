@@ -20,7 +20,6 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-
 package org.nmdp.ngs.fca;
 
 import java.util.List;
@@ -28,52 +27,48 @@ import java.util.ArrayList;
 import java.util.BitSet;
 
 /**
- *
- * @author int33484
+ * Extent adder.
  */
 public class ExtentAdder<O, A> extends LatticePruner<O, A> {
-  private O object;
-  private BitSet extent;
-  
-  protected static abstract class Init<O, A, T extends Init<O, A, T>> extends LatticePruner.Init<O, A, T> {
     private O object;
-    
-    public T withObject(final O object) {
-      this.object = object;
-      return self();
-    }
-    
-    public ExtentAdder build() {
-      return new ExtentAdder(this);
-    }
-  }
-  
-  public static class Builder<O, A> extends Init<O, A, Builder<O, A>> {
-    @Override
-    protected Builder self() {
-      return this;
-    }
-  }
+    private BitSet extent;
 
-  protected ExtentAdder(Init<O, A, ?> init) {
-    super(init);
-    this. object = init.object;
-    List<O> list = new ArrayList<O>();
-    list.add(object);
-    extent = Concept.encode(list, objects);
-    go = Lattice.Direction.DOWN;
-  }
-  
-  public boolean pruneVertex(Vertex vertex)
-	{
-    if(super.pruneVertex(vertex)) {
-      return true;
+    protected static abstract class Init<O, A, T extends Init<O, A, T>> extends LatticePruner.Init<O, A, T> {
+        private O object;
+
+        public T withObject(final O object) {
+            this.object = object;
+            return self();
+        }
+
+        public ExtentAdder build() {
+            return new ExtentAdder(this);
+        }
     }
-    
-    Vertex<Concept, Long> source = vertex;
-    source.getLabel().extent().or(extent);
-		
-    return false;
-	}
-  
+
+    public static class Builder<O, A> extends Init<O, A, Builder<O, A>> {
+        @Override
+        protected Builder self() {
+            return this;
+        }
+    }
+
+    protected ExtentAdder(final Init<O, A, ?> init) {
+        super(init);
+        this. object = init.object;
+        List<O> list = new ArrayList<O>();
+        list.add(object);
+        extent = Concept.encode(list, objects);
+        go = Lattice.Direction.DOWN;
+    }
+
+    public boolean pruneVertex(final Vertex vertex) {
+        if (super.pruneVertex(vertex)) {
+            return true;
+        }
+
+        Vertex<Concept, Long> source = vertex;
+        source.getLabel().extent().or(extent);
+        return false;
+    }
 }

@@ -21,47 +21,52 @@
 
 */
 package org.nmdp.ngs.fca;
+
 /**
  * Interface for partially ordering objects.
+ *
  * @param <T> type of object
  */
 public interface Partial<T> {
-  /**
-   * Enumerated partial orders that extends natural (complete) orders for
-   * comparable objects. For example, real numbers are completely ordered in the
-   * normal way using greater-than, less-than, and equal to operators. Sets of
-   * real numbers, by contrast, are partially ordered by inclusion using subset,
-   * superset, and equals, respectively. A third possibility exists where sets
-   * are disjoint (intersection results in the null set). We call these sets
-   * noncomparable and define another ordering category that extends to all
-   * partially ordered objects.
-   */
-  public static enum Order {
+
     /**
-     * Equivalent to a return value of -1 for comparable objects. For example, 0
-     * is less than 1 and {0} is a subset {0, 1}.
+     * Enumerated partial orders that extends natural (complete) orders for
+     * comparable objects. For example, real numbers are completely ordered in the
+     * normal way using greater-than, less-than, and equal to operators. Sets of
+     * real numbers, by contrast, are partially ordered by inclusion using subset,
+     * superset, and equals, respectively. A third possibility exists where sets
+     * are disjoint (intersection results in the null set). We call these sets
+     * noncomparable and define another ordering category that extends to all
+     * partially ordered objects.
      */
-    LESS,
+    public static enum Order {
+        /**
+         * Equivalent to a return value of -1 for comparable objects. For example, 0
+         * is less than 1 and {0} is a subset {0, 1}.
+         */
+        LESS,
+        /**
+         * Equivalent to a return value of 1 for comparable objects. For example, 1
+         * is greater than 0 and {0, 1} is a superset {0}.
+         */
+        GREATER,
+        /**
+         * Equivalent to a return value of 0 for comparable objects. For example, 1
+         * is equal to 1 and {1} is equal to {1}.
+         */
+        EQUAL,
+        /**
+         * No equivalent for comparable objects. For example, {0} and {1} are
+         * disjoint and therefore noncomparable.
+         */
+        NONCOMPARABLE
+    }
+
     /**
-     * Equivalent to a return value of 1 for comparable objects. For example, 1
-     * is greater than 0 and {0, 1} is a superset {0}.
+     * Define the partial order.
+     *
+     * @param type of object
+     * @return partial order
      */
-    GREATER,
-    /**
-     * Equivalent to a return value of 0 for comparable objects. For example, 1
-     * is equal to 1 and {1} is equal to {1}.
-     */
-    EQUAL,
-    /**
-     * No equivalent for comparable objects. For example, {0} and {1} are
-     * disjoint and therefore noncomparable.
-     */
-    NONCOMPARABLE
-  }
-  /**
-   * Method to define the partial order.
-   * @param type of object
-   * @return partial order
-   */
-  public Order order(T type);
+    Order order(T type);
 }
