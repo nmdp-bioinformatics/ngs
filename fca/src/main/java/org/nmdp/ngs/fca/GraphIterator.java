@@ -25,6 +25,9 @@ package org.nmdp.ngs.fca;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+
+import com.tinkerpop.blueprints.Vertex;
+
 /**
  * A class to iterate over graphs.
  */

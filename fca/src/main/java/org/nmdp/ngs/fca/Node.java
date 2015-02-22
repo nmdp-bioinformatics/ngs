@@ -34,7 +34,7 @@ import com.google.common.collect.TreeMultiset;
  * @param <L> label type
  * @param <W> weight type
  */
-public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>> {
+public class Node<L, W extends Comparable> implements Iterable<Node.Edge<W>> {
   protected final L label;
   protected final int id, hashcode;
   protected int color;
@@ -47,15 +47,15 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
    * A class for edges.
    * @param <W> weight type
    */
-	public static class Edge<W extends Comparable> implements Comparable<Vertex.Edge<W>> {
-    private Vertex target;
+	public static class Edge<W extends Comparable> implements Comparable<Node.Edge<W>> {
+    private Node target;
 		private W weight;
     /**
      * Construct a new edge.
      * @param target vertex
      * @param weight of the edge
      */
-		Edge(Vertex target, W weight) { 
+		Edge(Node target, W weight) { 
 			this.target = target;
 			this.weight = weight;
 		}
@@ -63,7 +63,7 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
      * Method to retrieve the target vertex.
      * @return target vertex
      */
-		Vertex target() {
+		Node target() {
       return target;
     }
 		/**
@@ -120,7 +120,7 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
    * @param id
    * @param label 
    */
-	public Vertex(int id, L label) {
+	public Node(int id, L label) {
 		this.id = id;
     this.color = 0;
 		this.label = label;
@@ -187,7 +187,7 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
    * @param weight of edge
    * @return true if this vertex adopted target
    */
-	public boolean adopt(Vertex target, W weight) {
+	public boolean adopt(Node target, W weight) {
 		boolean added = edges.add(new Edge<W>(target, weight));
     if(added) {
       outdegree++;
@@ -217,7 +217,7 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
    * @param target vertex to remove
    * @return true if target vertex was removed
    */
-	public boolean orphan(Vertex target) {
+	public boolean orphan(Node target) {
 		Iterator<Edge<W>> iterator = edges.iterator();
 		while(iterator.hasNext()) {
 			Edge edge = iterator.next();
@@ -234,7 +234,7 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
    * @return vertex iterator
    */
   @Override
-	public Iterator<Vertex.Edge<W>> iterator()
+	public Iterator<Node.Edge<W>> iterator()
 	{
     Iterator<Edge<W>> edge = edges.iterator();
 		return edge;
@@ -258,11 +258,11 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
       return true;
     }
     
-    if(!(that instanceof Vertex)) {
+    if(!(that instanceof Node)) {
       return false;
     }
     
-    Vertex vertex = (Vertex) that;
+    Node vertex = (Node) that;
     return Objects.equals(id, vertex.getId())
         && Objects.equals(label, vertex.getLabel())
         && Objects.equals(edges, vertex.edges);         
@@ -271,7 +271,7 @@ public class Vertex<L, W extends Comparable> implements Iterable<Vertex.Edge<W>>
    * Method to make a shallow copy of this vertex with id and label.
    * @return shallow copy of this vertex with none of the original edges
    */
-  Vertex shallowCopy() {
-    return new Vertex(id, label);
+  Node shallowCopy() {
+    return new Node(id, label);
   }
 }

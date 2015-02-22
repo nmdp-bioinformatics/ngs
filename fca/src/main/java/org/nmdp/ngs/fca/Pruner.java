@@ -25,6 +25,8 @@ package org.nmdp.ngs.fca;
 
 import java.util.List;
 import java.util.ArrayList;
+
+import com.tinkerpop.blueprints.Vertex;
 /**
  * Class for pruning labeled vertexes and weighted edges. Pruners are the main
  * mechanism for performing read-only operations on graphs.
@@ -157,7 +159,7 @@ public class Pruner<L, W> {
 	{
 		parent = vertex;
 		
-		if(labels.contains(vertex.getLabel()))
+		if(labels.contains(vertex.getProperty("label")))
 		{
 			return true;
 		}

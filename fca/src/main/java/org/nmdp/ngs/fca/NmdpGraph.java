@@ -21,12 +21,14 @@
 
 */
 package org.nmdp.ngs.fca;
+
+import com.tinkerpop.blueprints.Vertex;
 /**
  * Interface for graphs.
  * @param <L> label type for vertexes
  * @param <W> weight type for edges
  */
-public interface Graph<L, W> extends Iterable<Vertex> {
+public interface NmdpGraph<L, W> extends Iterable<Vertex> {
    /**
    * Method to add a new vertex connected to root.
    * @param label assigned to vertex

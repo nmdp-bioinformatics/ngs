@@ -34,15 +34,15 @@ import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 
-public final class VertexTest {
-  private Vertex x, y, z;
-  private Iterator<Vertex.Edge<String>> edge;
+public final class NodeTest {
+  private Node x, y, z;
+  private Iterator<Node.Edge<String>> edge;
   
   @Before
   public void setUp() {
-    x = new Vertex(0, "X");
-    y = new Vertex(1, "Y");
-    z = new Vertex(2, "Z");
+    x = new Node(0, "X");
+    y = new Node(1, "Y");
+    z = new Node(2, "Z");
   }
   
   @Test
@@ -196,14 +196,14 @@ public final class VertexTest {
   
   @Test
   public void testEquals() {
-    Vertex vertex = new Vertex(0, "X");
+    Node vertex = new Node(0, "X");
     assertEquals(vertex, x);
   }
   
   @Test
   public void testShallowCopy() {
     y.adopt(x, 0);
-    Vertex copy = y.shallowCopy();
+    Node copy = y.shallowCopy();
     assertEquals(copy.getId(), 1);
     assertEquals(copy.getLabel(), "Y");
     assertEquals(copy.getInDegree(), 0);

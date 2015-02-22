@@ -26,13 +26,18 @@ package org.nmdp.ngs.fca;
 import java.util.Iterator;
 import java.lang.StringBuilder;
 
+import com.tinkerpop.blueprints.Graph;
+import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Edge;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Class for abstract graphs.
  * @param <L> type for vertexes
  * @param <W> type for edges
  */
-public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L, W>, Iterable<Vertex> {
+public abstract class AbstractGraph<L, W extends Comparable> implements Graph {
   protected Vertex root;
   protected boolean directed;
   protected int color, size, order;
@@ -42,7 +47,6 @@ public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L,
    * @param weight assigned to edge
    * @return the new vertex
    */
-  @Override
   public Vertex putVertex(L label, W weight) {
     return putVertex(root, label, weight);
   }
@@ -53,12 +57,12 @@ public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L,
    * @param weight assigned to edge
    * @return the new vertex
    */
-  @Override
   public Vertex putVertex(Vertex source, L label, W weight) {
     checkNotNull(label);
     checkNotNull(weight);        
     
-    Vertex target = new Vertex(color, label);
+    Vertex target = addVertex(null); // new Vertex(color, label);
+    target.setProperty("label", label);
 		putEdge(source, target, weight);
     ++size;
 
@@ -71,7 +75,6 @@ public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L,
    * @param weight assigned to edge
    * @return true if edge was added
    */
-  @Override
   public boolean putEdge(Vertex source, Vertex target, W weight) {
     checkNotNull(target);
     checkNotNull(weight);
@@ -81,17 +84,15 @@ public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L,
       return true;
     }
     
-    if(source.adopt(target, weight)) {
-      if(!directed) {
-				if(!target.adopt(source, weight)) {
-          return false;
-        }
-			}
-      ++order;
-      return true;
+    addEdge(null, source, target, weight.toString());
+    
+    if(!directed) {
+      addEdge(null, target, source, weight.toString());
     }
+    
+    ++order;
 
-		return false;
+		return true;
   }
   /**
    * Method to delete edge between source and target vertexes.
@@ -99,46 +100,38 @@ public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L,
    * @param target vertex
    * @return true if edge was deleted
    */
-  @Override
   public boolean deleteEdge(Vertex source, Vertex target) {
     checkNotNull(source);
     checkNotNull(target);
     
-    boolean found = source.orphan(target);
-		
-		if(!directed) {
-			target.orphan(source);
-		}
-		
-		if(!source.equals(target)) {	
-			if(root.equals(source)) {
-				root = target;
-			}
-		}
-		
-		if(found) {
-			--order;
-		}
-
-		return found;
+    Edge found = null;
+    for(Edge edge : source.getEdges(Direction.BOTH)) {
+      if(edge.getVertex(Direction.OUT).equals(target)) {
+        found = edge;
+        break;
+      }
+    }
+    
+    if(found != null) {
+      removeEdge(found);
+      return true;
+    }
+    
+    return false;
   }
   
-  @Override
   public long size() {
     return size;
   }
 
-  @Override
   public long order() {
     return order;
   }
   
-  @Override
   public Vertex root() {
     return root;
   }
   
-  @Override
   public boolean isEmpty() {
     return size() == 0 && order() == 0;
   }
@@ -146,7 +139,6 @@ public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L,
    * 
    * @return false
    */
-  @Override
   public boolean isLabeled() {
     return false;
   }
@@ -154,7 +146,6 @@ public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L,
    * 
    * @return false
    */
-  @Override
   public boolean isWeighted() {
     return false;
   }
@@ -162,7 +153,6 @@ public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L,
    * 
    * @return true if edges are directed
    */
-  @Override
   public boolean isDirected() {
     return directed;
   }
@@ -170,7 +160,6 @@ public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L,
    * 
    * @return true
    */
-  @Override
   public boolean isMulti() {
     return true;
   }
@@ -178,7 +167,6 @@ public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L,
    * 
    * @return true
    */
-  @Override
   public boolean isComplex() {
     return true;
   }
@@ -186,7 +174,6 @@ public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L,
    * 
    * @return true
    */
-  @Override
   public boolean isCyclic() {
     return true;
   }

@@ -22,7 +22,13 @@
 */
 package org.nmdp.ngs.fca;
 
+import com.tinkerpop.blueprints.Graph;
+import com.tinkerpop.blueprints.Vertex;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.Features;
+import com.tinkerpop.blueprints.GraphQuery;
 import java.util.Iterator;
 /**
  * A connected graph where every vertex is connected to any other vertex through
@@ -43,28 +49,76 @@ public class ConnectedGraph<L, W extends Comparable> extends AbstractGraph<L, W>
     order = 0;
 	}
   /**
-   * Default iterator performs a breadth first search without pruning.
-   * @return GraphIterator with default constructed Pruner
-   */
-  @Override
-  public GraphIterator iterator() {
-    return new GraphIterator(++color, new Pruner<L, W>(), root);
-  }
-  /**
-   * Iterator with customizable pruning.
-   * @param pruner argument
-   * @return GraphIterator with argument-defined Pruner
-   */
-  public GraphIterator iterator(Pruner pruner)
-	{
-		return new GraphIterator(++color, pruner, root);
-	}
-  /**
    * 
    * @return an empty builder ready to parameterize
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  @Override
+  public Features getFeatures() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public Vertex addVertex(Object o) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public Vertex getVertex(Object o) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void removeVertex(Vertex vertex) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public Iterable<Vertex> getVertices() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public Iterable<Vertex> getVertices(String string, Object o) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public Edge addEdge(Object o, Vertex vertex, Vertex vertex1, String string) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public Edge getEdge(Object o) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void removeEdge(Edge edge) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public Iterable<Edge> getEdges() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public Iterable<Edge> getEdges(String string, Object o) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public GraphQuery query() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void shutdown() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
   /**
    * A class for building common kinds of graphs (mostly for testing). 
@@ -135,8 +189,8 @@ public class ConnectedGraph<L, W extends Comparable> extends AbstractGraph<L, W>
     }
 
       
-    public Graph build() {
-      Graph graph = new ConnectedGraph(directed);
+    public AbstractGraph build() {
+      AbstractGraph graph = new ConnectedGraph(directed);
       
       if(kind == Kind.PATH) {
         Vertex source = graph.root();
