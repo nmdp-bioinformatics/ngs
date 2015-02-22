@@ -26,4 +26,9 @@ public class TinkerContext<G, M> extends AbstractContext<G, M> {
     lattice.addVertex(new Concept(new BitSet(), ones));
     bottom = top;
   }
+
+  @Override
+  public Concept greatestLowerBound(List query) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

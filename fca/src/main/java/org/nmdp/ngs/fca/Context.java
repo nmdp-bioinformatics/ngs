@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author int33484
  */
-public interface Context<G extends Comparable, M extends Comparable> {
+public interface Context<G, M> {
   
   public List<G> getObjects();
 

@@ -21,12 +21,12 @@ import java.util.BitSet;
  * @param <G> object type
  * @param <M> attribute type
  */
-public abstract class AbstractContext<G extends Comparable, M extends Comparable> implements Context<G, M> {
-  private List<G> objects;
-  private List<M> attributes;
-  private Vertex top;
-  private Vertex bottom;
-  private Graph lattice;
+public abstract class AbstractContext<G, M> implements Context<G, M> {
+  protected List<G> objects;
+  protected List<M> attributes;
+  protected Vertex top;
+  protected Vertex bottom;
+  protected Graph lattice;
   
    /**
   * Method to find the supremum or least upper bound.
@@ -154,18 +154,22 @@ public abstract class AbstractContext<G extends Comparable, M extends Comparable
     return added.getProperty("label");
   }
   
+  @Override
   public List<G> getObjects() {
     return objects;
   }
-
+  
+  @Override
   public List<M> getAttributes() {
     return attributes;
   }
 
+  @Override
   public Concept bottom() {
     return bottom.getProperty("label");
   }
 
+  @Override
   public Concept top() {
     return top.getProperty("label");
   }
@@ -179,19 +183,20 @@ public abstract class AbstractContext<G extends Comparable, M extends Comparable
    * @param query attributes
    * @return the found vertex
    */
-  private Vertex queryAttributes(final List<M> query) {
+  private Vertex queryAttributes(final List query) {
     BitSet bits = Concept.encode(query, attributes);
     return supremum(bits, top);
   }
   
-  private Vertex queryAttributes(final List<M> left, final List<M> right) {
+  private Vertex queryAttributes(final List left, final List right) {
     BitSet join = Concept.encode(left, attributes);
     BitSet bits = Concept.encode(right, attributes);
     join.or(bits);
     return supremum(join, top);
   }
   
-  public final Concept leastUpperBound(final List<M> query) {
+  @Override
+  public final Concept leastUpperBound(final List query) {
     return queryAttributes(query).getProperty("label");
   }
   
@@ -203,7 +208,8 @@ public abstract class AbstractContext<G extends Comparable, M extends Comparable
    * @param query attributes
    * @return the number of objects with the given attributes
    */
-  public int support(final List<M> query) {
+  @Override
+  public int support(final List query) {
     return leastUpperBound(query).extent().cardinality();
   }
   /**
@@ -213,7 +219,8 @@ public abstract class AbstractContext<G extends Comparable, M extends Comparable
    * @param q second set of query attributes
    * @return the number of objects with the query attributes
    */
-  public int support(final List<M> left, final List<M> right) {
+  @Override
+  public int support(final List left, final List right) {
     return leastUpperBound(left, right).extent().cardinality();
   }
   /**
@@ -223,7 +230,8 @@ public abstract class AbstractContext<G extends Comparable, M extends Comparable
    * is the number of times the given attributes are observed divided by the
    * total number of observations (objects)
    */
-  public double marginal(final List<M> query) {
+  @Override
+  public double marginal(final List query) {
     return (double) support(query) / objects.size();
   }
   /**
@@ -234,7 +242,8 @@ public abstract class AbstractContext<G extends Comparable, M extends Comparable
    * Calculation is the number of times the given attributes are observed
    * together divided by the total number of observations (objects)
    */
-  public double joint(final List<M> left, final List<M> right) {
+  @Override
+  public double joint(final List left, final List right) {
     return (double) support(left, right) / objects.size();
   }
   /**
@@ -245,7 +254,8 @@ public abstract class AbstractContext<G extends Comparable, M extends Comparable
    * @return the conditional frequency. Calculation is the joint divided by the
    * prior
    */
-  public double conditional(final List<M> left, final List<M> right) {
+  @Override
+  public double conditional(final List left, final List right) {
     return joint(left, right) / marginal(right);
   }
 }
