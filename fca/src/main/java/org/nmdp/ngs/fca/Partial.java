@@ -56,8 +56,29 @@ public interface Partial<T> {
      * No equivalent for comparable objects. For example, {0} and {1} are
      * disjoint and therefore noncomparable.
      */
-    NONCOMPARABLE
+    NONCOMPARABLE;
+
+    public static enum Direction {
+      FORWARD,
+      REVERSE
+    }
+    
+    public boolean gte() {
+      return this.equals(GREATER) || this.equals(EQUAL);
+    }
+    
+    public boolean lte() {
+      return this.equals(LESS) || this.equals(EQUAL);
+    }
+    
+    public boolean filter(Direction direction) {
+      if(direction.equals(Direction.FORWARD)) {
+        return gte();
+      }
+      return lte();
+    }
   }
+  
   /**
    * Method to define the partial order.
    * @param type of object

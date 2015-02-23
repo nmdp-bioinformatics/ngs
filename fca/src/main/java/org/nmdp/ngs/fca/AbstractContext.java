@@ -27,6 +27,13 @@ public abstract class AbstractContext<G, M> implements Context<G, M> {
   protected Vertex top;
   protected Vertex bottom;
   protected Graph lattice;
+  protected Partial.Order.Direction direction;
+  
+  private boolean go(Vertex source, Vertex target, Partial.Order.Direction direction) {
+    Concept sourceConcept = source.getProperty("label");
+    Concept targetConcept = target.getProperty("label");
+    return sourceConcept.order(targetConcept).filter(direction);
+  }
   
    /**
   * Method to find the supremum or least upper bound.
@@ -35,28 +42,48 @@ public abstract class AbstractContext<G, M> implements Context<G, M> {
   * @return vertex whose label-concept represents the supremum
   */
  private Vertex supremum(BitSet intent, Vertex generator) {
+   System.out.println("supremum(" + intent + ", " + generator.getProperty("label") + ")");
     boolean max = true;
     
 		while(max) {   
 			max = false;
-			for(Vertex target : lattice.getVertices()) {
+			for(Edge edge : generator.getEdges(Direction.BOTH)) {
+        Vertex target = edge.getVertex(Direction.OUT);
         Concept targetConcept = target.getProperty("label");
         Concept generatorConcept = generator.getProperty("label");
-				if(targetConcept.gte(generatorConcept)) {
+        
+        System.out.print(targetConcept.intent() + " gte " + generatorConcept.intent());
+        
+				if(targetConcept.order(generatorConcept).filter(direction)) {
+          System.out.println(" ... yes, continue");
           continue;
         }  
         
 				Concept proposed = new Concept(new BitSet(), intent);
+        
+        System.out.print(" ... no, " + targetConcept.intent() + " gte " + proposed.intent());
+        
         if(targetConcept.gte(proposed)) {
+          
 					generator = target;
+          
+          System.out.println(" ... yes, generator = " + generator.getProperty("label"));
+          
 					max = true;
 					break;
 				}        
 			}
 		}
     
+    System.out.println("GENERATOR = " + generator.getProperty("label"));
+    
 		return generator;
 	}
+ 
+ private void addUndirectedEdge(Vertex source, Vertex target, String weight) {
+   lattice.addEdge(null, source, target, weight);
+   lattice.addEdge(null, target, source, weight);
+ }
  
   /**
   * Method to find the supremum or least upper bound.
@@ -65,6 +92,7 @@ public abstract class AbstractContext<G, M> implements Context<G, M> {
   * @return vertex whose label-concept represents the supremum
   */
  	private Vertex addIntent(BitSet intent, Vertex generator) {
+    System.out.println("addIntent(" + intent + ", " + generator.getProperty("label") + ")");
 		generator = supremum(intent, generator);
     Concept proposed = new Concept(new BitSet(), intent);
     Concept generatorConcept = generator.getProperty("label");
@@ -77,17 +105,28 @@ public abstract class AbstractContext<G, M> implements Context<G, M> {
     for(Vertex target : lattice.getVertices()) {
       Concept targetConcept = target.getProperty("label");
       generatorConcept = generator.getProperty("label");
+      
+      System.out.print(targetConcept.intent() + " gte " + generatorConcept.intent());
+      
 			if(targetConcept.gte(generatorConcept)) {
+        System.out.println(" ... yes, continue");
         continue;
 			}
 			
+      System.out.print(" ... no, ");
 			Vertex candidate = target;
-      targetConcept = candidate.getProperty("label");
+      Concept candidateConcept = candidate.getProperty("label");
+      
+      System.out.print("!" + candidateConcept.intent() + " gte " + proposed.intent() + " and !" + proposed.intent() + " gte " + candidateConcept.intent());
+      
 			if(!(targetConcept.gte(proposed)) &&
          !(proposed.gte(targetConcept))) {
         
+        
         BitSet meet = (BitSet) targetConcept.intent().clone();
         meet.and(intent);
+        
+        System.out.println(" ... yes, addIntent(meet =" + meet);
         candidate = addIntent(meet, candidate);
 			}
 			
@@ -96,12 +135,16 @@ public abstract class AbstractContext<G, M> implements Context<G, M> {
       for(Iterator it = parents.iterator(); it.hasNext();) {
         Vertex parent = (Vertex) it.next();
         Concept parentConcept = parent.getProperty("label");
-        Concept candidateConcept = candidate.getProperty("label");
+        candidateConcept = candidate.getProperty("label");
+        
+        System.out.print(parentConcept.intent() + " gte " + candidateConcept.intent());
         
         if(parentConcept.gte(candidateConcept)) {
+          System.out.println(" ... yes, add = false");
 					add = false;
 					break;
         } else if(candidateConcept.gte(parentConcept)) {
+          System.out.println(" ... no, doomed.add(" + parentConcept.intent());
           doomed.add(parent);
 				}
 			}
@@ -118,26 +161,37 @@ public abstract class AbstractContext<G, M> implements Context<G, M> {
     
     Concept bottomConcept = bottom.getProperty("label");
     proposed.extent().or(generatorConcept.extent());
-		Vertex child = lattice.addVertex(proposed);
-    lattice.addEdge(null, generator, child, "");
+		Vertex child = lattice.addVertex(null);
+    child.setProperty("label", proposed);
+    
+    System.out.println("lattice.addEdge(" + generatorConcept.intent() + ", " + proposed.intent() + ")");
+            
+    addUndirectedEdge(generator, child, "");
 		bottom = bottomConcept.gte(proposed) ? child : bottom;
 
     for(Iterator it = parents.iterator(); it.hasNext();) {
       Vertex parent = (Vertex) it.next();
+      Concept parentConcept = parent.getProperty("label");
+      
+      System.out.println("parentConcept = " + parentConcept.intent());
+      
 			if(!parent.equals(generator)) {
         Edge found = null;
         for(Edge edge : parent.getEdges(Direction.BOTH)) {
-          if(edge.getVertex(Direction.OUT).equals(child)) {
-            found = edge;
-            break;
+          if(edge.getVertex(Direction.OUT).getProperty("label").equals(generator.getProperty("label"))) {
+            lattice.removeEdge(edge);
+            //break;
+          }
+          
+          if(edge.getVertex(Direction.IN).getProperty("label").equals(generator.getProperty("label"))) {
+            lattice.removeEdge(edge);
+            //break;
           }
         }
-    
-        if(found != null) {
-          lattice.removeEdge(found);
-        }
         
-        lattice.addEdge(null, parent, generator, "");
+        System.out.println("addEdge" + parentConcept.intent() + ", " + generatorConcept.intent() + ")");
+        
+        addUndirectedEdge(parent, child, "");
 			}
 		}
 		
