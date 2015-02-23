@@ -25,64 +25,67 @@ package org.nmdp.ngs.fca;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+
 /**
  * A class to iterate over graphs.
  */
 public class GraphIterator implements Iterator<Vertex> {
-	private final int color;
-	private final Pruner pruner;
-	private final List<Vertex> path;
-	/**
-   * Constructor for graph iterators.
-   * @param color of the graph
-   * @param pruner used to prune vertexes
-   * @param vertex to start from
-   */
-	public GraphIterator(int color, final Pruner pruner, final Vertex vertex)
-	{
-		this.color = color;
-		this.pruner = pruner;
-		path = new ArrayList<Vertex>();
-		path.add(vertex);
-	}
-  /**
-   * Method to retrieve the next vertex in the iteration path.
-   * @return true if the iteration path is not empty
-   */
-  @Override
-	public boolean hasNext() {
-		return !path.isEmpty();
-	}
-  /**
-   * Method to retrieve the next vertex in the iteration.
-   * @return true if another vertex exists in the iteration
-   */
-  @Override
-	public Vertex next() {
-		Vertex vertex = path.get(path.size() - 1);
-		path.remove(path.size() - 1);
-		vertex.setColor(color);
+    private final int color;
+    private final Pruner pruner;
+    private final List<Vertex> path;
 
-		if(!pruner.pruneVertex(vertex)) {
-      
-			for(Iterator<Vertex.Edge> it = vertex.iterator(); it.hasNext();) {   
-        Vertex.Edge edge = it.next();	
-        if(!pruner.pruneEdge(edge)) {	
-          if(edge.target().getColor() != color) {
-						edge.target().setColor(color);
-						path.add(edge.target());
-					}
-				}
-			}
-      
-		}
-    
-		return vertex;
-	}
+    /**
+     * Constructor for graph iterators.
+     *
+     * @param color of the graph
+     * @param pruner used to prune vertexes
+     * @param vertex to start from
+     */
+    public GraphIterator(final int color, final Pruner pruner, final Vertex vertex)
+    {
+        this.color = color;
+        this.pruner = pruner;
+        path = new ArrayList<Vertex>();
+        path.add(vertex);
+    }
 
-  @Override
-	public void remove() {
-		
-	}
+    /**
+     * Retrieve the next vertex in the iteration path.
+     *
+     * @return true if the iteration path is not empty
+     */
+    @Override
+    public boolean hasNext() {
+        return !path.isEmpty();
+    }
 
+    /**
+     * Retrieve the next vertex in the iteration.
+     *
+     * @return true if another vertex exists in the iteration
+     */
+    @Override
+    public Vertex next() {
+        Vertex vertex = path.get(path.size() - 1);
+        path.remove(path.size() - 1);
+        vertex.setColor(color);
+
+        if (!pruner.pruneVertex(vertex)) {
+            for (Iterator<Vertex.Edge> it = vertex.iterator(); it.hasNext();) {   
+                Vertex.Edge edge = it.next();	
+                if (!pruner.pruneEdge(edge)) {	
+                    if (edge.target().getColor() != color) {
+                        edge.target().setColor(color);
+                        path.add(edge.target());
+                    }
+                }
+            }
+        }
+        return vertex;
+    }
+
+    @Override
+    public void remove() {
+        // empty
+    }
 }

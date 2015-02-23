@@ -20,175 +20,183 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-
 package org.nmdp.ngs.fca;
 
-import java.util.Iterator;
-import java.lang.StringBuilder;
-
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.Iterator;
+
 /**
  * Class for abstract graphs.
+ *
  * @param <L> type for vertexes
  * @param <W> type for edges
  */
 public abstract class AbstractGraph<L, W extends Comparable> implements Graph<L, W>, Iterable<Vertex> {
-  protected Vertex root;
-  protected boolean directed;
-  protected int color, size, order;
-  /**
-   * Method to add a new vertex connected to root.
-   * @param label assigned to vertex
-   * @param weight assigned to edge
-   * @return the new vertex
-   */
-  @Override
-  public Vertex putVertex(L label, W weight) {
-    return putVertex(root, label, weight);
-  }
-  /**
-   * Method to add a new vertex connected to source.
-   * @param source vertex
-   * @param label assigned to vertex
-   * @param weight assigned to edge
-   * @return the new vertex
-   */
-  @Override
-  public Vertex putVertex(Vertex source, L label, W weight) {
-    checkNotNull(label);
-    checkNotNull(weight);        
-    
-    Vertex target = new Vertex(color, label);
-		putEdge(source, target, weight);
-    ++size;
+    protected Vertex root;
+    protected boolean directed;
+    protected int color, size, order;
 
-		return target;
-  }
-  /**
-   * Method to add a new edge between source and target vertexes.
-   * @param source vertex
-   * @param target vertex
-   * @param weight assigned to edge
-   * @return true if edge was added
-   */
-  @Override
-  public boolean putEdge(Vertex source, Vertex target, W weight) {
-    checkNotNull(target);
-    checkNotNull(weight);
-    
-    if(source == root && root == null) {
-      root = target;
-      return true;
+    /**
+     * Add a new vertex connected to root.
+     *
+     * @param label assigned to vertex
+     * @param weight assigned to edge
+     * @return the new vertex
+     */
+    @Override
+    public Vertex putVertex(final L label, final W weight) {
+        return putVertex(root, label, weight);
     }
-    
-    if(source.adopt(target, weight)) {
-      if(!directed) {
-				if(!target.adopt(source, weight)) {
-          return false;
+
+    /**
+     * Add a new vertex connected to source.
+     *
+     * @param source vertex
+     * @param label assigned to vertex
+     * @param weight assigned to edge
+     * @return the new vertex
+     */
+    @Override
+    public Vertex putVertex(final Vertex source, final L label, final W weight) {
+        checkNotNull(label);
+        checkNotNull(weight);
+ 
+        Vertex target = new Vertex(color, label);
+        putEdge(source, target, weight);
+        ++size;
+        return target;
+    }
+
+    /**
+     * Add a new edge between source and target vertexes.
+     *
+     * @param source vertex
+     * @param target vertex
+     * @param weight assigned to edge
+     * @return true if edge was added
+     */
+    @Override
+    public boolean putEdge(final Vertex source, final Vertex target, final W weight) {
+        checkNotNull(target);
+        checkNotNull(weight);
+
+        if (source == root && root == null) {
+            root = target;
+            return true;
         }
-			}
-      ++order;
-      return true;
+
+        if (source.adopt(target, weight)) {
+            if (!directed) {
+                if (!target.adopt(source, weight)) {
+                    return false;
+                }
+            }
+            ++order;
+            return true;
+        }
+        return false;
     }
 
-		return false;
-  }
-  /**
-   * Method to delete edge between source and target vertexes.
-   * @param source vertex
-   * @param target vertex
-   * @return true if edge was deleted
-   */
-  @Override
-  public boolean deleteEdge(Vertex source, Vertex target) {
-    checkNotNull(source);
-    checkNotNull(target);
-    
-    boolean found = source.orphan(target);
-		
-		if(!directed) {
-			target.orphan(source);
-		}
-		
-		if(!source.equals(target)) {	
-			if(root.equals(source)) {
-				root = target;
-			}
-		}
-		
-		if(found) {
-			--order;
-		}
+    /**
+     * Delete the edge between source and target vertexes.
+     *
+     * @param source vertex
+     * @param target vertex
+     * @return true if edge was deleted
+     */
+    @Override
+    public boolean deleteEdge(final Vertex source, final Vertex target) {
+        checkNotNull(source);
+        checkNotNull(target);
 
-		return found;
-  }
-  
-  @Override
-  public long size() {
-    return size;
-  }
+        boolean found = source.orphan(target);
+        if (!directed) {
+            target.orphan(source);
+        }
 
-  @Override
-  public long order() {
-    return order;
-  }
+        if (!source.equals(target)) {	
+            if(root.equals(source)) {
+                root = target;
+            }
+        }
+
+        if (found) {
+            --order;
+        }
+        return found;
+    }
   
-  @Override
-  public Vertex root() {
-    return root;
-  }
-  
-  @Override
-  public boolean isEmpty() {
-    return size() == 0 && order() == 0;
-  }
-  /**
-   * 
-   * @return false
-   */
-  @Override
-  public boolean isLabeled() {
-    return false;
-  }
-  /**
-   * 
-   * @return false
-   */
-  @Override
-  public boolean isWeighted() {
-    return false;
-  }
-  /**
-   * 
-   * @return true if edges are directed
-   */
-  @Override
-  public boolean isDirected() {
-    return directed;
-  }
-  /**
-   * 
-   * @return true
-   */
-  @Override
-  public boolean isMulti() {
-    return true;
-  }
-  /**
-   * 
-   * @return true
-   */
-  @Override
-  public boolean isComplex() {
-    return true;
-  }
-  /**
-   * 
-   * @return true
-   */
-  @Override
-  public boolean isCyclic() {
-    return true;
-  }
-  
+    @Override
+    public long size() {
+        return size;
+    }
+
+    @Override
+    public long order() {
+        return order;
+    }
+
+    @Override
+    public Vertex root() {
+        return root;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size() == 0 && order() == 0;
+    }
+
+    /**
+     * @return false
+     */
+    @Override
+    public boolean isLabeled() {
+        return false;
+    }
+
+    /**
+     * 
+     * @return false
+     */
+    @Override
+    public boolean isWeighted() {
+        return false;
+    }
+
+    /**
+     * 
+     * @return true if edges are directed
+     */
+    @Override
+    public boolean isDirected() {
+        return directed;
+    }
+
+    /**
+     * 
+     * @return true
+     */
+    @Override
+    public boolean isMulti() {
+        return true;
+    }
+
+    /**
+     * 
+     * @return true
+     */
+    @Override
+    public boolean isComplex() {
+        return true;
+    }
+
+    /**
+     * 
+     * @return true
+     */
+    @Override
+    public boolean isCyclic() {
+        return true;
+    }
 }

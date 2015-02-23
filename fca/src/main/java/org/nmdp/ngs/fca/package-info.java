@@ -20,18 +20,8 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-package org.nmdp.ngs.fca;
-
-import java.util.Iterator;
 
 /**
- * A class for traversed paths.
+ * Formal concept analysis for genomics.
  */
-public class Path extends ConnectedGraph {
-    /**
-     * Construct a new path (null connected graph).
-     */
-    public Path() {
-        super(true);
-    }
-}
+package org.nmdp.ngs.fca;
