@@ -1,8 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
+    ngs-fca  Formal concept analysis for genomics.
+    Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)
+
+    This library is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation; either version 3 of the License, or (at
+    your option) any later version.
+
+    This library is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; with out even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+    License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library;  if not, write to the Free Software Foundation,
+    Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
+
+    > http://www.gnu.org/licenses/lgpl.html
+
+*/
 
 package org.nmdp.ngs.fca;
 
@@ -25,7 +42,7 @@ import java.util.BitSet;
  * @param <G> object type
  * @param <M> attribute type
  */
-public abstract class AbstractContext<G, M> implements Context<G, M> {
+public abstract class AbstractContext<G, M> implements Context {
   protected List<G> objects;
   protected List<M> attributes;
   
@@ -195,7 +212,6 @@ public abstract class AbstractContext<G, M> implements Context<G, M> {
 		return child;
 	}
   
-  @Override
   public Concept insert(G object, List<M> attributes) {
     System.out.println("insert(" + object + ", " + attributes);
     objects.add(object);
@@ -286,32 +302,47 @@ public abstract class AbstractContext<G, M> implements Context<G, M> {
   
   @Override
   public final Concept leastUpperBound(final List query) {
-    return queryAttributes(query).getProperty("label");
+    BitSet bits = Concept.encode(query, attributes);  
+    return supremum(bits, top).getProperty(LABEL);
+  }
+  
+  @Override
+  public final Concept meet(final Concept left, final Concept right) {
+    BitSet bits = (BitSet) left.intent().clone();
+    bits.or(right.intent());
+    return supremum(bits, top).getProperty(LABEL);
+  }
+  
+  @Override
+  public final Concept join(final Concept left, final Concept right) {
+    BitSet bits = (BitSet) left.intent().clone();
+    bits.and(right.intent());
+    return supremum(bits, top).getProperty(LABEL);
   }
   
   public final Concept leastUpperBound(final List left, final List right) {
     return queryAttributes(left, right).getProperty("label");
   }
+  
   /**
    * Method to retrieve the number of objects that have the query attributes.
    * @param query attributes
    * @return the number of objects with the given attributes
    */
-  @Override
   public int support(final List query) {
     return leastUpperBound(query).extent().cardinality();
   }
+  
   /**
-   * Method to retrieve the number of objects that have the combined query
-   * attributes.
-   * @param p first set of query attributes
-   * @param q second set of query attributes
-   * @return the number of objects with the query attributes
+   * Utility method to determine the support given two sets of query attributes.
+   * @param left set of attributes
+   * @param right set of attributes
+   * @return the extent cardinality for the join of the attribute
    */
-  @Override
   public int support(final List left, final List right) {
     return leastUpperBound(left, right).extent().cardinality();
   }
+  
   /**
    * Method to calculate the marginal frequency of the given attributes. 
    * @param query attributes
@@ -323,6 +354,7 @@ public abstract class AbstractContext<G, M> implements Context<G, M> {
   public double marginal(final List query) {
     return (double) support(query) / objects.size();
   }
+  
   /**
    * Method to calculate the marginal frequency given two sets of attributes.
    * @param left set of query attributes
@@ -331,10 +363,10 @@ public abstract class AbstractContext<G, M> implements Context<G, M> {
    * Calculation is the number of times the given attributes are observed
    * together divided by the total number of observations (objects)
    */
-  @Override
   public double joint(final List left, final List right) {
     return (double) support(left, right) / objects.size();
   }
+  
   /**
    * Method to calculate the conditional frequency of one attribute set given
    * another.
@@ -345,6 +377,8 @@ public abstract class AbstractContext<G, M> implements Context<G, M> {
    */
   @Override
   public double conditional(final List left, final List right) {
-    return joint(left, right) / marginal(right);
+    Concept concept = leastUpperBound(right);
+    Concept meet = meet(leastUpperBound(left), concept);
+    return (double) meet.extent().cardinality() / concept.extent().cardinality();
   }
 }
