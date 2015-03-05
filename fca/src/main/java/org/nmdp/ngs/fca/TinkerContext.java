@@ -50,7 +50,6 @@ public class TinkerContext<G, M> extends AbstractContext<G, M> {
     direction = Partial.Order.Direction.FORWARD;
     size = 1;
     order = 0;
-    System.out.println("TinkerContext top = " + top.getProperty("label"));
     bottom = top;
   }
 

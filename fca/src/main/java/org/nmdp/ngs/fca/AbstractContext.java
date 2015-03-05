@@ -213,19 +213,13 @@ public abstract class AbstractContext<G, M> implements Context {
 	}
   
   public Concept insert(G object, List<M> attributes) {
-    System.out.println("insert(" + object + ", " + attributes);
     objects.add(object);
     BitSet intent = Concept.encode(attributes, this.attributes);
     Vertex added = addIntent(intent, top);
     
-    
-    // Add extent
-    
     List<G> list = new ArrayList<G>();
     list.add(object);
     BitSet extent = Concept.encode(list, objects);
-    //Concept addedConcept = added.getProperty("label");
-    //addedConcept.extent().or(extent);
     
     List queue = new ArrayList();
     added.setProperty("color", ++color);

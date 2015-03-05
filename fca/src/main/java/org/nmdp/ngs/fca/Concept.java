@@ -28,7 +28,6 @@ import java.util.ArrayList;
 
 /**
  * Class for representing formal concepts and their partial ordering.
- * @author int33484
  */
 public final class Concept implements Partial<Concept> {
   private final BitSet extent, intent;
@@ -44,7 +43,7 @@ public final class Concept implements Partial<Concept> {
   }
   
   /**
-   * Method to retrieve a concept's shared objects.
+   * Retrieve a concept's shared objects.
    * @return extent
    */
   public BitSet extent() {
@@ -52,7 +51,7 @@ public final class Concept implements Partial<Concept> {
   }
   
   /**
-   * Method to retrieve a concept's shared attributes.
+   * Retrieve a concept's shared attributes.
    * @return intent
    */
   public BitSet intent() {
@@ -60,7 +59,7 @@ public final class Concept implements Partial<Concept> {
   }
   
   /**
-   * Method to decode an object list from its bit membership. 
+   * Decode an object list from its bit membership. 
    * @param bits where each set bit represents membership in the given group
    * @param group list of all members
    * @return immutable list of members
@@ -76,7 +75,7 @@ public final class Concept implements Partial<Concept> {
   }
   
   /**
-   * Method to encode bit membership from a list of objects.
+   * Encode bit membership from a list of objects.
    * @param members to encode
    * @param group list of all members
    * @return bits where each set bit represents membership in the 
@@ -95,7 +94,7 @@ public final class Concept implements Partial<Concept> {
   }
   
   /**
-   * Method to determine the partial order of two concepts.
+   * Determine the partial order of two concepts.
    * @param that concept
    * @return enumerated partial order for this and that concept
    */

@@ -43,8 +43,8 @@ public final class TinkerContextTest {
   TinkerContext context;
   private List abcdefg, abdefg, abde, abdf, acef, bd, af;
   /**
-  * Example taken from Davey and Priestly's "Introduction to Lattices and
-  * Order" second edition (p 77).
+  * Example taken from Davey and Priestly "Introduction to Lattices and Order"
+  * second edition, p 77.
   */
   @Before
   public void setUp() {
@@ -64,37 +64,16 @@ public final class TinkerContextTest {
     .add("a").add("f").build();
     
     context = new TinkerContext(abcdefg);
-    System.out.println("insert(S, " + abdf);
     context.insert("S", abdf);
-    System.out.println("insert(T, " + abde);
     context.insert("T", abde);
-    System.out.println("insert(U, " + abdefg);
     context.insert("U", abdefg);
-    System.out.println("insert(V, " + acef);
     context.insert("V", acef);
-    System.out.println("insert(W, " + bd);
     context.insert("W", bd);
-    System.out.println("insert(X, " + af);
     context.insert("X", af);
-    System.out.println("done inserting");
-    
-    
-    System.out.println(context);
   }
 
   @Test
   public void testInsert() {
-    /*
-    List ab = new ImmutableList.Builder<String>().add("a").add("b").build();
-    List bc = new ImmutableList.Builder<String>().add("b").add("c").build();
-    List ac = new ImmutableList.Builder<String>().add("a").add("c").build();
-   
-    context.insert("A", ab);
-    context.insert("B", bc);
-    context.insert("C", ac);
-    */
-
-    
     BitSet ones = new BitSet();
     BitSet zeros = new BitSet();
     
@@ -106,8 +85,19 @@ public final class TinkerContextTest {
     assertEquals(context.top().intent(), ones);
     assertEquals(context.top().extent(), zeros);
     assertEquals(context.size(), 12);
-            
-    // assertEquals(context.order(), 18);
+  }
+  
+  @Test
+  public void testGetObjects() {
+    List STUVWX = new ImmutableList.Builder<String>()
+    .add("S").add("T").add("U").add("V").add("W").add("X").build();
+    
+    assertEquals(context.getObjects(), STUVWX);
+  }
+  
+  @Test
+  public void testGetAttributes() {
+    assertEquals(context.getAttributes(), abcdefg);
   }
   
   @Test
@@ -162,6 +152,33 @@ public final class TinkerContextTest {
     bits.clear();
     bits.flip(0); bits.flip(1); bits.flip(3); bits.flip(5); // {abdf}
     assertEquals(concept.intent(), bits);
+  }
+  
+  @Test
+  public void testMeet() {
+    BitSet bits = new BitSet();
+    
+    Concept left = context.leastUpperBound(bd);
+    Concept right = context.leastUpperBound(af);
+    
+    bits.flip(1); bits.flip(3);
+    assertEquals(context.meet(left, left).intent(), bits);
+    
+    bits.clear();
+    bits.flip(0); bits.flip(1); bits.flip(3); bits.flip(5);
+    assertEquals(context.meet(left, right).intent(), bits);
+  }
+  
+  @Test
+  public void testJoin() {
+    BitSet bits = new BitSet();
+    
+    Concept left = context.leastUpperBound(bd);
+    Concept right = context.leastUpperBound(af);
+    
+    bits.flip(1); bits.flip(3);
+    assertEquals(context.join(left, left).intent(), bits);
+    assertEquals(context.join(left, right).intent(), context.bottom().intent());
   }
   
   @Test
