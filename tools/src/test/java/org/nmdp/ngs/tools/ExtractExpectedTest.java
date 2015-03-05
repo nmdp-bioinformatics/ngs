@@ -31,12 +31,12 @@ import org.junit.Test;
 /**
  * Unit test for ExtractExpected.
  */
-
 public final class ExtractExpectedTest {
-	private File inputHmlFile;
-	
-	@Test
-	public void testConstructor() {
-	    assertNotNull(new ExtractExpected(inputHmlFile,true,false));
-	}
+    private File inputHmlFile;
+    private File outputFile;
+
+    @Test
+    public void testConstructor() {
+        assertNotNull(new ExtractExpected(inputHmlFile, outputFile, true, false));
+    }
 }
