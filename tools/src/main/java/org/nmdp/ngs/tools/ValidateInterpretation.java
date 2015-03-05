@@ -24,6 +24,7 @@ package org.nmdp.ngs.tools;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+
 import static org.dishevelled.compress.Readers.reader;
 import static org.dishevelled.compress.Writers.writer;
 
@@ -31,11 +32,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.concurrent.Callable;
 
 import com.google.common.base.Splitter;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -45,9 +49,12 @@ import org.dishevelled.commandline.CommandLineParseException;
 import org.dishevelled.commandline.CommandLineParser;
 import org.dishevelled.commandline.Switch;
 import org.dishevelled.commandline.Usage;
+
 import org.dishevelled.commandline.argument.FileArgument;
 import org.dishevelled.commandline.argument.IntegerArgument;
+
 import org.nmdp.ngs.hml.HmlReader;
+
 import org.nmdp.ngs.hml.jaxb.AlleleAssignment;
 import org.nmdp.ngs.hml.jaxb.Glstring;
 import org.nmdp.ngs.hml.jaxb.Haploid;
@@ -159,150 +166,144 @@ public final class ValidateInterpretation implements Callable<Integer> {
         BufferedReader reader = null;
         ListMultimap<String, String> expected = ArrayListMultimap.create();
         
-        if(isHML(expectedFile)){
-        	reader = reader(expectedFile);
+        if (isHML(expectedFile)) {
+            reader = reader(expectedFile);
             Hml hml = HmlReader.read(reader);
             for (Sample sample : hml.getSample()) {
                 String id = sample.getId();
                 for (Typing typing : sample.getTyping()) {
-                   for (AlleleAssignment alleleAssignment : typing.getAlleleAssignment()) {
-                	   List<Haploid> HapList = new ArrayList<Haploid>();
-                	   for (Object glstring : alleleAssignment.getPropertyAndHaploidAndGenotypeList()){
-                          String classType  = glstring.getClass().toString();
-                          String objectType = classType.substring(classType.indexOf("jaxb.") + 5,classType.length());
-                		   
-                          if(objectType.equals("Haploid") && HaploidBoolean){
-                              Haploid hap = (Haploid)glstring;
-                              HapList.add(hap);
-                              
-                          }else if(objectType.equals("Glstring") && GlstringBoolean){
-	                       	  Glstring gl = (Glstring)glstring;
-	                          List<String> Alleles = Splitter.onPattern("[+]+").splitToList(gl.getValue().replaceAll("[\n\r ]", ""));                         
-	                       	  expected.put(id, Alleles.get(0));
-	                       	  expected.put(id, Alleles.get(1));
-                          }          
-                          
-                	   }
-                	   
-                	   if(HaploidBoolean){
-                		   String hlaTyping1 = HapList.get(0).getLocus() + "*" +HapList.get(0).getType();
-                		   String hlaTyping2 = HapList.get(1).getLocus() + "*" +HapList.get(1).getType();
-                		   expected.put(id, hlaTyping1);
-                		   expected.put(id, hlaTyping2);
-                	   }               	   
+                    for (AlleleAssignment alleleAssignment : typing.getAlleleAssignment()) {
+                        List<Haploid> HapList = new ArrayList<Haploid>();
+                        for (Object glstring : alleleAssignment.getPropertyAndHaploidAndGenotypeList()) {
+                            String classType  = glstring.getClass().toString();
+                            String objectType = classType.substring(classType.indexOf("jaxb.") + 5,classType.length());
 
-                   }
+                            if (objectType.equals("Haploid") && HaploidBoolean) {
+                                Haploid hap = (Haploid)glstring;
+                                HapList.add(hap);
+                            }
+                            else if(objectType.equals("Glstring") && GlstringBoolean) {
+                                Glstring gl = (Glstring)glstring;
+                                List<String> Alleles = Splitter.onPattern("[+]+").splitToList(gl.getValue().replaceAll("[\n\r ]", ""));                         
+                                expected.put(id, Alleles.get(0));
+                                expected.put(id, Alleles.get(1));
+                            }
+                        }
+
+                        if (HaploidBoolean) {
+                            String hlaTyping1 = HapList.get(0).getLocus() + "*" +HapList.get(0).getType();
+                            String hlaTyping2 = HapList.get(1).getLocus() + "*" +HapList.get(1).getType();
+                            expected.put(id, hlaTyping1);
+                            expected.put(id, hlaTyping2);
+                        }
+                    }
                 }
             }
-        }else{       
-	        try {
-	            reader = reader(expectedFile);
-	
-	            int lineNumber = 1;
-	            while (reader.ready()) {
-	                String line = reader.readLine();
-	                if (line == null) {
-	                    break;
-	                }
-			
-	                List<String> tokens = Splitter.onPattern("\\s+").splitToList(line);
-	                if (tokens.size() != 6) {
-	                    throw new IOException("invalid expected file format at line " + lineNumber);
-	                }
-	
-	                String sample = tokens.get(0);
-	                //String locus = tokens.get(1);
-	                //String regionsFile = tokens.get(2);
-	                //String zygosity = tokens.get(3);
-	                String firstAllele = tokens.get(4);
-	                String secondAllele = tokens.get(5);
-	
-	                expected.put(sample, firstAllele);
-	                expected.put(sample, secondAllele);
-	
-	                lineNumber++;
-	            }
-	        }
-	        finally {
-	            try {
-	                reader.close();
-	            }
-	            catch (Exception e) {
-	                // ignore
-	            }
-	        }
+        }
+        else {       
+            try {
+                reader = reader(expectedFile);
+
+                int lineNumber = 1;
+                while (reader.ready()) {
+                    String line = reader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+
+                    List<String> tokens = Splitter.onPattern("\\s+").splitToList(line);
+                    if (tokens.size() != 6) {
+                        throw new IOException("invalid expected file format at line " + lineNumber);
+                    }
+
+                    String sample = tokens.get(0);
+                    //String locus = tokens.get(1);
+                    //String regionsFile = tokens.get(2);
+                    //String zygosity = tokens.get(3);
+                    String firstAllele = tokens.get(4);
+                    String secondAllele = tokens.get(5);
+
+                    expected.put(sample, firstAllele);
+                    expected.put(sample, secondAllele);
+
+                    lineNumber++;
+                }
+            }
+            finally {
+                try {
+                    reader.close();
+                }
+                catch (Exception e) {
+                    // ignore
+                }
+            }
         }
         return expected;
     }
 
     static ListMultimap<String, String> readObserved(final File observedFile) throws IOException {
-       
         ListMultimap<String, String> observed = ArrayListMultimap.create();
         BufferedReader reader = null;
-        if(isHML(observedFile)){
-        	reader = reader(observedFile);
+        if (isHML(observedFile)) {
+            reader = reader(observedFile);
             Hml hml = HmlReader.read(reader);
             for (Sample sample : hml.getSample()) {
                 String id = sample.getId();
                 for (Typing typing : sample.getTyping()) {
-                   for (AlleleAssignment alleleAssignment : typing.getAlleleAssignment()) {
-                	   List<Haploid> HapList = new ArrayList<Haploid>();
-                	   for (Object glstring : alleleAssignment.getPropertyAndHaploidAndGenotypeList()){
-                           String classType  = glstring.getClass().toString();
-                           String objectType = classType.substring(classType.indexOf("jaxb.") + 5,classType.length());
-                           
-                           if(objectType.equals("Haploid") && HaploidBoolean){
-                               Haploid hap = (Haploid)glstring;
-                               HapList.add(hap);
-                               
-                           }else if(objectType.equals("Glstring") && GlstringBoolean){
-                        	   Glstring gl = (Glstring)glstring;
-                        	   observed.put(id, gl.getValue().replaceAll("[\n\r ]", ""));
-                           }
-                		   
-                	   }
-                	   if(HaploidBoolean){
-                		   String hlaTyping1 = HapList.get(0).getLocus() + "*" +HapList.get(0).getType();
-                		   String hlaTyping2 = HapList.get(1).getLocus() + "*" +HapList.get(1).getType();
-                		   observed.put(id, hlaTyping1);
-                		   observed.put(id, hlaTyping2);
-                	   }
-                   }
+                    for (AlleleAssignment alleleAssignment : typing.getAlleleAssignment()) {
+                        List<Haploid> HapList = new ArrayList<Haploid>();
+                        for (Object glstring : alleleAssignment.getPropertyAndHaploidAndGenotypeList()) {
+                            String classType  = glstring.getClass().toString();
+                            String objectType = classType.substring(classType.indexOf("jaxb.") + 5,classType.length());
+
+                            if (objectType.equals("Haploid") && HaploidBoolean) {
+                                Haploid hap = (Haploid)glstring;
+                                HapList.add(hap);
+                            } else if(objectType.equals("Glstring") && GlstringBoolean) {
+                                Glstring gl = (Glstring)glstring;
+                                observed.put(id, gl.getValue().replaceAll("[\n\r ]", ""));
+                            }
+                        }
+                        if (HaploidBoolean) {
+                            String hlaTyping1 = HapList.get(0).getLocus() + "*" +HapList.get(0).getType();
+                            String hlaTyping2 = HapList.get(1).getLocus() + "*" +HapList.get(1).getType();
+                            observed.put(id, hlaTyping1);
+                            observed.put(id, hlaTyping2);
+                        }
+                    }
                 }
             }
-        }else{
-        	
-	        try {
-	        	reader = reader(observedFile);
-	        	
-	            int lineNumber = 1;
-	            while (reader.ready()) {
-	                String line = reader.readLine();
-	                if (line == null) {
-	                    break;
-	                }
-	
-	                List<String> tokens = Splitter.onPattern("\\s+").splitToList(line);
-	                if (tokens.size() != 2) {
-	                    throw new IOException("invalid observed file format at line " + lineNumber);
-	                }
-	
-	                String sample = tokens.get(0);
-	                String interpretation = tokens.get(1);
-	
-	                observed.put(sample, interpretation);
-	
-	                lineNumber++;
-	            }
-	        }
-	        finally {
-	            try {
-	                reader.close();
-	            }
-	            catch (Exception e) {
-	                // ignore
-	            }
-	        }
+        }
+        else {
+            try {
+                reader = reader(observedFile);
+
+                int lineNumber = 1;
+                while (reader.ready()) {
+                    String line = reader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+
+                    List<String> tokens = Splitter.onPattern("\\s+").splitToList(line);
+                    if (tokens.size() != 2) {
+                        throw new IOException("invalid observed file format at line " + lineNumber);
+                    }
+
+                    String sample = tokens.get(0);
+                    String interpretation = tokens.get(1);
+                    observed.put(sample, interpretation);
+                    lineNumber++;
+                }
+            }
+            finally {
+                try {
+                    reader.close();
+                }
+                catch (Exception e) {
+                    // ignore
+                }
+            }
         }
         return observed;
     }
@@ -324,15 +325,15 @@ public final class ValidateInterpretation implements Callable<Integer> {
 
     static boolean isHML(final File hmlFile) {
     	String file = hmlFile.toString();
-        if(file.matches("(.+)\\.hml") || file.matches("(.+)\\.xml")){
-        	return true;
-        }else{
-        	return false;
-        }   
+        if (file.matches("(.+)\\.hml") || file.matches("(.+)\\.xml")) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-    
-    
-    
+
+
     /**
      * Main.
      *
@@ -346,10 +347,9 @@ public final class ValidateInterpretation implements Callable<Integer> {
         FileArgument outputFile = new FileArgument("o", "output-file", "output file, default stdout", false);
         IntegerArgument resolution = new IntegerArgument("r", "resolution", "resolution, must be in the range [1..4], default " + DEFAULT_RESOLUTION, false);
         Switch printSummary = new Switch("s", "summary", "print summary");
-        Switch HaploidBoolean = new Switch("l", "haploid", "Flag for extracting Haploid data");        
-        Switch GlstringBoolean = new Switch("g", "glstring", "Flag for extracting Glstring data");  
-      
-        
+        Switch HaploidBoolean = new Switch("l", "haploid", "Flag for extracting Haploid data");
+        Switch GlstringBoolean = new Switch("g", "glstring", "Flag for extracting Glstring data");
+
         ArgumentList arguments = new ArgumentList(about, help, expectedFile, observedFile, HaploidBoolean,  GlstringBoolean, outputFile, resolution, printSummary);
         CommandLine commandLine = new CommandLine(args);
 
@@ -387,6 +387,4 @@ public final class ValidateInterpretation implements Callable<Integer> {
             System.exit(1);
         }
     }
-    
-    
 }
