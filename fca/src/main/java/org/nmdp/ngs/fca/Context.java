@@ -20,18 +20,33 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
+
 package org.nmdp.ngs.fca;
 
-import java.util.Iterator;
-
+import java.util.List;
 /**
- * A class for traversed paths.
+ *
+ * @author int33484
  */
-public class Path extends ConnectedGraph {
-    /**
-     * Construct a new path (null connected graph).
-     */
-    public Path() {
-        super(true);
-    }
+public interface Context {
+  
+  public List getObjects();
+
+  public List getAttributes();
+
+  public Concept bottom();
+
+  public Concept top();
+
+  public Concept greatestLowerBound(final List query);
+  
+  public Concept leastUpperBound(final List query);
+  
+  public Concept join(final Concept left, final Concept right);
+  
+  public Concept meet(final Concept left, final Concept right);
+
+  public double marginal(final List query);
+
+  public double conditional(final List left, final List right);
 }
