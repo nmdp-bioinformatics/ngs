@@ -101,48 +101,48 @@ public final class ConceptTest {
   
   @Test
   public void testGte() {
-    assertTrue(W.gte(W));
-    assertFalse(W.gte(X));
-    assertFalse(W.gte(Y));
-    assertFalse(W.gte(Z));
+    assertTrue(W.order(W).gte());
+    assertFalse(W.order(X).gte());
+    assertFalse(W.order(Y).gte());
+    assertFalse(W.order(Z).gte());
     
-    assertTrue(X.gte(W));
-    assertTrue(X.gte(X));
-    assertFalse(X.gte(Y));
-    assertFalse(X.gte(Z));
+    assertTrue(X.order(W).gte());
+    assertTrue(X.order(X).gte());
+    assertFalse(X.order(Y).gte());
+    assertFalse(X.order(Z).gte());
     
-    assertTrue(Y.gte(W));
-    assertFalse(Y.gte(X));
-    assertTrue(Y.gte(Y));
-    assertFalse(Y.gte(Z));
+    assertTrue(Y.order(W).gte());
+    assertFalse(Y.order(X).gte());
+    assertTrue(Y.order(Y).gte());
+    assertFalse(Y.order(Z).gte());
     
-    assertTrue(Z.gte(W));
-    assertTrue(Z.gte(X));
-    assertTrue(Z.gte(Y));
-    assertTrue(Z.gte(Z));
+    assertTrue(Z.order(W).gte());
+    assertTrue(Z.order(X).gte());
+    assertTrue(Z.order(Y).gte());
+    assertTrue(Z.order(Z).gte());
   }
   
   @Test
   public void testLte() {
-    assertTrue(W.lte(W));
-    assertTrue(W.lte(X));
-    assertTrue(W.lte(Y));
-    assertTrue(W.lte(Z));
+    assertTrue(W.order(W).lte());
+    assertTrue(W.order(X).lte());
+    assertTrue(W.order(Y).lte());
+    assertTrue(W.order(Z).lte());
     
-    assertFalse(X.lte(W));
-    assertTrue(X.lte(X));
-    assertFalse(X.lte(Y));
-    assertTrue(X.lte(Z));
+    assertFalse(X.order(W).lte());
+    assertTrue(X.order(X).lte());
+    assertFalse(X.order(Y).lte());
+    assertTrue(X.order(Z).lte());
     
-    assertFalse(Y.lte(W));
-    assertFalse(Y.lte(X));
-    assertTrue(Y.lte(Y));
-    assertTrue(Y.lte(Z));
+    assertFalse(Y.order(W).lte());
+    assertFalse(Y.order(X).lte());
+    assertTrue(Y.order(Y).lte());
+    assertTrue(Y.order(Z).lte());
     
-    assertFalse(Z.lte(W));
-    assertFalse(Z.lte(X));
-    assertFalse(Z.lte(Y));
-    assertTrue(Z.lte(Z));
+    assertFalse(Z.order(W).lte());
+    assertFalse(Z.order(X).lte());
+    assertFalse(Z.order(Y).lte());
+    assertTrue(Z.order(Z).lte());
   }
   
 }

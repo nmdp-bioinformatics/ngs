@@ -25,12 +25,14 @@ package org.nmdp.ngs.fca;
 import java.util.BitSet;
 import java.util.List;
 import java.util.ArrayList;
+
 /**
  * Class for representing formal concepts and their partial ordering.
  * @author int33484
  */
 public final class Concept implements Partial<Concept> {
   private final BitSet extent, intent;
+  
 	/**
    * Construct a concept with given objects (extent) and attributes (intent).
    * @param extent objects
@@ -40,22 +42,25 @@ public final class Concept implements Partial<Concept> {
     this.extent = extent;
     this.intent = intent;
   }
+  
   /**
    * Method to retrieve a concept's shared objects.
-   * @return concept's extent
+   * @return extent
    */
   public BitSet extent() {
     return extent;
   }
+  
   /**
    * Method to retrieve a concept's shared attributes.
-   * @return concept's intent
+   * @return intent
    */
   public BitSet intent() {
     return intent;
   }
+  
   /**
-   * Method to decode an object list from bits. 
+   * Method to decode an object list from its bit membership. 
    * @param bits where each set bit represents membership in the given group
    * @param group list of all members
    * @return immutable list of members
@@ -69,8 +74,9 @@ public final class Concept implements Partial<Concept> {
     
     return members;
   }
+  
   /**
-   * Method to encode a bit membership from a list of objects.
+   * Method to encode bit membership from a list of objects.
    * @param members to encode
    * @param group list of all members
    * @return bits where each set bit represents membership in the 
@@ -87,6 +93,7 @@ public final class Concept implements Partial<Concept> {
     
     return bits;
   }
+  
   /**
    * Method to determine the partial order of two concepts.
    * @param that concept
@@ -110,26 +117,6 @@ public final class Concept implements Partial<Concept> {
     }
     
     return Partial.Order.NONCOMPARABLE;
-  }
-  /**
-   * Utility method to determine greater-than-or-equal-to (gte) relationship of
-   * two concepts.
-   * @param that concept
-   * @return true if this concept is greater-than-or-equal-to that
-   */
-  public boolean gte(Concept that) {
-    return this.order(that) == Partial.Order.GREATER ||
-           this.order(that) == Partial.Order.EQUAL;
-  }
-  /**
-   * Utility method to determine less-than-or-equal-to (lte) relationship of two
-   * concepts.
-   * @param that concept
-   * @return true if this concept is less-than-or-equal-to that
-   */
-  public boolean lte(Concept that) {
-    return this.order(that) == Partial.Order.LESS ||
-           this.order(that) == Partial.Order.EQUAL;
   }
   
   @Override

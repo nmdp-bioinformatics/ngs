@@ -70,13 +70,6 @@ public interface Partial<T> {
     public boolean lte() {
       return this.equals(LESS) || this.equals(EQUAL);
     }
-    
-    public boolean filter(Direction direction) {
-      if(direction.equals(Direction.FORWARD)) {
-        return gte();
-      }
-      return lte();
-    }
   }
   
   /**

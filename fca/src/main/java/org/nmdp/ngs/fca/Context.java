@@ -13,9 +13,9 @@ import java.util.List;
  */
 public interface Context<G, M> {
   
-  public List<G> getObjects();
+  public List getObjects();
 
-  public List<M> getAttributes();
+  public List getAttributes();
 
   public Concept bottom();
 
@@ -29,7 +29,7 @@ public interface Context<G, M> {
 
   public int support(final List query);
 
-  public int support(final List right, final List left);
+  public int support(final List left, List right);
 
   public double marginal(final List query);
 

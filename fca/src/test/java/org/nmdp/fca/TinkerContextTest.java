@@ -33,7 +33,7 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.Direction;
 
 public final class TinkerContextTest {
-  TinkerContext lattice;
+  TinkerContext context;
   private List abcdefg, abdefg, abde, abdf, acef, bd, af;
   /**
   * Example taken from Davey and Priestly's "Introduction to Lattices and
@@ -41,50 +41,132 @@ public final class TinkerContextTest {
   */
   @Before
   public void setUp() {
-  abcdefg = new ImmutableList.Builder<String>()
-  .add("a").add("b").add("c").add("d").add("e").add("f").add("g").build();
-  abdefg = new ImmutableList.Builder<String>()
-  .add("a").add("b").add("d").add("e").add("f").add("g").build();
-  abde = new ImmutableList.Builder<String>()
-  .add("a").add("b").add("d").add("e").build();
-  abdf = new ImmutableList.Builder<String>()
-  .add("a").add("b").add("d").add("f").build();
-  acef = new ImmutableList.Builder<String>()
-  .add("a").add("c").add("e").add("f").build();
-  bd = new ImmutableList.Builder<String>()
-  .add("b").add("d").build();
-  af = new ImmutableList.Builder<String>()
-  .add("a").add("f").build();
-  lattice = new TinkerContext(abcdefg);
+    abcdefg = new ImmutableList.Builder<String>()
+    .add("a").add("b").add("c").add("d").add("e").add("f").add("g").build();
+    abdefg = new ImmutableList.Builder<String>()
+    .add("a").add("b").add("d").add("e").add("f").add("g").build();
+    abde = new ImmutableList.Builder<String>()
+    .add("a").add("b").add("d").add("e").build();
+    abdf = new ImmutableList.Builder<String>()
+    .add("a").add("b").add("d").add("f").build();
+    acef = new ImmutableList.Builder<String>()
+    .add("a").add("c").add("e").add("f").build();
+    bd = new ImmutableList.Builder<String>()
+    .add("b").add("d").build();
+    af = new ImmutableList.Builder<String>()
+    .add("a").add("f").build();
+    
+    context = new TinkerContext(abcdefg);
+    System.out.println("insert(S, " + abdf);
+    context.insert("S", abdf);
+    System.out.println("insert(T, " + abde);
+    context.insert("T", abde);
+    System.out.println("insert(U, " + abdefg);
+    context.insert("U", abdefg);
+    System.out.println("insert(V, " + acef);
+    context.insert("V", acef);
+    System.out.println("insert(W, " + bd);
+    context.insert("W", bd);
+    System.out.println("insert(X, " + af);
+    context.insert("X", af);
+    System.out.println("done inserting");
+    
+    
+    System.out.println(context);
   }
 
   @Test
   public void testInsert() {
-    
+    /*
     List ab = new ImmutableList.Builder<String>().add("a").add("b").build();
     List bc = new ImmutableList.Builder<String>().add("b").add("c").build();
     List ac = new ImmutableList.Builder<String>().add("a").add("c").build();
+   
+    context.insert("A", ab);
+    context.insert("B", bc);
+    context.insert("C", ac);
+    */
+
     
-    //lattice.insert("A", ab);
-    //lattice.insert("B", bc);
-    //lattice.insert("C", ac);
+    BitSet ones = new BitSet();
+    BitSet zeros = new BitSet();
     
+    ones.set(0, 6);
+    assertEquals(context.bottom().intent(), zeros);
+    assertEquals(context.bottom().extent(), ones);
     
-    System.out.println("insert(S, " + abdf);
-    lattice.insert("S", abdf);
-    System.out.println("insert(T, " + abde);
-    lattice.insert("T", abde);
-    System.out.println("insert(U, " + abdefg);
-    lattice.insert("U", abdefg);
-    System.out.println("insert(V, " + acef);
-    lattice.insert("V", acef);
-    System.out.println("insert(W, " + bd);
-    lattice.insert("W", bd);
-    System.out.println("insert(X, " + af);
-    lattice.insert("X", af);
-    System.out.println("done inserting");
+    ones.set(0, 7);
+    assertEquals(context.top().intent(), ones);
+    assertEquals(context.top().extent(), zeros);
+    assertEquals(context.size(), 12);
             
+    // assertEquals(context.order(), 18);
+  }
+  
+  @Test
+  public void testLeastUpperBound() {
+    BitSet bits = new BitSet();
     
-    System.out.println(lattice);
+    Concept concept = context.leastUpperBound(abcdefg);
+    
+    bits.clear(); // {}
+    assertEquals(concept.extent(), bits);
+    
+    bits.clear();
+    bits.set(0, 7); // {abcdefg}
+    assertEquals(concept.intent(), bits);
+    
+    concept = context.leastUpperBound(acef);
+    bits.clear();
+    bits.flip(3); // {V}
+    assertEquals(concept.extent(), bits);
+    
+    bits.clear();
+    bits.flip(0); bits.flip(2); bits.flip(4); bits.flip(5); // {acef}
+    assertEquals(concept.intent(), bits);
+    
+    List ae = new ImmutableList.Builder<String>().add("a").add("e").build();
+    concept = context.leastUpperBound(ae);
+
+    bits.clear();
+    bits.flip(1); bits.flip(2); bits.flip(3); // {TUV}
+    assertEquals(concept.extent(), bits);
+
+    bits.clear();
+    bits.flip(0); bits.flip(4); // {ae}
+    assertEquals(concept.intent(), bits);
+
+    List empty = new ImmutableList.Builder<String>().build();
+    concept = context.leastUpperBound(empty);
+
+    bits.clear();
+    bits.set(0, 6); // {STUVWX}
+    assertEquals(concept.extent(), bits);
+
+    bits.clear(); // {}
+    assertEquals(concept.intent(), bits);
+    
+    concept = context.leastUpperBound(bd, af);
+
+    bits.clear();
+    bits.flip(0); bits.flip(2); // {SU}
+    assertEquals(concept.extent(), bits);
+
+    bits.clear();
+    bits.flip(0); bits.flip(1); bits.flip(3); bits.flip(5); // {abdf}
+    assertEquals(concept.intent(), bits);
+  }
+  
+  @Test
+  public void testMarginal() {
+    assertEquals(0.0, context.marginal(abcdefg), 0.0);
+
+    assertEquals(0.167, context.marginal(abdefg), 0.01);
+
+    List abd = new ImmutableList.Builder<String>().add("a").add("b").add("d").build();
+    assertEquals(0.5, context.marginal(abd), 0.0);
+
+    List empty = new ImmutableList.Builder<String>().build();
+    assertEquals(1.0, context.marginal(empty), 0.0);
   }
 }

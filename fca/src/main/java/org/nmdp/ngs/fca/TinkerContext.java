@@ -29,7 +29,10 @@ public class TinkerContext<G, M> extends AbstractContext<G, M> {
     lattice = new TinkerGraph();
     top = lattice.addVertex(null);
     top.setProperty("label", new Concept(new BitSet(), ones));
+    top.setProperty("color", color);
     direction = Partial.Order.Direction.FORWARD;
+    size = 1;
+    order = 0;
     System.out.println("TinkerContext top = " + top.getProperty("label"));
     bottom = top;
   }
@@ -48,8 +51,8 @@ public class TinkerContext<G, M> extends AbstractContext<G, M> {
         if(!vertex.getProperty("label").equals(target.getProperty("label"))) {
           Concept vertexConcept = vertex.getProperty("label");
           Concept targetConcept = target.getProperty("label");
-          if(!vertexConcept.gte(targetConcept)) {
-           string += "  \"" + Concept.decode(vertexConcept.intent(), attributes) + "\" -> \"" + Concept.decode(targetConcept.intent(), attributes) + "\"[label=\"" + edge.getLabel() + "\"]\n";
+          if(!filter(vertex, target)) {
+           string += "  \"" + Concept.decode(vertexConcept.extent(), objects) + Concept.decode(vertexConcept.intent(), attributes) + "\" -> \"" + Concept.decode(targetConcept.extent(), objects) + Concept.decode(targetConcept.intent(), attributes) + "\"[label=\"" + edge.getLabel() + "\"]\n";
 
           }
         }
