@@ -1,6 +1,6 @@
 /*
 
-    ngs-tools  Next generation sequencing (NGS/HTS) command line tools.
+    ngs-fca  Formal concept analysis for genomics.
     Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
@@ -20,23 +20,33 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-package org.nmdp.ngs.tools;
 
-import static org.junit.Assert.assertNotNull;
+package org.nmdp.ngs.fca;
 
-import java.io.File;
-
-import org.junit.Test;
-
+import java.util.List;
 /**
- * Unit test for ExtractExpected.
+ *
+ * @author int33484
  */
-public final class ExtractExpectedTest {
-    private File inputHmlFile;
-    private File outputFile;
+public interface Context {
+  
+  public List getObjects();
 
-    @Test
-    public void testConstructor() {
-        assertNotNull(new ExtractExpected(inputHmlFile, outputFile, true, false));
-    }
+  public List getAttributes();
+
+  public Concept bottom();
+
+  public Concept top();
+
+  public Concept greatestLowerBound(final List query);
+  
+  public Concept leastUpperBound(final List query);
+  
+  public Concept join(final Concept left, final Concept right);
+  
+  public Concept meet(final Concept left, final Concept right);
+
+  public double marginal(final List query);
+
+  public double conditional(final List left, final List right);
 }

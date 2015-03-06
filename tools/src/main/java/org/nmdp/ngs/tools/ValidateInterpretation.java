@@ -24,6 +24,7 @@ package org.nmdp.ngs.tools;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+
 import static org.dishevelled.compress.Readers.reader;
 import static org.dishevelled.compress.Writers.writer;
 
@@ -31,13 +32,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.HashMap;
 import java.util.Map;
+
+
 import java.util.concurrent.Callable;
 
 import com.google.common.base.Splitter;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -52,10 +58,15 @@ import org.dishevelled.commandline.CommandLineParseException;
 import org.dishevelled.commandline.CommandLineParser;
 import org.dishevelled.commandline.Switch;
 import org.dishevelled.commandline.Usage;
+
 import org.dishevelled.commandline.argument.FileArgument;
 import org.dishevelled.commandline.argument.IntegerArgument;
+
 import org.dishevelled.commandline.argument.StringArgument;
+
+
 import org.nmdp.ngs.hml.HmlReader;
+
 import org.nmdp.ngs.hml.jaxb.AlleleAssignment;
 import org.nmdp.ngs.hml.jaxb.Glstring;
 import org.nmdp.ngs.hml.jaxb.Haploid;
@@ -195,8 +206,8 @@ public final class ValidateInterpretation implements Callable<Integer> {
 
         Map<String, SubjectTyping> expected = new HashMap<String, SubjectTyping>();
         
-        if(isHML(expectedFile)){
-        	reader = reader(expectedFile);
+        if (isHML(expectedFile)) {
+            reader = reader(expectedFile);
             Hml hml = HmlReader.read(reader);
             for (Sample sample : hml.getSample()) {
                 String id = sample.getId();
@@ -208,6 +219,7 @@ public final class ValidateInterpretation implements Callable<Integer> {
                 }
                 
                 for (Typing typing : sample.getTyping()) {
+
                    for (AlleleAssignment alleleAssignment : typing.getAlleleAssignment()) {
                 	   List<Haploid> HapList = new ArrayList<Haploid>();
                 	   for (Object glstring : alleleAssignment.getPropertyAndHaploidAndGenotypeList()){
@@ -295,8 +307,8 @@ public final class ValidateInterpretation implements Callable<Integer> {
         Map<String, SubjectTyping> observed = new HashMap<String, SubjectTyping>();
         
         BufferedReader reader = null;
-        if(isHML(observedFile)){
-        	reader = reader(observedFile);
+        if (isHML(observedFile)) {
+            reader = reader(observedFile);
             Hml hml = HmlReader.read(reader);
             for (Sample sample : hml.getSample()) {
                 String id = sample.getId();
@@ -408,11 +420,12 @@ public final class ValidateInterpretation implements Callable<Integer> {
 
     static boolean isHML(final File hmlFile) {
     	String file = hmlFile.toString();
-        if(file.matches("(.+)\\.hml") || file.matches("(.+)\\.xml")){
-        	return true;
-        }else{
-        	return false;
-        }   
+        if (file.matches("(.+)\\.hml") || file.matches("(.+)\\.xml")) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
     static String removeLocus(String locusAllele){
@@ -529,11 +542,12 @@ public final class ValidateInterpretation implements Callable<Integer> {
         StringArgument loci = new StringArgument("l", "loci", "list of loci that will be validated", false);
         
         Switch printSummary = new Switch("s", "summary", "print summary");
-        Switch HaploidBoolean = new Switch("p", "haploid", "Flag for extracting Haploid data");        
-        Switch GlstringBoolean = new Switch("g", "glstring", "Flag for extracting Glstring data");  
-        
-        
-        ArgumentList arguments = new ArgumentList(about, help, expectedFile, observedFile, HaploidBoolean, url,  GlstringBoolean, outputFile, resolution, printSummary);
+
+        Switch HaploidBoolean = new Switch("l", "haploid", "Flag for extracting Haploid data");
+        Switch GlstringBoolean = new Switch("g", "glstring", "Flag for extracting Glstring data");
+
+        ArgumentList arguments = new ArgumentList(about, help, expectedFile, observedFile, HaploidBoolean,  GlstringBoolean, outputFile, resolution, printSummary);
+
         CommandLine commandLine = new CommandLine(args);
         String matchUrl = url.getValue() == null ? "http://emmes-dev.nmdp.org:8080/v1/api/rs/" : url.getValue();
         String lociString  = loci.getValue() == null ? "HLA-A,HLA-B,HLA-C,HLA-DRB1,HLA-DQB1" : loci.getValue();
@@ -574,6 +588,4 @@ public final class ValidateInterpretation implements Callable<Integer> {
             System.exit(1);
         }
     }
-    
-    
 }

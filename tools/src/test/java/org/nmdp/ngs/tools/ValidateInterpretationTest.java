@@ -56,14 +56,15 @@ public final class ValidateInterpretationTest {
     private boolean printSummary;
     private boolean HaploidBoolean;
     private boolean GlstringBoolean;
+
     private String baseurl;
     private List<String> lociList;
+
     @Before
     public void setUp() throws Exception {
         expectedFile = File.createTempFile("validateInterpretationTest", "txt");
         observedFile = File.createTempFile("validateInterpretationTest", "txt");
         resolution = ValidateInterpretation.DEFAULT_RESOLUTION;
-        printSummary = false;
         printSummary = false;
     }
 

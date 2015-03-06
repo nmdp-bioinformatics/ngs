@@ -21,17 +21,7 @@
 
 */
 
+/**
+ * Formal concept analysis for genomics.
+ */
 package org.nmdp.ngs.fca;
-
-public class Writer<L, W> extends Pruner<L, W> {
-  @Override
-  public boolean pruneEdge(Vertex.Edge edge) {
-    if(super.pruneEdge(edge)) {
-      return true;
-    }
-    
-    System.out.println(parent.getLabel() + "->" + edge.target().getLabel() + "[" + edge.weight() + "]");
-		return false;
-	}
-  
-}

@@ -71,6 +71,7 @@
 
   <modules>
     <module>align</module>
+    <module>fca</module>
     <module>feature</module>
     <module>gtr</module>
     <module>hml</module>

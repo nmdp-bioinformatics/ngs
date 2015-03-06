@@ -20,12 +20,15 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
+
 package org.nmdp.ngs.fca;
+
 /**
  * Interface for partially ordering objects.
  * @param <T> type of object
  */
 public interface Partial<T> {
+  
   /**
    * Enumerated partial orders that extends natural (complete) orders for
    * comparable objects. For example, real numbers are completely ordered in the
@@ -33,31 +36,50 @@ public interface Partial<T> {
    * real numbers, by contrast, are partially ordered by inclusion using subset,
    * superset, and equals, respectively. A third possibility exists where sets
    * are disjoint (intersection results in the null set). We call these sets
-   * noncomparable and define another ordering category that extends to all
+   * non-comparable and define another ordering category that extends to all
    * partially ordered objects.
    */
   public static enum Order {
+    
     /**
      * Equivalent to a return value of -1 for comparable objects. For example, 0
-     * is less than 1 and {0} is a subset {0, 1}.
+     * is less than 1 and, likewise, {0} is less than (a subset of) {0, 1}.
      */
     LESS,
+    
     /**
      * Equivalent to a return value of 1 for comparable objects. For example, 1
-     * is greater than 0 and {0, 1} is a superset {0}.
+     * is greater than 0 and, likewise, {0, 1} is greater than (a superset of)
+     * {0}.
      */
     GREATER,
+    
     /**
      * Equivalent to a return value of 0 for comparable objects. For example, 1
-     * is equal to 1 and {1} is equal to {1}.
+     * is equal to 1 and, likewise, {1} is equal to {1}.
      */
     EQUAL,
+    
     /**
      * No equivalent for comparable objects. For example, {0} and {1} are
-     * disjoint and therefore noncomparable.
+     * disjoint and therefore non-comparable.
      */
-    NONCOMPARABLE
+    NONCOMPARABLE;
+
+    public static enum Direction {
+      FORWARD,
+      REVERSE
+    }
+    
+    public boolean gte() {
+      return this.equals(GREATER) || this.equals(EQUAL);
+    }
+    
+    public boolean lte() {
+      return this.equals(LESS) || this.equals(EQUAL);
+    }
   }
+  
   /**
    * Method to define the partial order.
    * @param type of object
