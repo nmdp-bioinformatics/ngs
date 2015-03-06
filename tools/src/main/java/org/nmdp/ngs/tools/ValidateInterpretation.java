@@ -543,7 +543,7 @@ public final class ValidateInterpretation implements Callable<Integer> {
         
         Switch printSummary = new Switch("s", "summary", "print summary");
 
-        Switch HaploidBoolean = new Switch("l", "haploid", "Flag for extracting Haploid data");
+        Switch HaploidBoolean = new Switch("p", "haploid", "Flag for extracting Haploid data");
         Switch GlstringBoolean = new Switch("g", "glstring", "Flag for extracting Glstring data");
 
         ArgumentList arguments = new ArgumentList(about, help, expectedFile, observedFile, HaploidBoolean,  GlstringBoolean, outputFile, resolution, printSummary);
