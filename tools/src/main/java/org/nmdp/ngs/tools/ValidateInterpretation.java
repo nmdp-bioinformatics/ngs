@@ -277,13 +277,10 @@ public final class ValidateInterpretation implements Callable<Integer> {
 	                
 	                
 	                String locus = tokens.get(1);
-	                System.out.println(locus);
 	                //String regionsFile = tokens.get(2);
 	                //String zygosity = tokens.get(3);
 	                String firstAllele = tokens.get(4);
 	                String secondAllele = tokens.get(5);
-	
-	                System.out.println("Locus " + locus + "First: " + firstAllele + "Second: " + secondAllele);
 	                
 	                subject.addTyping(locus, firstAllele);
 	                subject.addTyping(locus, secondAllele);
