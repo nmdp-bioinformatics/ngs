@@ -137,12 +137,12 @@ public final class ValidateInterpretationTest {
         copyResource("expected.txt", expectedFile);
         Map<String, SubjectTyping> expected = readExpected(expectedFile);
         assertNotNull(expected);
-//        assertTrue(expected.get("sample0").contains("firstAllele0"));
-//        assertTrue(expected.get("sample0").contains("secondAllele0"));
-//        assertTrue(expected.get("sample1").contains("firstAllele1"));
-//        assertTrue(expected.get("sample1").contains("secondAllele1"));
-//        assertTrue(expected.get("sample2").contains("firstAllele2"));
-//        assertTrue(expected.get("sample2").contains("secondAllele2"));
+        assertTrue(expected.get("sample0").getTyping("HLA-A").contains("firstAllele0"));
+        assertTrue(expected.get("sample0").getTyping("HLA-A").contains("secondAllele0"));
+        assertTrue(expected.get("sample1").getTyping("HLA-A").contains("firstAllele1"));
+        assertTrue(expected.get("sample1").getTyping("HLA-A").contains("secondAllele1"));
+        assertTrue(expected.get("sample2").getTyping("HLA-A").contains("firstAllele2"));
+        assertTrue(expected.get("sample2").getTyping("HLA-A").contains("secondAllele2"));
     }
 
     @Test

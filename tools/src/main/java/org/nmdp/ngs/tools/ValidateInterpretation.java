@@ -277,11 +277,14 @@ public final class ValidateInterpretation implements Callable<Integer> {
 	                
 	                
 	                String locus = tokens.get(1);
+	                System.out.println(locus);
 	                //String regionsFile = tokens.get(2);
 	                //String zygosity = tokens.get(3);
 	                String firstAllele = tokens.get(4);
 	                String secondAllele = tokens.get(5);
 	
+	                System.out.println("Locus " + locus + "First: " + firstAllele + "Second: " + secondAllele);
+	                
 	                subject.addTyping(locus, firstAllele);
 	                subject.addTyping(locus, secondAllele);
 	                
@@ -377,7 +380,9 @@ public final class ValidateInterpretation implements Callable<Integer> {
 	                	previousLoc = locus;
 	                	subject.addTyping(locus, interpretation);
 	                }else{
-	                	subject.addSeq(previousLoc, interpretation);
+	                	if(previousLoc != null){
+	                		subject.addSeq(previousLoc, interpretation);
+	                	}
 	                }
 	              
 	                lineNumber++;
@@ -435,7 +440,6 @@ public final class ValidateInterpretation implements Callable<Integer> {
     }
   
 
-    
     static String computeMatchGrade(final String url, final String locus, final String donorTypings, final String recipientTypings){
     	//Have base url be global parameter
     	
@@ -460,7 +464,7 @@ public final class ValidateInterpretation implements Callable<Integer> {
   
     public static class SubjectTyping{
     	
-    	private final List<String> lociList;
+    	private List<String> lociList;
         final ListMultimap<String, String> typingList     = ArrayListMultimap.create(); 
         final ListMultimap<String, String> seqList        = ArrayListMultimap.create();    	
         final ListMultimap<String, String> typingListTrim = ArrayListMultimap.create();
@@ -472,6 +476,9 @@ public final class ValidateInterpretation implements Callable<Integer> {
     	
     	public void addTyping(String locus, String typing){
     		//locus exists in list
+			lociList = lociList == null ? Splitter.on(",").splitToList("HLA-A,HLA-B,HLA-C,HLA-DRB1,HLA-DQB1") 
+					: lociList;
+   	
     		if(lociList.contains(locus)){
     			typingList.put(locus, typing);
     			String noLocus = typing.replaceAll(locus +"[*]", "");
@@ -480,7 +487,7 @@ public final class ValidateInterpretation implements Callable<Integer> {
     	}
     	
     	public void addSeq(String locus, String sequence){
-    		if(lociList.contains(locus)){
+    		if(locus !=null && lociList.contains(locus)){
     			seqList.put(locus, sequence);
     		}
     	}
