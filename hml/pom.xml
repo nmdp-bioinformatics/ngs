@@ -84,8 +84,8 @@
             <configuration>
               <xsdOptions>
                 <xsdOption>
-                  <xsd>src/main/xsd/hml-1.0.xsd</xsd>
-                  <bindingFile>src/main/xsd/hml-1.0.xjb</bindingFile>
+                  <xsd>src/main/xsd/hml-1.0.1.xsd</xsd>
+                  <bindingFile>src/main/xsd/hml-1.0.1.xjb</bindingFile>
                   <extension>true</extension>
                 </xsdOption>
               </xsdOptions>

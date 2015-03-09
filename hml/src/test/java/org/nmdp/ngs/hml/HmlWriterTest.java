@@ -61,7 +61,7 @@ public final class HmlWriterTest {
     @Before
     public void setUp() throws Exception {
         data = new Hml();
-        data.setVersion("1.0");
+        data.setVersion("1.0.1");
         data.setProjectName("LAB");
 
         ReportingCenter reportingCenter = new ReportingCenter();
