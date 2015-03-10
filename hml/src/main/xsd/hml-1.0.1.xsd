@@ -2,7 +2,7 @@
 <!--
 
     Histoimmunogenetics Markup Language (HML)
-    Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2014 National Marrow Donor Program (NMDP)
 
     This specification is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -22,12 +22,12 @@
 
 -->
 <xs:schema 
-  xmlns="http://schemas.nmdp.org/spec/hml/1.0"
-  xmlns:hmlns="http://schemas.nmdp.org/spec/hml/1.0" 
+  xmlns="http://schemas.nmdp.org/spec/hml/1.0.1"
+  xmlns:hmlns="http://schemas.nmdp.org/spec/hml/1.0.1" 
   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
   elementFormDefault="qualified" attributeFormDefault="unqualified" 
-  targetNamespace="http://schemas.nmdp.org/spec/hml/1.0"
-  version="1.0">
+  targetNamespace="http://schemas.nmdp.org/spec/hml/1.0.1"
+  version="1.0.1">
 
   <!-- HML document root -->
   <xs:element name="hml" id="hml" nillable="false">
@@ -59,11 +59,11 @@
       </xs:sequence>
       <xs:attribute name="version" use="required">
         <xs:annotation><xs:documentation>
-          Expected to be '1.0' to use this version of the HML schema.
+          Expected to be '1.0.1' to use this version of the HML schema.
         </xs:documentation></xs:annotation>
         <xs:simpleType id="version">
           <xs:restriction base="xs:string">
-            <xs:pattern value="1\.0\.0|1\.0" /><!-- xs:pattern value="[0][.][9]([.][0-9]*)?" / -->
+            <xs:pattern value="1\.0\.[0-9]|1\.0" /><!-- xs:pattern value="[0][.][9]([.][0-9]*)?" / -->
             <xs:maxLength value="5" />
           </xs:restriction>
         </xs:simpleType>
@@ -483,7 +483,7 @@
     <xs:complexType>
       <xs:annotation><xs:documentation>
           A genotype-list represents a full unambiguous list of possibilities for
-            the typing of a sample (NOTE: This element and its children are deprecated
+            the typing of a sample (NOTE: This element and its children were deprecated
             in HML 1.0). The values of the elements in this genotype-list (each allele
             element) should conform to the nomenclature specified by the 
             allele-assignement/interpretation.
@@ -503,7 +503,7 @@
   <xs:complexType name="diploid-combination">
     <xs:annotation><xs:documentation>
         A diploid-combination element is one possibility value in a genotype-
-          list (NOTE: This element and its children are deprecated in HML 1.0).
+          list (NOTE: This element and its children were deprecated in HML 1.0).
           There may be either one or two locus-block child elements, 
           depending on whether the data provided in this diploid-combination 
           covers one or two chromosomes.
@@ -523,7 +523,7 @@
     <xs:annotation><xs:documentation>
         A locus-block element allows allele-list elements to be grouped 
           together to mean one allele-list is a possibility if and only if all
-          others are (NOTE: This element and its children are deprecated in HML 1.0).
+          others are (NOTE: This element and its children were deprecated in HML 1.0).
           This is useful, for example, in the case when listing 
           HLA-DRB1 alleles next to the corresponding HLA-DRB3 alleles that are 
           relevant in only some cases (example in comments).
@@ -553,7 +553,7 @@
   <xs:complexType name="allele-list">
     <xs:annotation><xs:documentation>
         An allele-list element is a representation of the list of allele
-          possibilities for a genotype (NOTE: This element and its children are
+          possibilities for a genotype (NOTE: This element and its children were
           deprecated in HML 1.0). NMDP has historically used allele codes 
           in combination with allele families to represent this.
 
@@ -580,7 +580,7 @@
     <xs:annotation><xs:documentation>
         An allele element specifies a single allele: it should be given in
           LOCUS*NAME format and names must be at allele-level resolution (NOTE:
-          This element and its children are deprecated in HML 1.0). The 
+          This element and its children were deprecated in HML 1.0). The 
           value must conform to the nomenclature specified in the interpretation.
         <!-- Example: 
           <allele>HLA-A*01:01:01:01</allele> 
@@ -1152,7 +1152,8 @@
                     0-based or space-counted coordinate system, closed-open range
         - strand:   (optional) String value (eg. one of "-1", "1", "-", "+");
                     defaults to "+" if unspecified
-        - phasing-group: Phasing group identifier (string, optional)
+        - phasing-group: Phasing group identifier - DEPRECATED. Use "phase-set". 
+        - phase-set: Phase set identifier (string, optional)
         - continuity: (optional) True if this represents a continuous read, false 
                     if not continuous.
         - expected-copy-number:  (optional) Integer for how many copies of 
@@ -1180,7 +1181,10 @@
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
-      <xs:attribute name="phasing-group" type="xs:string" use="optional" />
+
+      <xs:attribute name="phasing-group" type="xs:string" use="optional" /><!-- DEPRECATED: Use phase-set -->
+      <xs:attribute name="phase-set" type="xs:string" use="optional" />
+
       <xs:attribute name="continuity" type="xs:boolean" use="optional" />
       <xs:attribute name="expected-copy-number" use="optional">
         <xs:simpleType>
