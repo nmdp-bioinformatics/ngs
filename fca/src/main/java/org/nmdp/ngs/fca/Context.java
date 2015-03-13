@@ -20,33 +20,23 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-
 package org.nmdp.ngs.fca;
 
 import java.util.List;
+
 /**
- *
- * @author int33484
+ * Context.
  */
+// todo:  should the lists in this interface be typed?
 public interface Context {
-  
-  public List getObjects();
-
-  public List getAttributes();
-
-  public Concept bottom();
-
-  public Concept top();
-
-  public Concept greatestLowerBound(final List query);
-  
-  public Concept leastUpperBound(final List query);
-  
-  public Concept join(final Concept left, final Concept right);
-  
-  public Concept meet(final Concept left, final Concept right);
-
-  public double marginal(final List query);
-
-  public double conditional(final List left, final List right);
+    List getObjects();
+    List getAttributes();
+    Concept bottom();
+    Concept top();
+    Concept greatestLowerBound(List query);
+    Concept leastUpperBound(List query);
+    Concept join(Concept left, Concept right);
+    Concept meet(Concept left, Concept right);
+    double marginal(List query);
+    double conditional(List left, List right);
 }

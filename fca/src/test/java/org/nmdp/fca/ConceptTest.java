@@ -23,12 +23,6 @@
 
 package org.nmdp.ngs.fca;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.List;
-import com.google.common.collect.ImmutableList;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -36,113 +30,121 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.util.BitSet;
+import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ * Unit test for Concept.
+ */
 public final class ConceptTest {
-  private BitSet w, x, y, z;
-  private Concept W, X, Y, Z;
-  private List a, b, ab, empty;
-  
-  @Before
-  public void setUp() {
-    w = new BitSet(2); // empty
-    x = new BitSet(2); x.flip(0); // a
-    y = new BitSet(2); y.flip(1); // b
-    z = new BitSet(2); z.flip(0); z.flip(1); // ab
+    private BitSet w, x, y, z;
+    private Concept W, X, Y, Z;
+    private List a, b, ab, empty;
 
-    W = new Concept(null, w);
-    X = new Concept(null, x);
-    Y = new Concept(null, y);
-    Z = new Concept(null, z);
-    
-    a = new ImmutableList.Builder<String>().add("A").build();
-    b = new ImmutableList.Builder<String>().add("B").build();
-    ab = new ImmutableList.Builder<String>().add("A").add("B").build();
-    empty = new ImmutableList.Builder<String>().build();
-  }
-  
-  @Test
-  public void testDecode() {
-    assertEquals(Concept.decode(w, b), empty);
-    assertEquals(Concept.decode(x, ab), a);
-    assertEquals(Concept.decode(y, ab), b);
-    assertEquals(Concept.decode(z, ab), ab);
-  }
-  
-  @Test
-  public void testEncode() {
-    assertEquals(Concept.encode(empty, ab), w);
-    assertEquals(Concept.encode(a, ab), x);
-    assertEquals(Concept.encode(b, ab), y);
-    assertEquals(Concept.encode(ImmutableList.copyOf(ab), ab), z);
-  }
-  
-  @Test
-  public void testOrder() {
-    assertEquals(W.order(W), Partial.Order.EQUAL);
-    assertEquals(W.order(X), Partial.Order.LESS);
-    assertEquals(W.order(Y), Partial.Order.LESS);
-    assertEquals(W.order(Z), Partial.Order.LESS);
-    
-    assertEquals(X.order(W), Partial.Order.GREATER);
-    assertEquals(X.order(X), Partial.Order.EQUAL);
-    assertEquals(X.order(Y), Partial.Order.NONCOMPARABLE);
-    assertEquals(X.order(Z), Partial.Order.LESS);
-    
-    assertEquals(Y.order(W), Partial.Order.GREATER);
-    assertEquals(Y.order(X), Partial.Order.NONCOMPARABLE);
-    assertEquals(Y.order(Y), Partial.Order.EQUAL);
-    assertEquals(Y.order(Z), Partial.Order.LESS);
-    
-    assertEquals(Z.order(W), Partial.Order.GREATER);
-    assertEquals(Z.order(X), Partial.Order.GREATER);
-    assertEquals(Z.order(Y), Partial.Order.GREATER);
-    assertEquals(Z.order(Z), Partial.Order.EQUAL);
-  }
-  
-  @Test
-  public void testGte() {
-    assertTrue(W.order(W).gte());
-    assertFalse(W.order(X).gte());
-    assertFalse(W.order(Y).gte());
-    assertFalse(W.order(Z).gte());
-    
-    assertTrue(X.order(W).gte());
-    assertTrue(X.order(X).gte());
-    assertFalse(X.order(Y).gte());
-    assertFalse(X.order(Z).gte());
-    
-    assertTrue(Y.order(W).gte());
-    assertFalse(Y.order(X).gte());
-    assertTrue(Y.order(Y).gte());
-    assertFalse(Y.order(Z).gte());
-    
-    assertTrue(Z.order(W).gte());
-    assertTrue(Z.order(X).gte());
-    assertTrue(Z.order(Y).gte());
-    assertTrue(Z.order(Z).gte());
-  }
-  
-  @Test
-  public void testLte() {
-    assertTrue(W.order(W).lte());
-    assertTrue(W.order(X).lte());
-    assertTrue(W.order(Y).lte());
-    assertTrue(W.order(Z).lte());
-    
-    assertFalse(X.order(W).lte());
-    assertTrue(X.order(X).lte());
-    assertFalse(X.order(Y).lte());
-    assertTrue(X.order(Z).lte());
-    
-    assertFalse(Y.order(W).lte());
-    assertFalse(Y.order(X).lte());
-    assertTrue(Y.order(Y).lte());
-    assertTrue(Y.order(Z).lte());
-    
-    assertFalse(Z.order(W).lte());
-    assertFalse(Z.order(X).lte());
-    assertFalse(Z.order(Y).lte());
-    assertTrue(Z.order(Z).lte());
-  }
-  
+    @Before
+    public void setUp() {
+        w = new BitSet(2); // empty
+        x = new BitSet(2); x.flip(0); // a
+        y = new BitSet(2); y.flip(1); // b
+        z = new BitSet(2); z.flip(0); z.flip(1); // ab
+
+        W = new Concept(null, w);
+        X = new Concept(null, x);
+        Y = new Concept(null, y);
+        Z = new Concept(null, z);
+
+        a = new ImmutableList.Builder<String>().add("A").build();
+        b = new ImmutableList.Builder<String>().add("B").build();
+        ab = new ImmutableList.Builder<String>().add("A").add("B").build();
+        empty = new ImmutableList.Builder<String>().build();
+    }
+
+    @Test
+    public void testDecode() {
+        assertEquals(Concept.decode(w, b), empty);
+        assertEquals(Concept.decode(x, ab), a);
+        assertEquals(Concept.decode(y, ab), b);
+        assertEquals(Concept.decode(z, ab), ab);
+    }
+
+    @Test
+    public void testEncode() {
+        assertEquals(Concept.encode(empty, ab), w);
+        assertEquals(Concept.encode(a, ab), x);
+        assertEquals(Concept.encode(b, ab), y);
+        assertEquals(Concept.encode(ImmutableList.copyOf(ab), ab), z);
+    }
+
+    @Test
+    public void testOrdering() {
+        assertEquals(W.ordering(W), Partial.Ordering.EQUAL);
+        assertEquals(W.ordering(X), Partial.Ordering.LESS);
+        assertEquals(W.ordering(Y), Partial.Ordering.LESS);
+        assertEquals(W.ordering(Z), Partial.Ordering.LESS);
+
+        assertEquals(X.ordering(W), Partial.Ordering.GREATER);
+        assertEquals(X.ordering(X), Partial.Ordering.EQUAL);
+        assertEquals(X.ordering(Y), Partial.Ordering.NONCOMPARABLE);
+        assertEquals(X.ordering(Z), Partial.Ordering.LESS);
+
+        assertEquals(Y.ordering(W), Partial.Ordering.GREATER);
+        assertEquals(Y.ordering(X), Partial.Ordering.NONCOMPARABLE);
+        assertEquals(Y.ordering(Y), Partial.Ordering.EQUAL);
+        assertEquals(Y.ordering(Z), Partial.Ordering.LESS);
+
+        assertEquals(Z.ordering(W), Partial.Ordering.GREATER);
+        assertEquals(Z.ordering(X), Partial.Ordering.GREATER);
+        assertEquals(Z.ordering(Y), Partial.Ordering.GREATER);
+        assertEquals(Z.ordering(Z), Partial.Ordering.EQUAL);
+    }
+
+    @Test
+    public void testGte() {
+        assertTrue(W.ordering(W).gte());
+        assertFalse(W.ordering(X).gte());
+        assertFalse(W.ordering(Y).gte());
+        assertFalse(W.ordering(Z).gte());
+
+        assertTrue(X.ordering(W).gte());
+        assertTrue(X.ordering(X).gte());
+        assertFalse(X.ordering(Y).gte());
+        assertFalse(X.ordering(Z).gte());
+
+        assertTrue(Y.ordering(W).gte());
+        assertFalse(Y.ordering(X).gte());
+        assertTrue(Y.ordering(Y).gte());
+        assertFalse(Y.ordering(Z).gte());
+
+        assertTrue(Z.ordering(W).gte());
+        assertTrue(Z.ordering(X).gte());
+        assertTrue(Z.ordering(Y).gte());
+        assertTrue(Z.ordering(Z).gte());
+    }
+
+    @Test
+    public void testLte() {
+        assertTrue(W.ordering(W).lte());
+        assertTrue(W.ordering(X).lte());
+        assertTrue(W.ordering(Y).lte());
+        assertTrue(W.ordering(Z).lte());
+
+        assertFalse(X.ordering(W).lte());
+        assertTrue(X.ordering(X).lte());
+        assertFalse(X.ordering(Y).lte());
+        assertTrue(X.ordering(Z).lte());
+
+        assertFalse(Y.ordering(W).lte());
+        assertFalse(Y.ordering(X).lte());
+        assertTrue(Y.ordering(Y).lte());
+        assertTrue(Y.ordering(Z).lte());
+
+        assertFalse(Z.ordering(W).lte());
+        assertFalse(Z.ordering(X).lte());
+        assertFalse(Z.ordering(Y).lte());
+        assertTrue(Z.ordering(Z).lte());
+    }
 }

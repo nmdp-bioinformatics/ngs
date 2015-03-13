@@ -22,104 +22,109 @@
 */
 package org.nmdp.ngs.fca;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
- * Class for representing formal concepts and their partial ordering.
+ * Formal concepts and their partial ordering.
  */
 public final class Concept implements Partial<Concept> {
-  private final BitSet extent, intent;
-  
-	/**
-   * Construct a concept with given objects (extent) and attributes (intent).
-   * @param extent objects
-   * @param intent attributes
-   */
-	public Concept(final BitSet extent, final BitSet intent) {
-    this.extent = extent;
-    this.intent = intent;
-  }
-  
-  /**
-   * Retrieve a concept's shared objects.
-   * @return extent
-   */
-  public BitSet extent() {
-    return extent;
-  }
-  
-  /**
-   * Retrieve a concept's shared attributes.
-   * @return intent
-   */
-  public BitSet intent() {
-    return intent;
-  }
-  
-  /**
-   * Decode an object list from its bit membership. 
-   * @param bits where each set bit represents membership in the given group
-   * @param group list of all members
-   * @return immutable list of members
-   */
-  public final static List decode(final BitSet bits, final List group) {
-    List members = new ArrayList();
-    
-    for(int i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
-      members.add(group.get(i));
+    private final BitSet extent;
+    private final BitSet intent;
+
+    /**
+     * Construct a concept with given objects (extent) and attributes (intent).
+     *
+     * @param extent objects
+     * @param intent attributes
+     */
+    public Concept(final BitSet extent, final BitSet intent) {
+        this.extent = extent;
+        this.intent = intent;
     }
-    
-    return members;
-  }
-  
-  /**
-   * Encode bit membership from a list of objects.
-   * @param members to encode
-   * @param group list of all members
-   * @return bits where each set bit represents membership in the 
-   */
-  public static BitSet encode(final List members, final List group) {
-    BitSet bits = new BitSet();
-    
-    for(Object object : members) {
-      int index = group.indexOf(object);
-      if(index >= 0) {
-        bits.flip(index);
-      }
+
+    /**
+     * Retrieve a concept's shared objects.
+     *
+     * @return extent
+     */
+    // todo:  shared objects --> bitset?  needs clarification
+    public BitSet extent() {
+        return extent;
     }
-    
-    return bits;
-  }
-  
-  /**
-   * Determine the partial order of two concepts.
-   * @param that concept
-   * @return enumerated partial order for this and that concept
-   */
-  @Override
-  public Order order(Concept that) {
-    BitSet meet = (BitSet) this.intent.clone();
-    meet.and(that.intent);
-    
-    if(this.intent.equals(that.intent)) {
-      return Partial.Order.EQUAL;
+
+    /**
+     * Retrieve a concept's shared attributes.
+     *
+     * @return intent
+     */
+    // todo:  shared attributes --> bitset?  needs clarification
+    public BitSet intent() {
+        return intent;
     }
-    
-    if(this.intent.equals(meet)) {
-      return Partial.Order.LESS;
+
+    /**
+     * Decode an object list from its bit membership.
+     *
+     * @param bits where each set bit represents membership in the given group
+     * @param group list of all members
+     * @return immutable list of members
+     */
+    // todo:  lists should be typed
+    public static List decode(final BitSet bits, final List group) {
+        List members = new ArrayList();
+
+        for (int i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
+            members.add(group.get(i));
+        }
+        return members;
     }
-    
-    if(that.intent.equals(meet)) {
-      return Partial.Order.GREATER;
+
+    /**
+     * Encode bit membership from a list of objects.
+     *
+     * @param members to encode
+     * @param group list of all members
+     * @return bits where each set bit represents membership in the group
+     */
+    public static BitSet encode(final List members, final List group) {
+        BitSet bits = new BitSet();
+
+        for (Object object : members) {
+            int index = group.indexOf(object);
+            if (index >= 0) {
+                bits.flip(index);
+            }
+        }
+        return bits;
     }
-    
-    return Partial.Order.NONCOMPARABLE;
-  }
-  
-  @Override
-  public String toString() {
-    return intent.toString();
-  }
+
+    /**
+     * Define the partial ordering of two concepts.
+     *
+     * @param that that concept
+     * @return partial ordering of this and that concept
+     */
+    @Override
+    public Ordering ordering(final Concept that) {
+        BitSet meet = (BitSet) this.intent.clone();
+        meet.and(that.intent);
+
+        if (this.intent.equals(that.intent)) {
+            return Partial.Ordering.EQUAL;
+        }
+        if (this.intent.equals(meet)) {
+            return Partial.Ordering.LESS;
+        }
+        if (that.intent.equals(meet)) {
+            return Partial.Ordering.GREATER;
+        }
+        return Partial.Ordering.NONCOMPARABLE;
+    }
+
+    @Override
+    public String toString() {
+        return intent.toString();
+    }
 }

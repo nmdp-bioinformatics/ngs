@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    ngs-fca Formal concept analysis for genomics.
+    ngs-fca  Formal concept analysis for genomics.
     Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
   </parent>
   <artifactId>ngs-fca</artifactId>
   <name>ngs-fca</name>
-  <description>FCA.</description>
+  <description>Formal concept analysis for genomics.</description>
   <dependencies>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -41,12 +41,13 @@
     <dependency>
       <groupId>com.tinkerpop.blueprints</groupId>
       <artifactId>blueprints-core</artifactId>
-      <version>2.6.0</version>
+      <scope>compile</scope>
     </dependency>
+    <!-- todo:  would be better not to have this a compile time dependency -->
     <dependency>
       <groupId>com.tinkerpop.gremlin</groupId>
       <artifactId>gremlin-java</artifactId>
-      <version>2.6.0</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
