@@ -117,8 +117,8 @@ public interface Partial<T> {
     /**
      * Determine the partial ordering.
      *
-     * @param type of object
+     * @param that partially ordered object
      * @return partial ordering
      */
-    Ordering ordering(T type); // todo: <? extends T> ?
+    Ordering ordering(T that); // todo: <? extends T> ?
 }

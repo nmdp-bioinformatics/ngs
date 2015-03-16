@@ -25,24 +25,36 @@ package org.nmdp.ngs.fca;
 import java.util.List;
 
 /**
- * Context.
+ * A class for finite (trivially complete) lattices.
+ * @param <T> partially ordered type
  */
-// todo:  should the lists in this interface be typed?
-public interface Context extends Lattice<Concept> {
-    List getObjects();
-    List getAttributes();
-    @Override
-    Concept bottom();
-    @Override
-    Concept top();
-    @Override
-    Concept join(Concept left, Concept right);
-    @Override
-    Concept meet(Concept left, Concept right);   
+public interface Lattice<T extends Partial> {
+  
+  /**
+   * The bottom of the lattice.
+   * @return the least element in the lattice
+   */
+    T bottom();
     
-    Concept greatestLowerBound(List query);
-    Concept leastUpperBound(List query);
-
-    double marginal(List query);
-    double conditional(List left, List right);
+    /**
+     * The top of the lattice.
+     * @return the greatest element in the lattice
+     */
+    T top();
+    
+    /**
+     * The least upper bound of two lattice elements (also the supremum).
+     * @param left element
+     * @param right element
+     * @return meet of left and right
+     */
+    T join(T left, T right);
+    
+    /**
+     * The greatest lower bound of two lattice elements (also the infimum).
+     * @param left element
+     * @param right element
+     * @return join of left and right
+     */
+    T meet(T left, T right);
 }
