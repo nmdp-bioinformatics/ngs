@@ -71,7 +71,6 @@
 
   <modules>
     <module>align</module>
-    <module>fca</module>
     <module>feature</module>
     <module>gtr</module>
     <module>hml</module>
@@ -113,16 +112,6 @@
         <groupId>com.google.code.findbugs</groupId>
         <artifactId>jsr305</artifactId>
         <version>2.0.3</version>
-      </dependency>
-      <dependency>
-        <groupId>com.tinkerpop.blueprints</groupId>
-        <artifactId>blueprints-core</artifactId>
-        <version>2.6.0</version>
-      </dependency>
-      <dependency>
-        <groupId>com.tinkerpop.gremlin</groupId>
-        <artifactId>gremlin-java</artifactId>
-        <version>2.6.0</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
