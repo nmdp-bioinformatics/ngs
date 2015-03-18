@@ -84,7 +84,7 @@
   </modules>
 
   <properties>
-    <biojava.version>1.9.1</biojava.version>
+    <biojava.version>1.9.2</biojava.version>
     <maven.compile.source>1.7</maven.compile.source>
     <maven.compile.target>1.7</maven.compile.target>
     <maven.enforcer.jdk-version>[1.7,)</maven.enforcer.jdk-version>
