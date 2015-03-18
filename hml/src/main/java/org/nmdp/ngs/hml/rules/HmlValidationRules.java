@@ -22,16 +22,33 @@
 */
 package org.nmdp.ngs.hml.rules;
 
-import java.util.Collections;
+import static org.nmdp.ngs.hml.HmlUtils.getHmlid;
+
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+
+import org.nmdp.ngs.hml.HmlValidationException;
 import org.nmdp.ngs.hml.HmlValidationRule;
 import org.nmdp.ngs.hml.HmlValidator;
+
+import org.nmdp.ngs.hml.jaxb.Hml;
 
 /**
  * HML validation rules.
  */
 public final class HmlValidationRules {
+
+    /** MIRING specification requires <code>lt;hmlid&gt;</code> element. */
+    static HmlValidationRule HMLID_ELEMENT_REQUIRED = new AbstractHmlValidationRule("MIRING specification requires <hmlid> element") {
+            @Override
+            public boolean validate(final Hml hml) throws HmlValidationException {
+                if (getHmlid(hml) == null) {
+                    throw new HmlValidationException(this);
+                }
+                return true;
+            }
+        };
 
     /**
      * Return the set of HML validation rules that implement the MIRING specification.
@@ -39,7 +56,7 @@ public final class HmlValidationRules {
      * @return the set of HML validation rules that implement the MIRING specification
      */
     public static Set<HmlValidationRule> miringRules() {
-        return Collections.<HmlValidationRule>emptySet();
+        return ImmutableSet.of(HMLID_ELEMENT_REQUIRED);
     }
 
     /**

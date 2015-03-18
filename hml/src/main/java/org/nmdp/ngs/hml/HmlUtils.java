@@ -47,6 +47,13 @@ import org.biojava.bio.seq.SequenceIterator;
 
 import org.biojava.bio.seq.io.SeqIOTools;
 
+import org.biojava.bio.seq.DNATools;
+
+import org.biojava.bio.symbol.IllegalSymbolException;
+import org.biojava.bio.symbol.SymbolList;
+
+import org.nmdp.ngs.hml.jaxb.Hml;
+import org.nmdp.ngs.hml.jaxb.Hmlid;
 import org.nmdp.ngs.hml.jaxb.Sequence;
 
 /**
@@ -57,7 +64,7 @@ public final class HmlUtils {
     /**
      * Create and return a new HML Sequence from the specified sequence.
      *
-     * @param sequence sequence, must not be null, and alphabet must be one of DNA
+     * @param sequence sequence, must not be null, and alphabet must be DNA
      * @return a new HML Sequence created from the specified sequence.
      */
     public static Sequence createSequence(final org.biojava.bio.seq.Sequence sequence) {
@@ -65,7 +72,7 @@ public final class HmlUtils {
 
         Sequence s = new Sequence();
         if (!DNATools.getDNA().equals(sequence.getAlphabet())) {
-            throw new IllegalArgumentException("alphabet must be one of DNA");
+            throw new IllegalArgumentException("alphabet must be DNA");
         }
         s.setValue(sequence.seqString());
         return s;
@@ -133,5 +140,27 @@ public final class HmlUtils {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             return createSequences(reader);
         }
+    }
+
+    /**
+     * Return the Hmlid element from the specified HML document, if any.
+     *
+     * @param hml HML document, must not be null
+     */
+    public static Hmlid getHmlid(final Hml hml) {
+        checkNotNull(hml);
+        return hml.getHmlid();
+    }
+
+    /**
+     * Convert the specified HML Sequence element into a DNA symbol list.
+     *
+     * @param sequence HML Sequence element, must not be null
+     * @return the specified HML Sequence element converted into a DNA symbol list
+     * @throws IllegalSymbolException if an illegal symbol is found
+     */
+    public static SymbolList toDnaSymbolList(final Sequence sequence) throws IllegalSymbolException {
+        checkNotNull(sequence);
+        return DNATools.createDNA(sequence.getValue().replaceAll("\\s+", ""));
     }
 }
