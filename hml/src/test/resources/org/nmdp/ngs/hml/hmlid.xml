@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Histoimmunogenetics Markup Language (HML)
+    Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)
+
+    This specification is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation; either version 3 of the License, or (at
+    your option) any later version.
+
+    This specification is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; with out even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+    License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this specification;  if not, write to the Free Software Foundation,
+    Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
+
+    > http://www.gnu.org/licenses/lgpl.html
+
+-->
+
+<!-- NOTE: This is a brief example of a DRAFT version of HML in action. It is not intended to be an accurate genotyping result. -->
+
+<hml xmlns="http://schemas.nmdp.org/spec/hml/1.0.1" 
+     xmlns:hml="http://schemas.nmdp.org/spec/hml/1.0.1" 
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     xsi:schemaLocation="http://schemas.nmdp.org/spec/hml/1.0.1 http://schemas.nmdp.org/spec/hml/1.0.1/hml-1.0.1.xsd"
+     project-name="LAB"
+     version="1.0.1">
+  <hmlid root="1234" extension="abcd" />
+  <reporting-center reporting-center-id="789" reporting-center-context="NMDP" />
+  <sample center-code="321" id="123456789">
+    <collection-method>buccal swab</collection-method>
+    <typing gene-family="HLA" date="2013-12-31">
+      <allele-assignment date="2014-01-01" allele-db="IMGT/HLA" allele-version="3.14.0">
+        <!-- 
+          EITHER a single glstring element with a URI -OR- a single glstring 
+          element containing inline data are expected here.  Both shown here for 
+          sample purposes.
+        -->
+        <!-- glstring using a URI reference: -->
+        <glstring uri="http://gl.immunogenomics.org/imgt-hla/3.14.0/multilocus-unphased-genotype/8" />
+  
+        <!-- glstring using inline data: -->
+        <glstring>
+          HLA-A*02:01:01:01/HLA-A*02:01:01:02L/HLA-A*02:01:01:03/HLA-A*02:01:08/HLA-A*02:01:11/HLA-A*02:01:14Q/HLA-A*02:01:15/HLA-A*02:01:21/HLA-A*02:01:48/HLA-A*02:01:50/HLA-A*02:01:79/HLA-A*02:01:80/HLA-A*02:01:89/HLA-A*02:01:97/HLA-A*02:01:98/HLA-A*02:01:99/HLA-A*02:09/HLA-A*02:43N/HLA-A*02:66/HLA-A*02:75/HLA-A*02:83N/HLA-A*02:89/HLA-A*02:97:01/HLA-A*02:97:02/HLA-A*02:132/HLA-A*02:134/HLA-A*02:140/HLA-A*02:241/HLA-A*02:252/HLA-A*02:256/HLA-A*02:266/HLA-A*02:291/HLA-A*02:294/HLA-A*02:305N/HLA-A*02:327/HLA-A*02:329/HLA-A*02:356N/HLA-A*02:357/HLA-A*02:397/HLA-A*02:411/HLA-A*02:446+HLA-A*03:01:01:01/HLA-A*03:01:01:02N/HLA-A*03:01:01:03/HLA-A*03:01:07/HLA-A*03:01:27/HLA-A*03:20/HLA-A*03:21N/HLA-A*03:26/HLA-A*03:37/HLA-A*03:45/HLA-A*03:78/HLA-A*03:112/HLA-A*03:118/HLA-A*03:129N/HLA-A*03:132/HLA-A*03:134/HLA-A*03:162N^HLA-B*08:02+HLA-B*44:46|HLA-B*08:47+HLA-B*44:109|HLA-B*08:01:01/HLA-B*08:01:14/HLA-B*08:01:20/HLA-B*08:19N/HLA-B*08:109+HLA-B*44:03:01/HLA-B*44:03:03/HLA-B*44:03:04
+        </glstring>
+      </allele-assignment>
+
+      <typing-method>
+        <sbt-sanger locus="HLA-B" test-id="GTR000000000.0" test-id-source="NCBI-GTR">
+          <amplification registered-name="L999.K1.V1.BGeneric">
+              GCTCCCACTCCATGAGGTATTTCTACACCTCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATCTC
+              AGTGGGCTACGTGGACGACACCCAGTTCGTGAGGTTCGACAGCGACGCCGCGAGTCCGAGAGAGGAGCCG
+              CGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCGGAACACACAGATCTACAAGGCCCAGG
+              CACAGACTGACCGAGAGAGCCTGCGGAACCTGCGCGGCTACTACAACCAGAGCGAGGCCGGGTCTCACAC
+              CCTCCAGAGCATGTACGGCTGCGACGTGGGGCCGGACGGGCGCCTCCTCCGCGGGCATGACCAGTACGCC
+              TACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCCTGGACCGCCGCGGACACGGCGGCTC
+              AGATCACCCAGCGCAAGTGGGAGGCGGCCCGTGAGGCGGAGCAGCGGAGAGCCTACCTGGAGGGCGAGTG
+              CGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGACAAGCTGGAGCGCGCTG
+          </amplification>
+        </sbt-sanger>
+      </typing-method>
+
+      <consensus-sequence date="2014-10-22">
+          <reference-database name="GRCh38.p1" 
+              description="Genome Reference Consortium (GRC)"
+              version="GRCh38.p1"
+              availability="public"
+              curated="true"
+              uri="http://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/human">
+            
+              <reference-sequence id="ref1"
+                  name="HSCHR6_MHC_MCF_CTG1" 
+                  start="0"
+                  end="4827813"
+                  accession="GL000254.2"
+                  uri="http://www.ncbi.nlm.nih.gov/nuccore/GL000254.2" />
+        </reference-database>
+
+        <consensus-sequence-block reference-sequence-id="ref1"
+            start="29942756"
+            end="29943026"
+            strand="1"
+            phasing-group="1"
+            continuity="true"
+            expected-copy-number="1"
+            description="HLA-A exon 1">
+          <sequence>
+            GCTCTCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATC
+            GCAGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGA
+            GCCGCGGGCGCCGTGGATAGAGCAGGAGGGTCCGGAGTATTGGGACGGGGAGACACGGAAAGTGAAGG
+            CCCACTCACAGACTCACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCG
+          </sequence>
+          <!-- SNP -->
+          <variant reference-bases="T" alternate-bases="C" start="29942937" end="29943001" >
+              <variant-effect term="missense_variant" />
+          </variant>
+          <!-- deletion -->
+          <variant reference-bases="CG" alternate-bases="C" start="29942999" end="29943025" >
+              <variant-effect term="frameshift_variant" />
+          </variant>
+          <!-- insertion -->
+          <variant reference-bases="A" alternate-bases="AT" start="29942760" end="29942852" >
+              <variant-effect term="stop_gained" />
+          </variant>
+          <sequence-quality sequence-start="29942937" sequence-end="29943001" quality-score="1.0" />
+          <sequence-quality sequence-start="29942955" sequence-end="29943020" quality-score="1.0" />
+        </consensus-sequence-block>
+        <consensus-sequence-block reference-sequence-id="ref1"
+            start="29942756"
+            end="29943026"
+            strand="1"
+            phasing-group="2"
+            continuity="true"
+            expected-copy-number="1"
+            description="HLA-A exon 2">
+          <sequence>
+            GCTCCCACTCCATGAGGTATTTCTTCACATCCGTGTCCCGGCCCGGCCGCGGGGAGCCCCGCTTCATC
+            GCCGTGGGCTACGTGGACGACACGCAGTTCGTGCGGTTCGACAGCGACGCCGCGAGCCAGAGGATGGA
+            GCCGCGGGCGCCGTGGATAGAGCAGGAGGGGCCGGAGTATTGGGACCAGGAGACACGGAATGTGAAGG
+            CCCAGTCACAGACTGACCGAGTGGACCTGGGGACCCTGCGCGGCTACTACAACCAGAGCGAGGCCG
+          </sequence>
+        </consensus-sequence-block>
+        <consensus-sequence-block reference-sequence-id="ref1"
+            start="29943267"
+            end="29943543"
+            strand="1"
+            phasing-group="3"
+            continuity="true"
+            expected-copy-number="1"
+            description="HLA-A exon 3">
+          <sequence>
+            GTTCTCACACCGTCCAGAGGATGTATGGCTGCGACGTGGGGTCGGACTGGCGCTTCCTCCGCGGGTAC
+            CACCAGTACGCCTACGACGGCAAGGATTACATCGCCCTGAAAGAGGACCTGCGCTCTTGGACCGCGGC
+            GGACATGGCAGCTCAGACCACCAAGCACAAGTGGGAGGCGGCCCATGTGGCGGAGCAGTTGAGAGCCT
+            ACCTGGAGGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGC
+            ACGG
+          </sequence>
+        </consensus-sequence-block>
+        <consensus-sequence-block reference-sequence-id="ref1"
+            start="29943267"
+            end="29943543"
+            strand="1"
+            phasing-group="4"
+            continuity="true"
+            expected-copy-number="1"
+            description="HLA-A exon 3">
+          <sequence>
+            GTTCTCACACCATCCAGATAATGTATGGCTGCGACGTGGGGTCGGACGGGCGCTTCCTCCGCGGGTAC
+            CGGCAGGACGCCTACGACGGCAAGGATTACATCGCCCTGAACGAGGACCTGCGCTCTTGGACCGCGGC
+            GGACATGGCGGCTCAGATCACCAAGCGCAAGTGGGAGGCGGCCCATGAGGCGGAGCAGTTGAGAGCCT
+            ACCTGGATGGCACGTGCGTGGAGTGGCTCCGCAGATACCTGGAGAACGGGAAGGAGACGCTGCAGCGC
+            ACGG
+          </sequence>
+        </consensus-sequence-block>
+      </consensus-sequence>
+    </typing>
+  </sample>
+</hml>
+

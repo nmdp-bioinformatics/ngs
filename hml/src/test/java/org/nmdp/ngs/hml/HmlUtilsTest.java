@@ -23,10 +23,13 @@
 package org.nmdp.ngs.hml;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import static org.nmdp.ngs.hml.HmlUtils.createSequence;
 import static org.nmdp.ngs.hml.HmlUtils.createSequences;
+import static org.nmdp.ngs.hml.HmlUtils.getHmlid;
+import static org.nmdp.ngs.hml.HmlUtils.toDnaSymbolList;
 
 import java.net.URL;
 
@@ -39,8 +42,12 @@ import org.biojava.bio.seq.DNATools;
 import org.biojava.bio.seq.ProteinTools;
 import org.biojava.bio.seq.RNATools;
 
+import org.biojava.bio.symbol.IllegalSymbolException;
+
 import org.junit.Test;
 
+import org.nmdp.ngs.hml.jaxb.Hml;
+import org.nmdp.ngs.hml.jaxb.Hmlid;
 import org.nmdp.ngs.hml.jaxb.Sequence;
 
 /**
@@ -102,5 +109,47 @@ public final class HmlUtilsTest {
     @Test(expected=NullPointerException.class)
     public void testCreateSequencesNullInputStream() throws Exception {
         createSequences((InputStream) null);
+    }
+
+    @Test
+    public void testGetHmlid() throws Exception {
+        Hmlid hmlid = getHmlid(read("hmlid.xml"));
+        assertEquals("1234", hmlid.getRoot());
+        assertEquals("abcd", hmlid.getExtension());
+    }
+
+    @Test
+    public void testGetHmlidMissing() throws Exception {
+        assertNull(getHmlid(read("missing-hmlid.xml")));
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testToDnaSymbolListNullSequence() throws Exception {
+        toDnaSymbolList(null);
+    }
+
+    @Test(expected=IllegalSymbolException.class)
+    public void testToDnaSymbolListIllegalSymbol() throws Exception {
+        Sequence sequence = new Sequence();
+        sequence.setValue("1234");
+        toDnaSymbolList(sequence);
+    }
+
+    @Test
+    public void testToDnaSymbolList() throws Exception {
+        Sequence sequence = new Sequence();
+        sequence.setValue("actg");
+        assertEquals("actg", toDnaSymbolList(sequence).seqString());
+    }
+
+    @Test
+    public void testToDnaSymbolListWhitespace() throws Exception {
+        Sequence sequence = new Sequence();
+        sequence.setValue("\t\n a  c\t\nt  g\t\n");
+        assertEquals("actg", toDnaSymbolList(sequence).seqString());
+    }
+
+    private static Hml read(final String name) throws Exception {
+        return HmlReader.read(HmlUtilsTest.class.getResourceAsStream(name));
     }
 }

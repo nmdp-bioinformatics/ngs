@@ -25,6 +25,8 @@ package org.nmdp.ngs.tools;
 import static org.dishevelled.compress.Readers.reader;
 import static org.dishevelled.compress.Writers.writer;
 
+import static org.nmdp.ngs.hml.HmlUtils.toDnaSymbolList;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
@@ -32,10 +34,6 @@ import java.io.PrintWriter;
 import java.util.concurrent.Callable;
 
 import javax.xml.bind.JAXBElement;
-
-import org.biojava.bio.seq.DNATools;
-
-import org.biojava.bio.symbol.SymbolList;
 
 import org.dishevelled.commandline.ArgumentList;
 import org.dishevelled.commandline.CommandLine;
@@ -104,10 +102,7 @@ public final class ExtractConsensus implements Callable<Integer> {
                                 sb.append("|");
                                 sb.append((consensusSequenceBlock.isContinuity() != null && consensusSequenceBlock.isContinuity().booleanValue()) ? "1" : "0");
                                 sb.append("\n");
-
-                                // todo: move to HlaUtils
-                                SymbolList symbolList = DNATools.createDNA(consensusSequenceBlock.getSequence().getValue().replaceAll("\\s+", ""));
-                                sb.append(symbolList.seqString());
+                                sb.append(toDnaSymbolList(consensusSequenceBlock.getSequence()).seqString());
                                 writer.println(sb.toString());
 
                                 blocks++;
