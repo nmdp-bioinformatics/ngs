@@ -31,14 +31,15 @@ For example
 ```bash
 $ ngs-downsample-fastq -h
 usage:
-java DownsampleFastq -p 0.5 -z 42 [args]
+ngs-downsample-fastq -p 0.5 [args]
 
 arguments:
-  -h, --help  display help message [optional]
-  -i, --input-fastq-file [class java.io.File]  input FASTQ file, default stdin [optional]
-  -o, --output-fastq-file [class java.io.File]  output FASTQ file, default stdout [optional]
-  -p, --probability [class java.lang.Double]  probability a FASTQ record will be removed, [0.0-1.0] [required]
-  -z, --seed [class java.lang.Integer]  random number seed, default relates to current time [optional]
+   -a, --about  display about message [optional]
+   -h, --help  display help message [optional]
+   -i, --input-fastq-file [class java.io.File]  input FASTQ file, default stdin [optional]
+   -o, --output-fastq-file [class java.io.File]  output FASTQ file, default stdout [optional]
+   -p, --probability [class java.lang.Double]  probability a FASTQ record will be removed, [0.0-1.0] [required]
+   -z, --seed [class java.lang.Integer]  random number seed, default relates to current time [optional]
 ```
 
 
@@ -47,7 +48,7 @@ arguments:
 Install
 
  * JDK 1.7 or later, http://openjdk.java.net
- * Apache Maven 3.2.3 or later, http://maven.apache.org
+ * Apache Maven 3.2.5 or later, http://maven.apache.org
 
 To build
 
