@@ -33,8 +33,6 @@ import java.io.PrintWriter;
 
 import java.util.concurrent.Callable;
 
-import javax.xml.bind.JAXBElement;
-
 import org.dishevelled.commandline.ArgumentList;
 import org.dishevelled.commandline.CommandLine;
 import org.dishevelled.commandline.CommandLineParseException;
@@ -51,7 +49,6 @@ import org.nmdp.ngs.hml.jaxb.ConsensusSequenceBlock;
 import org.nmdp.ngs.hml.jaxb.Hml;
 import org.nmdp.ngs.hml.jaxb.ReferenceDatabase;
 import org.nmdp.ngs.hml.jaxb.Sample;
-import org.nmdp.ngs.hml.jaxb.Sequence;
 import org.nmdp.ngs.hml.jaxb.Typing;
 
 /**

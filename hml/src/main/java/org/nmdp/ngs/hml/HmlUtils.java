@@ -47,8 +47,6 @@ import org.biojava.bio.seq.SequenceIterator;
 
 import org.biojava.bio.seq.io.SeqIOTools;
 
-import org.biojava.bio.seq.DNATools;
-
 import org.biojava.bio.symbol.IllegalSymbolException;
 import org.biojava.bio.symbol.SymbolList;
 

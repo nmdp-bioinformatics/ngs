@@ -24,8 +24,6 @@ package org.nmdp.ngs.hml;
 
 import static org.nmdp.ngs.hml.HmlWriter.write;
 
-import java.net.URL;
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,12 +33,8 @@ import java.io.Writer;
 
 import java.util.GregorianCalendar;
 
-import javax.xml.bind.JAXBElement;
-
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import javax.xml.namespace.QName;
 
 import org.junit.Before;
 import org.junit.Test;

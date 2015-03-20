@@ -46,7 +46,7 @@ final class HmlValidatorImpl implements HmlValidator {
     /**
      * Create a new HML validator with the specified validation rules.
      *
-     * @param valiationRules variable number of validation rules, must not be null
+     * @param validationRules variable number of validation rules, must not be null
      *    and must not contain any null validation rules
      */
     HmlValidatorImpl(final HmlValidationRule... validationRules) {
