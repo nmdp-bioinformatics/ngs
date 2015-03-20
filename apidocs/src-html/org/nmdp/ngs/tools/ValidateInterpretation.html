@@ -9,7 +9,7 @@
 <pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
 <span class="sourceLineNo">003</span>    ngs-tools  Next generation sequencing (NGS/HTS) command line tools.<a name="line.3"></a>
-<span class="sourceLineNo">004</span>    Copyright (c) 2014 National Marrow Donor Program (NMDP)<a name="line.4"></a>
+<span class="sourceLineNo">004</span>    Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)<a name="line.4"></a>
 <span class="sourceLineNo">005</span><a name="line.5"></a>
 <span class="sourceLineNo">006</span>    This library is free software; you can redistribute it and/or modify it<a name="line.6"></a>
 <span class="sourceLineNo">007</span>    under the terms of the GNU Lesser General Public License as published<a name="line.7"></a>
@@ -103,7 +103,7 @@
 <span class="sourceLineNo">095</span>        try {<a name="line.95"></a>
 <span class="sourceLineNo">096</span>            writer = writer(outputFile);<a name="line.96"></a>
 <span class="sourceLineNo">097</span>            ListMultimap&lt;String, String&gt; expected = readExpected(expectedFile);<a name="line.97"></a>
-<span class="sourceLineNo">098</span>            ListMultimap&lt;String, String&gt; observed = readObserved(observedFile);   <a name="line.98"></a>
+<span class="sourceLineNo">098</span>            ListMultimap&lt;String, String&gt; observed = readObserved(observedFile); <a name="line.98"></a>
 <span class="sourceLineNo">099</span><a name="line.99"></a>
 <span class="sourceLineNo">100</span>            for (String sample : expected.keySet()) {<a name="line.100"></a>
 <span class="sourceLineNo">101</span>                List&lt;String&gt; alleles = expected.get(sample);<a name="line.101"></a>
@@ -167,7 +167,7 @@
 <span class="sourceLineNo">159</span>                if (line == null) {<a name="line.159"></a>
 <span class="sourceLineNo">160</span>                    break;<a name="line.160"></a>
 <span class="sourceLineNo">161</span>                }<a name="line.161"></a>
-<span class="sourceLineNo">162</span>                <a name="line.162"></a>
+<span class="sourceLineNo">162</span>                        <a name="line.162"></a>
 <span class="sourceLineNo">163</span>                List&lt;String&gt; tokens = Splitter.onPattern("\\s+").splitToList(line);<a name="line.163"></a>
 <span class="sourceLineNo">164</span>                if (tokens.size() != 6) {<a name="line.164"></a>
 <span class="sourceLineNo">165</span>                    throw new IOException("invalid expected file format at line " + lineNumber);<a name="line.165"></a>

@@ -9,7 +9,7 @@
 <pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
 <span class="sourceLineNo">003</span>    ngs-hml  Mapping for HML XSDs.<a name="line.3"></a>
-<span class="sourceLineNo">004</span>    Copyright (c) 2014 National Marrow Donor Program (NMDP)<a name="line.4"></a>
+<span class="sourceLineNo">004</span>    Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)<a name="line.4"></a>
 <span class="sourceLineNo">005</span><a name="line.5"></a>
 <span class="sourceLineNo">006</span>    This library is free software; you can redistribute it and/or modify it<a name="line.6"></a>
 <span class="sourceLineNo">007</span>    under the terms of the GNU Lesser General Public License as published<a name="line.7"></a>
@@ -85,7 +85,7 @@
 <span class="sourceLineNo">077</span>            JAXBContext context = JAXBContext.newInstance(Hml.class);<a name="line.77"></a>
 <span class="sourceLineNo">078</span>            Unmarshaller unmarshaller = context.createUnmarshaller();<a name="line.78"></a>
 <span class="sourceLineNo">079</span>            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);<a name="line.79"></a>
-<span class="sourceLineNo">080</span>            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-1.0.xsd");<a name="line.80"></a>
+<span class="sourceLineNo">080</span>            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-1.0.1.xsd");<a name="line.80"></a>
 <span class="sourceLineNo">081</span>            Schema schema = schemaFactory.newSchema(schemaURL);<a name="line.81"></a>
 <span class="sourceLineNo">082</span>            unmarshaller.setSchema(schema);<a name="line.82"></a>
 <span class="sourceLineNo">083</span>            return (Hml) unmarshaller.unmarshal(reader);<a name="line.83"></a>

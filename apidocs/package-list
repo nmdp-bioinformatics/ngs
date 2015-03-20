@@ -5,6 +5,7 @@ org.nmdp.ngs.gtr
 org.nmdp.ngs.gtr.jaxb
 org.nmdp.ngs.hml
 org.nmdp.ngs.hml.jaxb
+org.nmdp.ngs.hml.rules
 org.nmdp.ngs.range
 org.nmdp.ngs.range.rtree
 org.nmdp.ngs.range.tree
