@@ -262,10 +262,6 @@
               <mainClass>org.nmdp.ngs.tools.ValidateHml</mainClass>
             </program>
             <program>
-              <id>ngs-extract-expected</id>
-              <mainClass>org.nmdp.ngs.tools.ExtractExpected</mainClass>
-            </program>            
-            <program>
               <id>ngs-validate-interleaved-fastq</id>
               <mainClass>org.nmdp.ngs.tools.ValidateInterleavedFastq</mainClass>
             </program>

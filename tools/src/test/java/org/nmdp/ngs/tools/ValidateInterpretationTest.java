@@ -51,8 +51,6 @@ public final class ValidateInterpretationTest {
     private File outputFile;
     private int resolution;
     private boolean printSummary;
-    private boolean HaploidBoolean;
-    private boolean GlstringBoolean;
 
     @Before
     public void setUp() throws Exception {
@@ -70,27 +68,27 @@ public final class ValidateInterpretationTest {
 
     @Test(expected=NullPointerException.class)
     public void testConstructorNullExpectedFile() {
-        new ValidateInterpretation(null, observedFile, HaploidBoolean, GlstringBoolean, outputFile, resolution, printSummary);
+        new ValidateInterpretation(null, observedFile, outputFile, resolution, printSummary);
     }
 
     @Test(expected=NullPointerException.class)
     public void testConstructorNullObservedFile() {
-        new ValidateInterpretation(expectedFile, null, HaploidBoolean, GlstringBoolean, outputFile, resolution, printSummary);
+        new ValidateInterpretation(expectedFile, null, outputFile, resolution, printSummary);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testConstructorNullResolutionTooLow() {
-        new ValidateInterpretation(expectedFile, observedFile, HaploidBoolean, GlstringBoolean, outputFile, 0, printSummary);
+        new ValidateInterpretation(expectedFile, observedFile, outputFile, 0, printSummary);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testConstructorNullResolutionTooHigh() {
-        new ValidateInterpretation(expectedFile, observedFile, HaploidBoolean, GlstringBoolean, outputFile, 5, printSummary);
+        new ValidateInterpretation(expectedFile, observedFile, outputFile, 5, printSummary);
     }
 
     @Test
     public void testConstructor() {
-        assertNotNull(new ValidateInterpretation(expectedFile, observedFile, HaploidBoolean, GlstringBoolean, outputFile, resolution, printSummary));
+        assertNotNull(new ValidateInterpretation(expectedFile, observedFile, outputFile, resolution, printSummary));
     }
 
     @Test(expected=NullPointerException.class)
