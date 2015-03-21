@@ -24,14 +24,16 @@ package org.nmdp.ngs.fca;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import org.dishevelled.bitset.MutableBitSet;
+import org.dishevelled.bitset.ImmutableBitSet;
 import java.util.List;
 
 /**
  * Formal concepts and their partial ordering.
  */
 public final class Concept implements Partial<Concept> {
-    private final BitSet extent;
-    private final BitSet intent;
+    private final MutableBitSet extent;
+    private final MutableBitSet intent;
 
     /**
      * Construct a concept with given objects (extent) and attributes (intent).
@@ -39,28 +41,26 @@ public final class Concept implements Partial<Concept> {
      * @param extent objects
      * @param intent attributes
      */
-    public Concept(final BitSet extent, final BitSet intent) {
+    public Concept(final MutableBitSet extent, final MutableBitSet intent) {
         this.extent = extent;
         this.intent = intent;
     }
 
     /**
-     * Retrieve a concept's shared objects.
+     * Retrieve the bitset representation of the concept's objects.
      *
      * @return extent
      */
-    // todo:  shared objects --> bitset?  needs clarification
-    public BitSet extent() {
+    public MutableBitSet extent() {
         return extent;
     }
 
     /**
-     * Retrieve a concept's shared attributes.
+     * Retrieve the bitset representation of the concept's attributes.
      *
      * @return intent
      */
-    // todo:  shared attributes --> bitset?  needs clarification
-    public BitSet intent() {
+    public MutableBitSet intent() {
         return intent;
     }
 
@@ -72,11 +72,11 @@ public final class Concept implements Partial<Concept> {
      * @return immutable list of members
      */
     // todo:  lists should be typed
-    public static List decode(final BitSet bits, final List group) {
+    public static List decode(final MutableBitSet bits, final List group) {
         List members = new ArrayList();
 
-        for (int i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
-            members.add(group.get(i));
+        for (long i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
+            members.add(group.get((int) i));
         }
         return members;
     }
@@ -88,8 +88,8 @@ public final class Concept implements Partial<Concept> {
      * @param group list of all members
      * @return bits where each set bit represents membership in the group
      */
-    public static BitSet encode(final List members, final List group) {
-        BitSet bits = new BitSet();
+    public static MutableBitSet encode(final List members, final List group) {
+        MutableBitSet bits = new MutableBitSet();
 
         for (Object object : members) {
             int index = group.indexOf(object);
@@ -108,7 +108,7 @@ public final class Concept implements Partial<Concept> {
      */
     @Override
     public Ordering ordering(final Concept that) {
-        BitSet meet = (BitSet) this.intent.clone();
+        MutableBitSet meet =  this.intent.immutableCopy().mutableCopy();
         meet.and(that.intent);
 
         if (this.intent.equals(that.intent)) {
@@ -126,5 +126,10 @@ public final class Concept implements Partial<Concept> {
     @Override
     public String toString() {
         return intent.toString();
+    }
+
+    @Override
+    public Concept intersect(Concept that) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

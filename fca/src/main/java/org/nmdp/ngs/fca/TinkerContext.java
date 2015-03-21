@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.BitSet;
 
+import org.dishevelled.bitset.MutableBitSet;
+
 /**
  * Tinker context.
  *
@@ -44,11 +46,11 @@ public class TinkerContext<G, M> extends AbstractContext<G, M> {
     public TinkerContext(final List<M> attributes) {
         objects = new ArrayList<>();
         this.attributes = attributes;
-        BitSet ones = new BitSet(this.attributes.size());
+        MutableBitSet ones = new MutableBitSet(this.attributes.size());
         ones.set(0, this.attributes.size());
         lattice = new TinkerGraph();
         top = lattice.addVertex(null);
-        top.setProperty("label", new Concept(new BitSet(), ones));
+        top.setProperty("label", new Concept(new MutableBitSet(), ones));
         top.setProperty("color", color);
         direction = Partial.Ordering.Direction.FORWARD;
         size = 1;

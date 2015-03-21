@@ -30,6 +30,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.util.BitSet;
+
+import org.dishevelled.bitset.MutableBitSet;
+import org.dishevelled.bitset.ImmutableBitSet;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -41,16 +44,16 @@ import org.junit.Test;
  * Unit test for Concept.
  */
 public final class ConceptTest {
-    private BitSet w, x, y, z;
+    private MutableBitSet w, x, y, z;
     private Concept W, X, Y, Z;
     private List a, b, ab, empty;
 
     @Before
     public void setUp() {
-        w = new BitSet(2); // empty
-        x = new BitSet(2); x.flip(0); // a
-        y = new BitSet(2); y.flip(1); // b
-        z = new BitSet(2); z.flip(0); z.flip(1); // ab
+        w = new MutableBitSet(2); // empty
+        x = new MutableBitSet(2); x.flip(0); // a
+        y = new MutableBitSet(2); y.flip(1); // b
+        z = new MutableBitSet(2); z.flip(0); z.flip(1); // ab
 
         W = new Concept(null, w);
         X = new Concept(null, x);
@@ -85,7 +88,6 @@ public final class ConceptTest {
         assertEquals(W.ordering(X), Partial.Ordering.LESS);
         assertEquals(W.ordering(Y), Partial.Ordering.LESS);
         assertEquals(W.ordering(Z), Partial.Ordering.LESS);
-
         assertEquals(X.ordering(W), Partial.Ordering.GREATER);
         assertEquals(X.ordering(X), Partial.Ordering.EQUAL);
         assertEquals(X.ordering(Y), Partial.Ordering.NONCOMPARABLE);

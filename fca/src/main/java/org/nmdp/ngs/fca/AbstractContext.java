@@ -29,6 +29,9 @@ import com.tinkerpop.blueprints.Direction;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+
+import org.dishevelled.bitset.MutableBitSet;
+import org.dishevelled.bitset.ImmutableBitSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -81,7 +84,8 @@ public abstract class AbstractContext<G, M> implements Context {
      * @return vertex whose label-concept represents the supremum
      */
     // todo:  modifies generator parameter
-    private Vertex supremum(final BitSet intent, Vertex generator) {
+    private Vertex supremum(final MutableBitSet intent, Vertex generator) {
+      System.out.println("supremum intent = " + Concept.decode(intent, attributes));
         boolean max = true;
         while (max) {
             max = false;
@@ -91,7 +95,7 @@ public abstract class AbstractContext<G, M> implements Context {
                 if (filter(target, generator)) {
                     continue;
                 }
-                Concept proposed = new Concept(new BitSet(), intent);
+                Concept proposed = new Concept(new MutableBitSet(), intent);
 
                 if (filter(target, proposed)) {
                     generator = target;
@@ -148,9 +152,9 @@ public abstract class AbstractContext<G, M> implements Context {
      * @return vertex whose label-concept represents the supremum
      */
     // todo:  modifies generator parameter
-    private Vertex addIntent(final BitSet intent, Vertex generator) {
+    private Vertex addIntent(final MutableBitSet intent, Vertex generator) {
         generator = supremum(intent, generator);
-        Concept proposed = new Concept(new BitSet(), intent);
+        Concept proposed = new Concept(new MutableBitSet(), intent);
 
         if (filter(generator, proposed) && filter(proposed, generator)) {
             return generator;
@@ -164,7 +168,7 @@ public abstract class AbstractContext<G, M> implements Context {
             Vertex candidate = target;
             if (!filter(target, proposed) && !filter(proposed, target)) {
                 Concept targetConcept = target.getProperty(LABEL);
-                BitSet meet = (BitSet) targetConcept.intent().clone();
+                MutableBitSet meet = (MutableBitSet) targetConcept.intent().immutableCopy().mutableCopy();
                 meet.and(intent);
                 candidate = addIntent(meet, candidate);
             }
@@ -211,12 +215,12 @@ public abstract class AbstractContext<G, M> implements Context {
 
     public Concept insert(final G object, final List<M> attributes) {
         objects.add(object);
-        BitSet intent = Concept.encode(attributes, this.attributes);
+        MutableBitSet intent = Concept.encode(attributes, this.attributes);
         Vertex added = addIntent(intent, top);
 
         List<G> list = new ArrayList<G>();
         list.add(object);
-        BitSet extent = Concept.encode(list, objects);
+        MutableBitSet extent = Concept.encode(list, objects);
 
         List queue = new ArrayList();
         added.setProperty("color", ++color);
@@ -282,10 +286,10 @@ public abstract class AbstractContext<G, M> implements Context {
      * @return the found vertex
      */
     private Vertex queryAttributes(final List... queries) {
-        BitSet join = new BitSet();
+        MutableBitSet join = new MutableBitSet();
 
         for (List query : queries) {
-            BitSet bits = Concept.encode(query, attributes);
+            MutableBitSet bits = Concept.encode(query, attributes);
             join.or(bits);
         }
         return supremum(join, top);
@@ -293,20 +297,24 @@ public abstract class AbstractContext<G, M> implements Context {
 
     @Override
     public final Concept leastUpperBound(final List query) {
-        BitSet bits = Concept.encode(query, attributes);
+        MutableBitSet bits = Concept.encode(query, attributes);
+        System.out.println("encoded bits = " + Concept.decode(bits, attributes));
         return supremum(bits, top).getProperty(LABEL);
     }
 
     @Override
     public final Concept meet(final Concept left, final Concept right) {
-        BitSet bits = (BitSet) left.intent().clone();
+        System.out.println("left = " + Concept.decode(left.intent(), attributes));
+        MutableBitSet bits = left.intent().immutableCopy().mutableCopy();
+        System.out.println("meet bits = " + Concept.decode(bits, attributes));
         bits.or(right.intent());
+        System.out.println("meet bits = " + Concept.decode(bits, attributes));
         return supremum(bits, top).getProperty(LABEL);
     }
 
     @Override
     public final Concept join(final Concept left, final Concept right) {
-        BitSet bits = (BitSet) left.intent().clone();
+        MutableBitSet bits = left.intent().immutableCopy().mutableCopy();
         bits.and(right.intent());
         return supremum(bits, top).getProperty(LABEL);
     }
@@ -321,7 +329,7 @@ public abstract class AbstractContext<G, M> implements Context {
      * @param query attributes
      * @return the number of objects with the given attributes
      */
-    public int support(final List query) {
+    public long support(final List query) {
         return leastUpperBound(query).extent().cardinality();
     }
 
@@ -332,7 +340,7 @@ public abstract class AbstractContext<G, M> implements Context {
      * @param right set of attributes
      * @return the extent cardinality for the join of the attribute
      */
-    public int support(final List left, final List right) {
+    public long support(final List left, final List right) {
         return leastUpperBound(left, right).extent().cardinality();
     }
 

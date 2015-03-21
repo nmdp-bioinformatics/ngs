@@ -22,11 +22,9 @@
 */
 package org.nmdp.ngs.fca;
 
-import java.util.List;
-
 /**
- * A class for finite (trivially complete) lattices.
- * @param <T> partially ordered type
+ * An interface for finite (trivially complete) lattices.
+ * @param <T> type of partially ordered objects
  */
 public interface Lattice<T extends Partial> {
   

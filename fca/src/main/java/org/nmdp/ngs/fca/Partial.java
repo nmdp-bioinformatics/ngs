@@ -121,4 +121,6 @@ public interface Partial<T> {
      * @return partial ordering
      */
     Ordering ordering(T that); // todo: <? extends T> ?
+    
+    T intersect(T that);
 }

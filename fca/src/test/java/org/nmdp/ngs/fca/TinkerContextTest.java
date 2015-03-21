@@ -29,6 +29,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.util.BitSet;
+
+import org.dishevelled.bitset.MutableBitSet;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -76,12 +78,14 @@ public final class TinkerContextTest {
         context.insert("V", acef);
         context.insert("W", bd);
         context.insert("X", af);
+        
+        System.out.println(context);
     }
 
     @Test
     public void testInsert() {
-        BitSet ones = new BitSet();
-        BitSet zeros = new BitSet();
+        MutableBitSet ones = new MutableBitSet();
+        MutableBitSet zeros = new MutableBitSet();
 
         ones.set(0, 6);
         assertEquals(context.bottom().intent(), zeros);
@@ -91,6 +95,8 @@ public final class TinkerContextTest {
         assertEquals(context.top().intent(), ones);
         assertEquals(context.top().extent(), zeros);
         assertEquals(context.size(), 12);
+        
+        //System.out.println(context);
     }
 
     @Test
@@ -108,76 +114,79 @@ public final class TinkerContextTest {
 
     @Test
     public void testLeastUpperBound() {
-        BitSet bits = new BitSet();
+        MutableBitSet bits = new MutableBitSet();
 
         Concept concept = context.leastUpperBound(abcdefg);
 
-        bits.clear(); // {}
+        bits.clear(0, bits.capacity()); // {}
         assertEquals(concept.extent(), bits);
 
-        bits.clear();
+        bits.clear(0, bits.capacity());
         bits.set(0, 7); // {abcdefg}
         assertEquals(concept.intent(), bits);
 
         concept = context.leastUpperBound(acef);
-        bits.clear();
+        bits.clear(0, bits.capacity());
         bits.flip(3); // {V}
         assertEquals(concept.extent(), bits);
 
-        bits.clear();
+        bits.clear(0, bits.capacity());
         bits.flip(0); bits.flip(2); bits.flip(4); bits.flip(5); // {acef}
         assertEquals(concept.intent(), bits);
 
         List ae = new ImmutableList.Builder<String>().add("a").add("e").build();
         concept = context.leastUpperBound(ae);
 
-        bits.clear();
+        bits.clear(0, bits.capacity());
         bits.flip(1); bits.flip(2); bits.flip(3); // {TUV}
         assertEquals(concept.extent(), bits);
 
-        bits.clear();
+        bits.clear(0, bits.capacity());
         bits.flip(0); bits.flip(4); // {ae}
         assertEquals(concept.intent(), bits);
 
         List empty = new ImmutableList.Builder<String>().build();
         concept = context.leastUpperBound(empty);
 
-        bits.clear();
+        bits.clear(0, bits.capacity());
         bits.set(0, 6); // {STUVWX}
         assertEquals(concept.extent(), bits);
 
-        bits.clear(); // {}
+        bits.clear(0, bits.capacity()); // {}
         assertEquals(concept.intent(), bits);
 
         concept = context.leastUpperBound(bd, af);
 
-        bits.clear();
+        bits.clear(0, bits.capacity());
         bits.flip(0); bits.flip(2); // {SU}
         assertEquals(concept.extent(), bits);
 
-        bits.clear();
+        bits.clear(0, bits.capacity());
         bits.flip(0); bits.flip(1); bits.flip(3); bits.flip(5); // {abdf}
         assertEquals(concept.intent(), bits);
     }
 
     @Test
     public void testMeet() {
-        BitSet bits = new BitSet();
+        MutableBitSet bits = new MutableBitSet();
 
         Concept left = context.leastUpperBound(bd);
+        System.out.println("left.intent() = " + Concept.decode(left.intent(), abcdefg));
         Concept right = context.leastUpperBound(af);
     
         bits.flip(1); bits.flip(3);
+        System.out.println("bits = " + Concept.decode(bits, abcdefg));
+        System.out.println("meet = " + Concept.decode(context.meet(left, left).intent(), abcdefg));
         assertEquals(context.meet(left, left).intent(), bits);
 
-        bits.clear();
+        bits.clear(0, bits.capacity());
         bits.flip(0); bits.flip(1); bits.flip(3); bits.flip(5);
         assertEquals(context.meet(left, right).intent(), bits);
     }
 
     @Test
     public void testJoin() {
-        BitSet bits = new BitSet();
+        MutableBitSet bits = new MutableBitSet();
 
         Concept left = context.leastUpperBound(bd);
         Concept right = context.leastUpperBound(af);
