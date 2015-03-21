@@ -39,6 +39,11 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>org.dishevelled</groupId>
+      <artifactId>dsh-bitset</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>com.tinkerpop.blueprints</groupId>
       <artifactId>blueprints-core</artifactId>
       <scope>compile</scope>
