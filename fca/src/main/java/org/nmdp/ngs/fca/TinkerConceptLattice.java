@@ -41,9 +41,9 @@ import org.dishevelled.bitset.MutableBitSet;
  * @param <G> object type
  * @param <M> attribute type
  */
-public class TinkerContext<G, M> extends AbstractContext<G, M> {
+public class TinkerConceptLattice<G, M> extends AbstractConceptLattice<G, M> {
 
-    public TinkerContext(final List<M> attributes) {
+    public TinkerConceptLattice(final List<M> attributes) {
         objects = new ArrayList<>();
         this.attributes = attributes;
         MutableBitSet ones = new MutableBitSet(this.attributes.size());
@@ -52,7 +52,7 @@ public class TinkerContext<G, M> extends AbstractContext<G, M> {
         top = lattice.addVertex(null);
         top.setProperty("label", new Concept(new MutableBitSet(), ones));
         top.setProperty("color", color);
-        direction = Partial.Ordering.Direction.FORWARD;
+        direction = Partial.Order.Direction.FORWARD;
         size = 1;
         order = 0;
         bottom = top;

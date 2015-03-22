@@ -44,10 +44,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit test for TinkerContext.
+ * Unit test for TinkerConceptLattice.
  */
-public final class TinkerContextTest {
-    private TinkerContext context;
+public final class TinkerConceptLatticeTest {
+    private TinkerConceptLattice context;
     private List abcdefg, abdefg, abde, abdf, acef, bd, af;
 
     /**
@@ -71,15 +71,13 @@ public final class TinkerContextTest {
         af = new ImmutableList.Builder<String>()
             .add("a").add("f").build();
 
-        context = new TinkerContext(abcdefg);
+        context = new TinkerConceptLattice(abcdefg);
         context.insert("S", abdf);
         context.insert("T", abde);
         context.insert("U", abdefg);
         context.insert("V", acef);
         context.insert("W", bd);
         context.insert("X", af);
-        
-        System.out.println(context);
     }
 
     @Test
@@ -95,8 +93,6 @@ public final class TinkerContextTest {
         assertEquals(context.top().intent(), ones);
         assertEquals(context.top().extent(), zeros);
         assertEquals(context.size(), 12);
-        
-        //System.out.println(context);
     }
 
     @Test
@@ -171,12 +167,9 @@ public final class TinkerContextTest {
         MutableBitSet bits = new MutableBitSet();
 
         Concept left = context.leastUpperBound(bd);
-        System.out.println("left.intent() = " + Concept.decode(left.intent(), abcdefg));
         Concept right = context.leastUpperBound(af);
     
         bits.flip(1); bits.flip(3);
-        System.out.println("bits = " + Concept.decode(bits, abcdefg));
-        System.out.println("meet = " + Concept.decode(context.meet(left, left).intent(), abcdefg));
         assertEquals(context.meet(left, left).intent(), bits);
 
         bits.clear(0, bits.capacity());

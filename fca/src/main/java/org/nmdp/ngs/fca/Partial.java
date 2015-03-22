@@ -39,7 +39,7 @@ public interface Partial<T> {
      * non-comparable and define another ordering category that extends to all
      * partially ordered objects.
      */
-    public static enum Ordering {
+    public static enum Order {
 
         /**
          * Equivalent to a return value of -1 for comparable objects. For example, 0
@@ -120,7 +120,7 @@ public interface Partial<T> {
      * @param that partially ordered object
      * @return partial ordering
      */
-    Ordering ordering(T that); // todo: <? extends T> ?
+    Order ordering(T that); // todo: <? extends T> ?
     
     T intersect(T that);
 }

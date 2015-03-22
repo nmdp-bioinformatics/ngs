@@ -84,24 +84,24 @@ public final class ConceptTest {
 
     @Test
     public void testOrdering() {
-        assertEquals(W.ordering(W), Partial.Ordering.EQUAL);
-        assertEquals(W.ordering(X), Partial.Ordering.LESS);
-        assertEquals(W.ordering(Y), Partial.Ordering.LESS);
-        assertEquals(W.ordering(Z), Partial.Ordering.LESS);
-        assertEquals(X.ordering(W), Partial.Ordering.GREATER);
-        assertEquals(X.ordering(X), Partial.Ordering.EQUAL);
-        assertEquals(X.ordering(Y), Partial.Ordering.NONCOMPARABLE);
-        assertEquals(X.ordering(Z), Partial.Ordering.LESS);
+        assertEquals(W.ordering(W), Partial.Order.EQUAL);
+        assertEquals(W.ordering(X), Partial.Order.LESS);
+        assertEquals(W.ordering(Y), Partial.Order.LESS);
+        assertEquals(W.ordering(Z), Partial.Order.LESS);
+        assertEquals(X.ordering(W), Partial.Order.GREATER);
+        assertEquals(X.ordering(X), Partial.Order.EQUAL);
+        assertEquals(X.ordering(Y), Partial.Order.NONCOMPARABLE);
+        assertEquals(X.ordering(Z), Partial.Order.LESS);
 
-        assertEquals(Y.ordering(W), Partial.Ordering.GREATER);
-        assertEquals(Y.ordering(X), Partial.Ordering.NONCOMPARABLE);
-        assertEquals(Y.ordering(Y), Partial.Ordering.EQUAL);
-        assertEquals(Y.ordering(Z), Partial.Ordering.LESS);
+        assertEquals(Y.ordering(W), Partial.Order.GREATER);
+        assertEquals(Y.ordering(X), Partial.Order.NONCOMPARABLE);
+        assertEquals(Y.ordering(Y), Partial.Order.EQUAL);
+        assertEquals(Y.ordering(Z), Partial.Order.LESS);
 
-        assertEquals(Z.ordering(W), Partial.Ordering.GREATER);
-        assertEquals(Z.ordering(X), Partial.Ordering.GREATER);
-        assertEquals(Z.ordering(Y), Partial.Ordering.GREATER);
-        assertEquals(Z.ordering(Z), Partial.Ordering.EQUAL);
+        assertEquals(Z.ordering(W), Partial.Order.GREATER);
+        assertEquals(Z.ordering(X), Partial.Order.GREATER);
+        assertEquals(Z.ordering(Y), Partial.Order.GREATER);
+        assertEquals(Z.ordering(Z), Partial.Order.EQUAL);
     }
 
     @Test

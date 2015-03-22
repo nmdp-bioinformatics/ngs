@@ -28,7 +28,7 @@ import java.util.List;
  * Context.
  */
 // todo:  should the lists in this interface be typed?
-public interface Context extends Lattice<Concept> {
+public interface ConceptLattice extends Lattice<Concept> {
     List getObjects();
     List getAttributes();
     @Override

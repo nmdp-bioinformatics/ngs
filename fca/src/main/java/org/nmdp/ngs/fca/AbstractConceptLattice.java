@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 
 import org.dishevelled.bitset.MutableBitSet;
-import org.dishevelled.bitset.ImmutableBitSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -41,7 +40,7 @@ import java.util.List;
  * @param <G> object type
  * @param <M> attribute type
  */
-public abstract class AbstractContext<G, M> implements Context {
+public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
     protected List<G> objects;
     protected List<M> attributes;
 
@@ -49,7 +48,7 @@ public abstract class AbstractContext<G, M> implements Context {
     protected Vertex bottom;
     protected Vertex top;
 
-    protected Partial.Ordering.Direction direction;
+    protected Partial.Order.Direction direction;
     protected int color;
     protected int size;
     protected int order;
@@ -73,7 +72,7 @@ public abstract class AbstractContext<G, M> implements Context {
     }
 
     private boolean filter(final Concept right, final Concept left) {
-        return right.ordering(left).gte();
+        return right.ordering(left).greaterOrEqual();
     }
 
     /**
@@ -85,7 +84,6 @@ public abstract class AbstractContext<G, M> implements Context {
      */
     // todo:  modifies generator parameter
     private Vertex supremum(final MutableBitSet intent, Vertex generator) {
-      System.out.println("supremum intent = " + Concept.decode(intent, attributes));
         boolean max = true;
         while (max) {
             max = false;
@@ -118,10 +116,10 @@ public abstract class AbstractContext<G, M> implements Context {
     private void addUndirectedEdge(final Vertex source, final Vertex target, final String weight) {
         Concept sourceConcept = source.getProperty("label");
         Concept targetConcept = target.getProperty("label");
-        Partial.Ordering.Direction direction = this.direction;
+        Partial.Order.Direction direction = this.direction;
 
         if (targetConcept.ordering(sourceConcept).gte()) {
-            direction = Partial.Ordering.Direction.REVERSE;
+            direction = Partial.Order.Direction.REVERSE;
         }
 
         lattice.addEdge(null, source, target, "");
@@ -168,8 +166,7 @@ public abstract class AbstractContext<G, M> implements Context {
             Vertex candidate = target;
             if (!filter(target, proposed) && !filter(proposed, target)) {
                 Concept targetConcept = target.getProperty(LABEL);
-                MutableBitSet meet = (MutableBitSet) targetConcept.intent().immutableCopy().mutableCopy();
-                meet.and(intent);
+                MutableBitSet meet = (MutableBitSet) new MutableBitSet().or(targetConcept.intent()).and(intent);
                 candidate = addIntent(meet, candidate);
             }
 
@@ -266,12 +263,12 @@ public abstract class AbstractContext<G, M> implements Context {
 
     @Override
     public Concept bottom() {
-        return bottom.getProperty("label");
+        return bottom.getProperty(LABEL);
     }
 
     @Override
     public Concept top() {
-        return top.getProperty("label");
+        return top.getProperty(LABEL);
     }
 
     /**
@@ -298,24 +295,18 @@ public abstract class AbstractContext<G, M> implements Context {
     @Override
     public final Concept leastUpperBound(final List query) {
         MutableBitSet bits = Concept.encode(query, attributes);
-        System.out.println("encoded bits = " + Concept.decode(bits, attributes));
         return supremum(bits, top).getProperty(LABEL);
     }
 
     @Override
     public final Concept meet(final Concept left, final Concept right) {
-        System.out.println("left = " + Concept.decode(left.intent(), attributes));
-        MutableBitSet bits = left.intent().immutableCopy().mutableCopy();
-        System.out.println("meet bits = " + Concept.decode(bits, attributes));
-        bits.or(right.intent());
-        System.out.println("meet bits = " + Concept.decode(bits, attributes));
+        MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(left.intent()).or(right.intent());
         return supremum(bits, top).getProperty(LABEL);
     }
 
     @Override
     public final Concept join(final Concept left, final Concept right) {
-        MutableBitSet bits = left.intent().immutableCopy().mutableCopy();
-        bits.and(right.intent());
+        MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(left.intent()).and(right.intent());
         return supremum(bits, top).getProperty(LABEL);
     }
 

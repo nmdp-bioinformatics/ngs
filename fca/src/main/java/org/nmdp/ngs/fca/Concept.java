@@ -25,7 +25,6 @@ package org.nmdp.ngs.fca;
 import java.util.ArrayList;
 import java.util.BitSet;
 import org.dishevelled.bitset.MutableBitSet;
-import org.dishevelled.bitset.ImmutableBitSet;
 import java.util.List;
 
 /**
@@ -107,20 +106,19 @@ public final class Concept implements Partial<Concept> {
      * @return partial ordering of this and that concept
      */
     @Override
-    public Ordering ordering(final Concept that) {
-        MutableBitSet meet =  this.intent.immutableCopy().mutableCopy();
-        meet.and(that.intent);
+    public Order ordering(final Concept that) {
+        MutableBitSet meet = (MutableBitSet) new MutableBitSet().or(this.intent).and(that.intent);
 
         if (this.intent.equals(that.intent)) {
-            return Partial.Ordering.EQUAL;
+            return Partial.Order.EQUAL;
         }
         if (this.intent.equals(meet)) {
-            return Partial.Ordering.LESS;
+            return Partial.Order.LESS;
         }
         if (that.intent.equals(meet)) {
-            return Partial.Ordering.GREATER;
+            return Partial.Order.GREATER;
         }
-        return Partial.Ordering.NONCOMPARABLE;
+        return Partial.Order.NONCOMPARABLE;
     }
 
     @Override
