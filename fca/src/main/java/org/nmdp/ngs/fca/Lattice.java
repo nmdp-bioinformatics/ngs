@@ -23,36 +23,54 @@
 package org.nmdp.ngs.fca;
 
 /**
- * An interface for finite (trivially complete) lattices.
+ * Finite lattice.
  * @param <T> type of partially ordered objects
  */
 public interface Lattice<T extends Partial> {
   
   /**
    * The bottom of the lattice.
-   * @return the least element in the lattice
+   * @return the least lattice element
    */
     T bottom();
     
     /**
      * The top of the lattice.
-     * @return the greatest element in the lattice
+     * @return the greatest lattice element
      */
     T top();
     
     /**
-     * The least upper bound of two lattice elements (also the supremum).
+     * The join of one lattice element (also supremum).
+     * @param query element
+     * @return the greatest lower bound of lattice element query
+     */
+    T greatestLowerBound(T query);
+    
+    /**
+     * The meet of one lattice element (also infimum).
+     * @param query element
+     * @return the least upper bound of lattice element query
+     */
+    T leastUpperBound(T query);
+    
+    /**
+     * The join of two lattice elements (also supremum).
      * @param left element
      * @param right element
-     * @return meet of left and right
+     * @return the least upper bound of lattice elements left and right
      */
     T join(T left, T right);
     
     /**
-     * The greatest lower bound of two lattice elements (also the infimum).
+     * The meet of two lattice elements (also infimum).
      * @param left element
      * @param right element
-     * @return join of left and right
+     * @return the greatest lower bound of lattice elements left and right
      */
     T meet(T left, T right);
+    
+    double measure(T query);
+    
+    double measure(T left, T right);
 }

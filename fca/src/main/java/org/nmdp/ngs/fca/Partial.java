@@ -120,7 +120,7 @@ public interface Partial<T> {
      * @param that partially ordered object
      * @return partial ordering
      */
-    Order ordering(T that); // todo: <? extends T> ?
+    Order relation(T that); // todo: <? extends T> ?
     
     T intersect(T that);
 }

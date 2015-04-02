@@ -22,13 +22,14 @@
 */
 package org.nmdp.ngs.fca;
 
+import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.BitSet;
-import org.dishevelled.bitset.MutableBitSet;
 import java.util.List;
+import org.dishevelled.bitset.MutableBitSet;
 
 /**
- * Formal concepts and their partial ordering.
+ * Formal concept.
  */
 public final class Concept implements Partial<Concept> {
     private final MutableBitSet extent;
@@ -98,6 +99,36 @@ public final class Concept implements Partial<Concept> {
         }
         return bits;
     }
+    
+    public static Builder builder() {
+        return new Builder();
+    }
+    
+    /**
+     * Builder class for Concept.
+     */
+    public static final class Builder<G extends Comparable, M extends Comparable> {
+        private MutableBitSet extent, intent;
+        
+        public Builder() {
+          extent = new MutableBitSet();
+          intent = new MutableBitSet();
+        }
+        
+        public Builder withObjects(final List<G> chosen, final List<G> from) {
+            extent = encode(chosen, from);
+            return this;
+        }
+      
+        public Builder withAttributes(final List<M> chosen, final List<G> from) {
+            intent = encode(chosen, from);
+            return this;
+        }
+        
+        public Concept build() {
+            return new Concept(extent, intent);
+        }
+    }
 
     /**
      * Define the partial ordering of two concepts.
@@ -106,7 +137,7 @@ public final class Concept implements Partial<Concept> {
      * @return partial ordering of this and that concept
      */
     @Override
-    public Order ordering(final Concept that) {
+    public Order relation(final Concept that) {
         MutableBitSet meet = (MutableBitSet) new MutableBitSet().or(this.intent).and(that.intent);
 
         if (this.intent.equals(that.intent)) {
@@ -120,6 +151,25 @@ public final class Concept implements Partial<Concept> {
         }
         return Partial.Order.NONCOMPARABLE;
     }
+    
+    @Override
+    public boolean equals(final Object right) {
+        if (!(right instanceof Concept)) {
+            return false;
+        }
+        
+        if (right == this) {
+           return true;
+        }
+
+        Concept concept = (Concept) right;
+        return concept.extent == this.extent && concept.intent == this.intent;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(extent, intent);
+    }
 
     @Override
     public String toString() {
@@ -127,7 +177,9 @@ public final class Concept implements Partial<Concept> {
     }
 
     @Override
-    public Concept intersect(Concept that) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Concept intersect(final Concept that) {
+        MutableBitSet or = (MutableBitSet) new MutableBitSet().or(this.extent).or(that.extent);
+        MutableBitSet and = (MutableBitSet) new MutableBitSet().or(this.intent).and(that.intent);
+        return new Concept(or, and);
     }
 }
