@@ -41,20 +41,6 @@ public interface Lattice<T extends Partial> {
     T top();
     
     /**
-     * The join of one lattice element (also supremum).
-     * @param query element
-     * @return the greatest lower bound of lattice element query
-     */
-    T greatestLowerBound(T query);
-    
-    /**
-     * The meet of one lattice element (also infimum).
-     * @param query element
-     * @return the least upper bound of lattice element query
-     */
-    T leastUpperBound(T query);
-    
-    /**
      * The join of two lattice elements (also supremum).
      * @param left element
      * @param right element

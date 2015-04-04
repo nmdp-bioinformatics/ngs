@@ -123,4 +123,6 @@ public interface Partial<T> {
     Order relation(T that); // todo: <? extends T> ?
     
     T intersect(T that);
+    
+    T union(T that);
 }

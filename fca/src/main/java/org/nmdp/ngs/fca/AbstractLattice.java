@@ -35,15 +35,11 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Abstract context.
+ * Abstract lattice.
  *
- * @param <G> object type
- * @param <M> attribute type
+ * @param <T> type
  */
-public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
-    protected List<G> objects;
-    protected List<M> attributes;
-
+public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
     protected Graph lattice;
     protected Vertex bottom;
     protected Vertex top;
@@ -53,26 +49,26 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
     protected int size;
     protected int order;
 
-    private static final String LABEL = "label";
+    protected static final String LABEL = "label";
 
     protected boolean filter(final Vertex source, final Vertex target) {
-        Concept sourceConcept = source.getProperty(LABEL);
-        Concept targetConcept = target.getProperty(LABEL);
+        T sourceConcept = source.getProperty(LABEL);
+        T targetConcept = target.getProperty(LABEL);
         return filter(sourceConcept, targetConcept);
     }
 
-    private boolean filter(final Vertex source, final Concept right) {
-        Concept sourceConcept = source.getProperty(LABEL);
+    private boolean filter(final Vertex source, final T right) {
+        T sourceConcept = source.getProperty(LABEL);
         return filter(sourceConcept, right);
     }
 
-    private boolean filter(final Concept left, final Vertex target) {
-        Concept targetConcept = target.getProperty(LABEL);
+    private boolean filter(final T left, final Vertex target) {
+        T targetConcept = target.getProperty(LABEL);
         return filter(left, targetConcept);
     }
 
-    private boolean filter(final Concept right, final Concept left) {
-        return right.ordering(left).greaterOrEqual();
+    private boolean filter(final T right, final T left) {
+        return right.relation(left).greaterOrEqual();
     }
 
     /**
@@ -83,7 +79,7 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
      * @return vertex whose label-concept represents the supremum
      */
     // todo:  modifies generator parameter
-    private Vertex supremum(final MutableBitSet intent, Vertex generator) {
+    private Vertex supremum(final T proposed, Vertex generator) {
         boolean max = true;
         while (max) {
             max = false;
@@ -93,7 +89,7 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
                 if (filter(target, generator)) {
                     continue;
                 }
-                Concept proposed = new Concept(new MutableBitSet(), intent);
+                //Concept proposed = new Concept(new MutableBitSet(), proposed.intent);
 
                 if (filter(target, proposed)) {
                     generator = target;
@@ -105,7 +101,7 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
         return generator;
     }
 
-    private Vertex addConcept(final Concept label) {
+    private Vertex add(final T label) {
         Vertex child = lattice.addVertex(null);
         child.setProperty("label", label);
         child.setProperty("color", color);
@@ -113,18 +109,19 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
         return child;
     }
 
-    private void addUndirectedEdge(final Vertex source, final Vertex target, final String weight) {
-        Concept sourceConcept = source.getProperty("label");
-        Concept targetConcept = target.getProperty("label");
+    private Edge addUndirectedEdge(final Vertex source, final Vertex target, final String weight) {
+        T sourceConcept = source.getProperty("label");
+        T targetConcept = target.getProperty("label");
         Partial.Order.Direction direction = this.direction;
 
-        if (targetConcept.ordering(sourceConcept).gte()) {
+        if (targetConcept.relation(sourceConcept).gte()) {
             direction = Partial.Order.Direction.REVERSE;
         }
 
-        lattice.addEdge(null, source, target, "");
-        lattice.addEdge(null, target, source, "");
+        lattice.addEdge(null, source, target, weight);
+        Edge edge = lattice.addEdge(null, target, source, weight);
         ++order;
+        return edge;
     }
 
     private void removeUndirectedEdge(final Vertex source, final Vertex target) {
@@ -150,9 +147,9 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
      * @return vertex whose label-concept represents the supremum
      */
     // todo:  modifies generator parameter
-    private Vertex addIntent(final MutableBitSet intent, Vertex generator) {
-        generator = supremum(intent, generator);
-        Concept proposed = new Concept(new MutableBitSet(), intent);
+    protected Vertex addIntent(T proposed, Vertex generator) {
+        generator = supremum(proposed, generator);
+        
 
         if (filter(generator, proposed) && filter(proposed, generator)) {
             return generator;
@@ -165,9 +162,10 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
 
             Vertex candidate = target;
             if (!filter(target, proposed) && !filter(proposed, target)) {
-                Concept targetConcept = target.getProperty(LABEL);
-                MutableBitSet meet = (MutableBitSet) new MutableBitSet().or(targetConcept.intent()).and(intent);
-                candidate = addIntent(meet, candidate);
+                T targetConcept = target.getProperty(LABEL);
+                // MutableBitSet meet = (MutableBitSet) new MutableBitSet().or(targetConcept.intent()).and(proposed.intent());
+                T intersect = (T) targetConcept.intersect(proposed);
+                candidate = addIntent(intersect, candidate);
             }
 
             boolean add = true;
@@ -194,10 +192,11 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
             }
         }
 
-        Concept generatorConcept = generator.getProperty(LABEL);
-        proposed.extent().or(generatorConcept.extent());
-        Vertex child = addConcept(proposed);
+        T generatorConcept = generator.getProperty(LABEL);
+        
+        Vertex child = add((T) proposed.union(generatorConcept));
         addUndirectedEdge(generator, child, "");
+        // proposed.extent().or(generatorConcept.extent());
         bottom = filter(bottom, proposed) ? child : bottom;
 
         for (Iterator it = parents.iterator(); it.hasNext();) {
@@ -210,38 +209,6 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
         return child;
     }
 
-    public Concept insert(final G object, final List<M> attributes) {
-        objects.add(object);
-        MutableBitSet intent = Concept.encode(attributes, this.attributes);
-        Vertex added = addIntent(intent, top);
-
-        List<G> list = new ArrayList<G>();
-        list.add(object);
-        MutableBitSet extent = Concept.encode(list, objects);
-
-        List queue = new ArrayList();
-        added.setProperty("color", ++color);
-        queue.add(added);
-
-        while (!queue.isEmpty()) {
-            Vertex visiting = (Vertex) queue.remove(0);
-            Concept visitingConcept = visiting.getProperty(LABEL);
-            visitingConcept.extent().or(extent);
-
-            for (Edge edge : visiting.getEdges(Direction.BOTH)) {
-                Vertex target = edge.getVertex(Direction.OUT);
-
-                if ((int) target.getProperty("color") != color) {
-                    if (filter(visiting, target)) {
-                        target.setProperty("color", color);
-                        queue.add(target);
-                    }
-                }
-            }
-        }
-        return added.getProperty(LABEL);
-    }
-
     public int size() {
         return size;
     }
@@ -250,79 +217,49 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
         return order;
     }
 
-    @Override
-    // todo:  this should be typed
-    public final List getObjects() {
-        return objects;
-    }
+
 
     @Override
-    public List<M> getAttributes() {
-        return attributes;
-    }
-
-    @Override
-    public Concept bottom() {
+    public T bottom() {
         return bottom.getProperty(LABEL);
     }
 
     @Override
-    public Concept top() {
+    public T top() {
         return top.getProperty(LABEL);
     }
-
-    /**
-     * Find the concept with given attributes. This is a low-level
-     * retrieval method that enables iteration over the entire lattice starting at
-     * the queried vertex; however, access to the vertex label (concept) and its
-     * methods (intent and extent) require some tedious dereferencing. If your
-     * application doesn't require further query use the leastUpperBound method
-     * instead.
-     *
-     * @param queries attributes
-     * @return the found vertex
-     */
-    private Vertex queryAttributes(final List... queries) {
-        MutableBitSet join = new MutableBitSet();
-
-        for (List query : queries) {
-            MutableBitSet bits = Concept.encode(query, attributes);
-            join.or(bits);
-        }
-        return supremum(join, top);
+    
+    /*
+    @Override
+    public final T join(final T left, final T right) {
+        MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(leftConcept.intent()).or(rightConcept.intent());
+        Concept query = new Concept(new MutableBitSet(), bits);
+        return supremum(query, top).getProperty(LABEL);
     }
+    */
 
     @Override
-    public final Concept leastUpperBound(final List query) {
-        MutableBitSet bits = Concept.encode(query, attributes);
-        return supremum(bits, top).getProperty(LABEL);
+    public final T meet(final T left, final T right) {
+        // MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(left.intent()).and(right.intent());
+        return supremum((T) left.intersect(right), top).getProperty(LABEL);
     }
-
-    @Override
-    public final Concept meet(final Concept left, final Concept right) {
-        MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(left.intent()).or(right.intent());
-        return supremum(bits, top).getProperty(LABEL);
-    }
-
-    @Override
-    public final Concept join(final Concept left, final Concept right) {
-        MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(left.intent()).and(right.intent());
-        return supremum(bits, top).getProperty(LABEL);
-    }
-
+    
+    /*
     public final Concept leastUpperBound(final List left, final List right) {
         return queryAttributes(left, right).getProperty("label");
     }
-
+    */
     /**
      * Retrieve the number of objects that have the query attributes.
      *
      * @param query attributes
      * @return the number of objects with the given attributes
      */
+    /*
     public long support(final List query) {
         return leastUpperBound(query).extent().cardinality();
     }
+    */
 
     /**
      * Determine the support given two sets of query attributes.
@@ -331,9 +268,11 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
      * @param right set of attributes
      * @return the extent cardinality for the join of the attribute
      */
+    /*
     public long support(final List left, final List right) {
         return leastUpperBound(left, right).extent().cardinality();
     }
+    */
 
     /**
      * Calculate the marginal frequency of the given attributes.
@@ -343,10 +282,12 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
      *    is the number of times the given attributes are observed divided by the
      *    total number of observations (objects)
      */
+    /*
     @Override
     public double marginal(final List query) {
         return (double) support(query) / objects.size();
     }
+    */
 
     /**
      * Calculate the marginal frequency given two sets of attributes.
@@ -357,9 +298,11 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
      *    Calculation is the number of times the given attributes are observed
      *    together divided by the total number of observations (objects)
      */
+    /*
     public double joint(final List left, final List right) {
         return (double) support(left, right) / objects.size();
     }
+    */
 
     /**
      * Calculate the conditional frequency of one attribute set given another.
@@ -368,10 +311,12 @@ public abstract class AbstractConceptLattice<G, M> implements ConceptLattice {
      * @param right set of query attributes
      * @return the conditional frequency. Calculation is the joint divided by the prior
      */
+    /*
     @Override
     public double conditional(final List left, final List right) {
         Concept concept = leastUpperBound(right);
         Concept meet = meet(leastUpperBound(left), concept);
         return (double) meet.extent().cardinality() / concept.extent().cardinality();
     }
+    */
 }

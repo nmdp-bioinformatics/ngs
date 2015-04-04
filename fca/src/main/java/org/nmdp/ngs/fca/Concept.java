@@ -178,8 +178,13 @@ public final class Concept implements Partial<Concept> {
 
     @Override
     public Concept intersect(final Concept that) {
-        MutableBitSet or = (MutableBitSet) new MutableBitSet().or(this.extent).or(that.extent);
         MutableBitSet and = (MutableBitSet) new MutableBitSet().or(this.intent).and(that.intent);
-        return new Concept(or, and);
+        return new Concept(new MutableBitSet(), and);
+    }
+    
+    @Override
+    public Concept union(final Concept that) {
+        MutableBitSet or = (MutableBitSet) new MutableBitSet().or(this.extent).or(that.extent);
+        return new Concept(or, this.intent());   
     }
 }

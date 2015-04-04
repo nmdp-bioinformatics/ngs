@@ -41,9 +41,11 @@ import org.dishevelled.bitset.MutableBitSet;
  * @param <G> object type
  * @param <M> attribute type
  */
-public class TinkerConceptLattice<G, M> extends AbstractConceptLattice<G, M> {
+public class ConceptLattice<G, M> extends AbstractLattice<Concept> {
+    protected List<G> objects;
+    protected List<M> attributes;
 
-    public TinkerConceptLattice(final List<M> attributes) {
+    public ConceptLattice(final List<M> attributes) {
         objects = new ArrayList<>();
         this.attributes = attributes;
         MutableBitSet ones = new MutableBitSet(this.attributes.size());
@@ -57,12 +59,86 @@ public class TinkerConceptLattice<G, M> extends AbstractConceptLattice<G, M> {
         order = 0;
         bottom = top;
     }
+    
+    public Concept insert(final G object, final List<M> attributes) {
+        objects.add(object);
+        MutableBitSet intent = Concept.encode(attributes, this.attributes);
+        Concept proposed = new Concept(new MutableBitSet(), intent);
+        Vertex added = super.addIntent(proposed, top);
 
-    @Override
+        List<G> list = new ArrayList<G>();
+        list.add(object);
+        MutableBitSet extent = Concept.encode(list, objects);
+
+        List queue = new ArrayList();
+        added.setProperty("color", ++color);
+        queue.add(added);
+
+        while (!queue.isEmpty()) {
+            Vertex visiting = (Vertex) queue.remove(0);
+            Concept visitingConcept = visiting.getProperty(LABEL);
+            visitingConcept.extent().or(extent);
+
+            for (Edge edge : visiting.getEdges(Direction.BOTH)) {
+                Vertex target = edge.getVertex(Direction.OUT);
+
+                if ((int) target.getProperty("color") != color) {
+                    if (filter(visiting, target)) {
+                        target.setProperty("color", color);
+                        queue.add(target);
+                    }
+                }
+            }
+        }
+        return added.getProperty(LABEL);
+    }
+        
+    
+    // todo:  this should be typed
+    public final List getObjects() {
+        return objects;
+    }
+
+    
+    public List<M> getAttributes() {
+        return attributes;
+    }
+    
+    /**
+     * Find the concept with given attributes. This is a low-level
+     * retrieval method that enables iteration over the entire lattice starting at
+     * the queried vertex; however, access to the vertex label (concept) and its
+     * methods (intent and extent) require some tedious dereferencing. If your
+     * application doesn't require further query use the leastUpperBound method
+     * instead.
+     *
+     * @param queries attributes
+     * @return the found vertex
+     */
+    /*
+    private Vertex queryAttributes(final List... queries) {
+        MutableBitSet join = new MutableBitSet();
+
+        for (List query : queries) {
+            MutableBitSet bits = Concept.encode(query, attributes);
+            join.or(bits);
+        }
+        return super.supremum(join, top);
+    }
+    */
+
     public Concept greatestLowerBound(final List query) {
         // todo:  support this method
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    /*
+    @Override
+    public final Concept leastUpperBound(final List query) {
+        MutableBitSet bits = Concept.encode(query, attributes);
+        return supremum(bits, top).getProperty(LABEL);
+    }
+    */
 
     @Override
     public String toString() {
@@ -82,4 +158,19 @@ public class TinkerConceptLattice<G, M> extends AbstractConceptLattice<G, M> {
         sb.append("}");
         return sb.toString();
     }
+
+  @Override
+  public Concept join(Concept left, Concept right) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public double measure(Concept query) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public double measure(Concept left, Concept right) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

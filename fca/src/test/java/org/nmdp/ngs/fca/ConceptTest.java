@@ -28,6 +28,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
+
+import static org.nmdp.ngs.fca.TestUtil.list;
+import static org.nmdp.ngs.fca.TestUtil.bits;
+
 import org.junit.rules.ExpectedException;
 
 import java.util.BitSet;
@@ -52,18 +56,7 @@ public final class ConceptTest {
     
     private List objects, attributes;
     
-    public static MutableBitSet bits(long... indexes) {
-      MutableBitSet bits = new MutableBitSet();
-      
-      for (long index : indexes) {
-        bits.flip(index);
-      }
-      return bits;
-    }
-    
-    public static List list(String... elements) {
-      return new ImmutableList.Builder<String>().add(elements).build();
-    }
+
     
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -207,23 +200,26 @@ public final class ConceptTest {
     @Test
     public void testIntersect() {
         Concept intersect = S.intersect(T);
-        assertEquals(intersect.extent(), bits(0, 1));
+        assertEquals(intersect.extent(), bits());
         assertEquals(intersect.intent(), bits(0, 1, 3));
         
         intersect = T.intersect(S);
-        assertEquals(intersect.extent(), bits(0, 1));
         assertEquals(intersect.intent(), bits(0, 1, 3));
         
         intersect = W.intersect(W);
-        assertEquals(intersect.extent(), W.extent());
         assertEquals(intersect.intent(), W.intent());
         
         intersect = W.intersect(X);
-        assertEquals(intersect.extent(), bits(4, 5));
         assertEquals(intersect.intent(), bits());
         
         intersect = X.intersect(S);
-        assertEquals(intersect.extent(), bits(0, 5));
         assertEquals(intersect.intent(), X.intent());
+    }
+    
+    @Test
+    public void testUnion() {
+        Concept union = S.union(T);
+        assertEquals(union.extent(), bits(0, 1));
+        assertEquals(union.intent(), S.intent());
     }
 }
