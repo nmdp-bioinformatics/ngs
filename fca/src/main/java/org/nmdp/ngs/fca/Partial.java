@@ -125,4 +125,6 @@ public interface Partial<T> {
     T intersect(T that);
     
     T union(T that);
+    
+    double measure();
 }

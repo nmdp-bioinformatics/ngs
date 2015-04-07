@@ -222,4 +222,9 @@ public final class ConceptTest {
         assertEquals(union.extent(), bits(0, 1));
         assertEquals(union.intent(), S.intent());
     }
+    
+    @Test
+    public void testMeasure() {
+        assertEquals(1.0, S.measure(), 0.0);
+    }
 }

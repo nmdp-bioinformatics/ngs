@@ -187,4 +187,9 @@ public final class Concept implements Partial<Concept> {
         MutableBitSet or = (MutableBitSet) new MutableBitSet().or(this.extent).or(that.extent);
         return new Concept(or, this.intent());   
     }
+    
+    @Override
+    public double measure() {
+        return extent.cardinality();
+    }
 }

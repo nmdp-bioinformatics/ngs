@@ -79,7 +79,7 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
      * @return vertex whose label-concept represents the supremum
      */
     // todo:  modifies generator parameter
-    private Vertex supremum(final T proposed, Vertex generator) {
+    protected Vertex supremum(final T proposed, Vertex generator) {
         boolean max = true;
         while (max) {
             max = false;
@@ -196,7 +196,6 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
         
         Vertex child = add((T) proposed.union(generatorConcept));
         addUndirectedEdge(generator, child, "");
-        // proposed.extent().or(generatorConcept.extent());
         bottom = filter(bottom, proposed) ? child : bottom;
 
         for (Iterator it = parents.iterator(); it.hasNext();) {
@@ -220,27 +219,22 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
 
 
     @Override
-    public T bottom() {
+    public final T bottom() {
         return bottom.getProperty(LABEL);
     }
 
     @Override
-    public T top() {
+    public final T top() {
         return top.getProperty(LABEL);
     }
-    
-    /*
+      
     @Override
-    public final T join(final T left, final T right) {
-        MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(leftConcept.intent()).or(rightConcept.intent());
-        Concept query = new Concept(new MutableBitSet(), bits);
-        return supremum(query, top).getProperty(LABEL);
+    public T join(final T left, final T right) {
+        return supremum((T) left.union(right), top).getProperty(LABEL);
     }
-    */
 
     @Override
-    public final T meet(final T left, final T right) {
-        // MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(left.intent()).and(right.intent());
+    public T meet(final T left, final T right) {
         return supremum((T) left.intersect(right), top).getProperty(LABEL);
     }
     
@@ -303,7 +297,7 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
         return (double) support(left, right) / objects.size();
     }
     */
-
+    
     /**
      * Calculate the conditional frequency of one attribute set given another.
      *
@@ -311,12 +305,13 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
      * @param right set of query attributes
      * @return the conditional frequency. Calculation is the joint divided by the prior
      */
-    /*
+    
     @Override
-    public double conditional(final List left, final List right) {
-        Concept concept = leastUpperBound(right);
-        Concept meet = meet(leastUpperBound(left), concept);
-        return (double) meet.extent().cardinality() / concept.extent().cardinality();
+    public double measure(final T left, final T right) {
+        //Concept concept = leastUpperBound(right);
+        //Concept meet = left.meet(leastUpperBound(left), concept);
+        // T meet = this.meet(left, right);
+        return (double) join(left, right).measure() / meet(right, top()).measure();
     }
-    */
+    
 }

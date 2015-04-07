@@ -56,7 +56,5 @@ public interface Lattice<T extends Partial> {
      */
     T meet(T left, T right);
     
-    double measure(T query);
-    
     double measure(T left, T right);
 }

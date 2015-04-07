@@ -51,7 +51,7 @@ import org.junit.Test;
  */
 public final class ConceptLatticeTest {
     private ConceptLattice lattice;
-    private List abcdefg, abdefg, abde, abdf, acef, bd, af;
+    private List STUVWX, abcdefg, abdefg, abde, abdf, acef, bd, af;
 
     /*
      * Example taken from Davey and Priestly "Introduction to Lattices and Order"
@@ -74,6 +74,8 @@ public final class ConceptLatticeTest {
         lattice.insert("V", acef);
         lattice.insert("W", bd);
         lattice.insert("X", af);
+        
+        STUVWX = list("S", "T", "U", "V", "W", "X");
     }
     
     @Test
@@ -83,7 +85,7 @@ public final class ConceptLatticeTest {
     
     @Test
     public void testGetObjects() {
-        assertEquals(lattice.getObjects(), list("S", "T", "U", "V", "W", "X"));
+        assertEquals(lattice.getObjects(), STUVWX);
     }
     
     @Test
@@ -154,57 +156,38 @@ public final class ConceptLatticeTest {
     }
     
     */
-    /*
+    
     @Test
     public void testMeet() {
-        MutableBitSet bits = new MutableBitSet();
+        Concept left = (Concept) lattice.meet(lattice.top(), Concept.builder().withAttributes(bd, abcdefg).build());
+        Concept right = (Concept) lattice.meet(lattice.top(), Concept.builder().withAttributes(af, abcdefg).build());
 
-        Concept left = lattice.leastUpperBound(bd);
-        Concept right = lattice.leastUpperBound(af);
-    
-        bits.flip(1); bits.flip(3);
-        assertEquals(lattice.meet(left, left).intent(), bits);
-
-        bits.clear(0, bits.capacity());
-        bits.flip(0); bits.flip(1); bits.flip(3); bits.flip(5);
-        assertEquals(lattice.meet(left, right).intent(), bits);
+        assertEquals(left.intent(), bits(1, 3));
+        assertEquals(right.intent(), bits(0, 5));
+        assertEquals(((Concept) lattice.meet(left, left)).intent(), bits(1, 3));
+        assertEquals(((Concept) lattice.meet(left, right)).intent(), bits());
     }
-    */
-    /*
+    
     @Test
     public void testJoin() {
-        MutableBitSet bits = new MutableBitSet();
+        Concept left = (Concept) lattice.join(lattice.bottom(), Concept.builder().withAttributes(bd, abcdefg).build());
+        Concept right = (Concept) lattice.join(lattice.bottom(), Concept.builder().withAttributes(af, abcdefg).build());
 
-        Concept left = lattice.leastUpperBound(bd);
-        Concept right = lattice.leastUpperBound(af);
-
-        bits.flip(1); bits.flip(3);
-        assertEquals(lattice.join(left, left).intent(), bits);
-        assertEquals(lattice.join(left, right).intent(), lattice.bottom().intent());
+        assertEquals(left.intent(), bits(1, 3));
+        assertEquals(right.intent(), bits(0, 5));
+        assertEquals(((Concept) lattice.join(left, left)).intent(), bits(1, 3));
+        assertEquals(((Concept) lattice.join(left, right)).intent(), bits(0, 1, 3, 5));
     }
 
     @Test
-    public void testMarginal() {
-        assertEquals(0.0, lattice.marginal(abcdefg), 0.0);
-
-        assertEquals(0.167, lattice.marginal(abdefg), 0.01);
-
-        List abd = new ImmutableList.Builder<String>().add("a").add("b").add("d").build();
-        assertEquals(0.5, lattice.marginal(abd), 0.0);
-
-        List empty = new ImmutableList.Builder<String>().build();
-        assertEquals(1.0, lattice.marginal(empty), 0.0);
+    public void testMeasure() {
+        Concept V = Concept.builder().withObjects(list("V"), STUVWX).withAttributes(acef, abcdefg).build();
+        Concept W = Concept.builder().withObjects(list("W"), STUVWX).withAttributes(bd, abcdefg).build();
+        Concept Z = Concept.builder().withObjects(list("Z"), STUVWX).withAttributes(list("a"), abcdefg).build();
+        
+        assertEquals(0.0, lattice.measure(V, W), 0.0);
+        assertEquals(0.0, lattice.measure(W, V), 0.0);
+        assertEquals(0.2, lattice.measure(V, Z), 0.01);
+        assertEquals(1.0, lattice.measure(Z, V), 0.0);
     }
-
-    @Test
-    public void testConditional() {
-        assertEquals(0.0, lattice.conditional(acef, bd), 0.0);
-
-        assertEquals(0.0, lattice.conditional(bd, acef), 0.0);
-
-        List a = new ImmutableList.Builder<String>().add("a").build();
-        assertEquals(0.2, lattice.conditional(acef, a), 0.01);
-
-        assertEquals(1.0, lattice.conditional(a, acef), 0.0);
-    }
-*/ }
+}

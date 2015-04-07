@@ -126,6 +126,13 @@ public class ConceptLattice<G, M> extends AbstractLattice<Concept> {
         return super.supremum(join, top);
     }
     */
+    
+    @Override
+    public final Concept join(final Concept left, final Concept right) {
+        MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(left.intent()).or(right.intent());
+        Concept query = new Concept(new MutableBitSet(), bits);
+        return supremum(query, top).getProperty(LABEL);
+    }
 
     public Concept greatestLowerBound(final List query) {
         // todo:  support this method
@@ -158,19 +165,4 @@ public class ConceptLattice<G, M> extends AbstractLattice<Concept> {
         sb.append("}");
         return sb.toString();
     }
-
-  @Override
-  public Concept join(Concept left, Concept right) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public double measure(Concept query) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public double measure(Concept left, Concept right) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
 }
