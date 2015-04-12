@@ -237,75 +237,7 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
     public T meet(final T left, final T right) {
         return supremum((T) left.intersect(right), top).getProperty(LABEL);
     }
-    
-    /*
-    public final Concept leastUpperBound(final List left, final List right) {
-        return queryAttributes(left, right).getProperty("label");
-    }
-    */
-    /**
-     * Retrieve the number of objects that have the query attributes.
-     *
-     * @param query attributes
-     * @return the number of objects with the given attributes
-     */
-    /*
-    public long support(final List query) {
-        return leastUpperBound(query).extent().cardinality();
-    }
-    */
 
-    /**
-     * Determine the support given two sets of query attributes.
-     *
-     * @param left set of attributes
-     * @param right set of attributes
-     * @return the extent cardinality for the join of the attribute
-     */
-    /*
-    public long support(final List left, final List right) {
-        return leastUpperBound(left, right).extent().cardinality();
-    }
-    */
-
-    /**
-     * Calculate the marginal frequency of the given attributes.
-     *
-     * @param query attributes
-     * @return marginal frequency of observing the given attributes. Calculation
-     *    is the number of times the given attributes are observed divided by the
-     *    total number of observations (objects)
-     */
-    /*
-    @Override
-    public double marginal(final List query) {
-        return (double) support(query) / objects.size();
-    }
-    */
-
-    /**
-     * Calculate the marginal frequency given two sets of attributes.
-     *
-     * @param left set of query attributes
-     * @param right set of query attributes
-     * @return the joint frequency of observing both sets of attributes.
-     *    Calculation is the number of times the given attributes are observed
-     *    together divided by the total number of observations (objects)
-     */
-    /*
-    public double joint(final List left, final List right) {
-        return (double) support(left, right) / objects.size();
-    }
-    */
-    
-    /**
-     * Calculate the conditional frequency of one attribute set given another.
-     *
-     * @param left set of query attributes
-     * @param right set of query attributes
-     * @return the conditional frequency. Calculation is the joint divided by the prior
-     */
-    
     @Override
     public double measure(final T left, final T right) {
         //Concept concept = leastUpperBound(right);

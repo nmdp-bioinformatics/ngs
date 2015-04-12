@@ -104,29 +104,6 @@ public class ConceptLattice<G, M> extends AbstractLattice<Concept> {
         return attributes;
     }
     
-    /**
-     * Find the concept with given attributes. This is a low-level
-     * retrieval method that enables iteration over the entire lattice starting at
-     * the queried vertex; however, access to the vertex label (concept) and its
-     * methods (intent and extent) require some tedious dereferencing. If your
-     * application doesn't require further query use the leastUpperBound method
-     * instead.
-     *
-     * @param queries attributes
-     * @return the found vertex
-     */
-    /*
-    private Vertex queryAttributes(final List... queries) {
-        MutableBitSet join = new MutableBitSet();
-
-        for (List query : queries) {
-            MutableBitSet bits = Concept.encode(query, attributes);
-            join.or(bits);
-        }
-        return super.supremum(join, top);
-    }
-    */
-    
     @Override
     public final Concept join(final Concept left, final Concept right) {
         MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(left.intent()).or(right.intent());
@@ -138,14 +115,6 @@ public class ConceptLattice<G, M> extends AbstractLattice<Concept> {
         // todo:  support this method
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    /*
-    @Override
-    public final Concept leastUpperBound(final List query) {
-        MutableBitSet bits = Concept.encode(query, attributes);
-        return supremum(bits, top).getProperty(LABEL);
-    }
-    */
 
     @Override
     public String toString() {

@@ -29,32 +29,38 @@ package org.nmdp.ngs.fca;
 public interface Lattice<T extends Partial> {
   
   /**
-   * The bottom of the lattice.
-   * @return the least lattice element
+   * The least lattice element.
+   * @return bottom
    */
     T bottom();
     
     /**
-     * The top of the lattice.
-     * @return the greatest lattice element
+     * The greatest lattice element.
+     * @return top
      */
     T top();
     
     /**
-     * The join of two lattice elements (also supremum).
+     * The least upper bound (also supremum).
      * @param left element
      * @param right element
-     * @return the least upper bound of lattice elements left and right
+     * @return The join of left and right
      */
     T join(T left, T right);
     
     /**
-     * The meet of two lattice elements (also infimum).
+     * The greatest lower bound (also infimum).
      * @param left element
      * @param right element
-     * @return the greatest lower bound of lattice elements left and right
+     * @return the meet of left and right
      */
     T meet(T left, T right);
     
+    /**
+     * Measure value.
+     * @param left element
+     * @param right element
+     * @return the countable measure of left and right
+     */
     double measure(T left, T right);
 }
