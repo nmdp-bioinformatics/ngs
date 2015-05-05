@@ -344,6 +344,7 @@
     </plugins>
   </build>
   <properties>
+    <maven.build.timestamp>${maven.build.timestamp}</maven.build.timestamp>
     <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
   </properties>
 </project>
