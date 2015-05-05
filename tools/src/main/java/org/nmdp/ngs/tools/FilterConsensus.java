@@ -60,6 +60,10 @@ import org.dishevelled.commandline.argument.IntegerArgument;
 import org.dishevelled.commandline.argument.FileArgument;
 import org.dishevelled.commandline.argument.StringArgument;
 
+import org.nmdp.ngs.align.BedListener;
+import org.nmdp.ngs.align.BedReader;
+import org.nmdp.ngs.align.BedRecord;
+
 import org.nmdp.ngs.feature.Allele;
 import org.nmdp.ngs.feature.AlleleException;
 import org.nmdp.ngs.feature.Locus;
@@ -81,8 +85,8 @@ import org.biojava.bio.symbol.SymbolList;
  * Filter consensus sequences into subregions of research or clinical interest.
  */
 public final class FilterConsensus implements Callable<Integer> {
-    private final File inputBamFile;
-    private final File inputGenomicFile;
+    private final File bamFile;
+    private final File bedFile;
     private final File outputFile;
     private final String gene;
     private final boolean cdna;
@@ -91,14 +95,14 @@ public final class FilterConsensus implements Callable<Integer> {
     private final int expectedPloidy;
     static final double DEFAULT_MINIMUM_BREADTH = 0.5d;
     static final int DEFAULT_EXPECTED_PLOIDY = 2;
-    static final String USAGE = "ngs-filter-consensus -i input.bam -x genome.txt -g HLA-A [args]";
+    static final String USAGE = "ngs-filter-consensus -i input.bam -x genome.bed -g HLA-A [args]";
 
 
     /**
      * Filter consensus sequences into subregions of research or clinical interest.
      *
-     * @param inputBamFile input BAM file, must not be null
-     * @param inputGenomicFile input genomic region file, must not be null
+     * @param bamFile input BAM file of consensus sequences, must not be null
+     * @param bedFile input BED file of genomic regions, must not be null
      * @param outputFile output FASTA file, if any
      * @param gene gene, must not be null
      * @param cdna cdna, true to output cdna from the same contig (phased consensus sequence)
@@ -107,21 +111,21 @@ public final class FilterConsensus implements Callable<Integer> {
      * @param minimumBreadth minimum breadth, must be in range [0.0 - 1.0]
      * @param expectedPloidy expected ploidy, must be &gt; 0
      */
-    public FilterConsensus(final File inputBamFile,
-                           final File inputGenomicFile,
+    public FilterConsensus(final File bamFile,
+                           final File bedFile,
                            final File outputFile,
                            final String gene,
                            final boolean cdna,
                            final boolean removeGaps,
                            final double minimumBreadth,
                            final int expectedPloidy) {
-        checkNotNull(inputBamFile);
-        checkNotNull(inputGenomicFile);
+        checkNotNull(bamFile);
+        checkNotNull(bedFile);
         checkNotNull(gene);
         checkArgument(minimumBreadth >= 0.0d && minimumBreadth <= 1.0d, "minimum breadth must be in range [0.0 - 1.0]");
         checkArgument(expectedPloidy > 0, "expected ploidy must be > 0");
-        this.inputBamFile = inputBamFile;
-        this.inputGenomicFile = inputGenomicFile;
+        this.bamFile = bamFile;
+        this.bedFile = bedFile;
         this.outputFile = outputFile;
         this.gene = gene;
         this.cdna = cdna;
@@ -137,14 +141,14 @@ public final class FilterConsensus implements Callable<Integer> {
         try {
             writer = writer(outputFile);
 
-            // map of region alleles from genomic file keyed by "exon" as integer
-            Map<Integer, Allele> exons = readGenomicFile(inputGenomicFile);
+            // map of region alleles from BED-formatted genomic regions file keyed by "exon" as integer
+            Map<Integer, Allele> exons = readBedFile(bedFile);
 
             // todo:  refactor this block into separate static methods
-            // map of overlapping alignment alleles from BAM file keyed by "exon" as integer
+            // map of overlapping alignment alleles from BAM-formatted consensus sequence file keyed by "exon" as integer
             ListMultimap<Integer, Allele> regions = ArrayListMultimap.create();
 
-            for (SAMRecord record : new SAMFileReader(inputBamFile)) {
+            for (SAMRecord record : new SAMFileReader(bamFile)) {
                 List<Edit> edits = cigarToEditList(record);
 
                 String referenceName = record.getReferenceName();
@@ -291,39 +295,32 @@ public final class FilterConsensus implements Callable<Integer> {
         return edits;
     }
 
-    // todo:  use BED format; extract BED format reader from e.g. LiftoverBed
-    static Map<Integer, Allele> readGenomicFile(final File inputGenomicFile) throws IOException {
-        int lineNumber = 0;
+    static Map<Integer, Allele> readBedFile(final File bedFile) throws IOException {
         BufferedReader reader = null;
-        Map<Integer, Allele> exons = new HashMap<Integer, Allele>();
+        final Map<Integer, Allele> exons = new HashMap<Integer, Allele>();
         try {
-            reader = reader(inputGenomicFile);
-
-            while (reader.ready()) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                String[] tokens = line.split("\\s+");
-                if (tokens.length != 2) {
-                    throw new IOException("invalid genomic file format at line " + lineNumber + ", invalid number of tokens");
-                }
-
-                try {
-                    int exon = Integer.parseInt(tokens[0]);
-                    Locus locus = FeatureParser.parseLocus(tokens[1]);
-                    exons.put(exon, Allele.builder()
-                              .withContig(locus.getContig())
-                              .withStart(locus.getMin())
-                              .withEnd(locus.getMax() + 1)
-                              .build());
-                }
-                catch (NumberFormatException | AlleleException | ParseException e) {
-                    throw new IOException("invalid genomic file format at line " + lineNumber + ", caught " + e.getMessage());
-                }
-
-                lineNumber++;
-            }
+            reader = reader(bedFile);
+            BedReader.stream(reader, new BedListener() {
+                    @Override
+                     public boolean record(final BedRecord rec) {
+                        try {
+                            int exon = Integer.parseInt(rec.name());
+                            Locus locus = FeatureParser.parseLocus(rec.chrom() + ":" + rec.start() + "-" + rec.end());
+                            exons.put(exon, Allele.builder()
+                                      .withContig(locus.getContig())
+                                      .withStart(locus.getMin())
+                                      .withEnd(locus.getMax())
+                                      .build());
+                        }
+                        catch (AlleleException | NumberFormatException | NullPointerException | ParseException e) {
+                            throw new ConversionException(rec, e);
+                        }
+                        return true;
+                    }
+                });
+        }
+        catch (ConversionException e) {
+            throw new IOException("could not convert BED record \"" + e.rec() + "\" to allele", e.getCause());
         }
         finally {
             try {
@@ -336,6 +333,18 @@ public final class FilterConsensus implements Callable<Integer> {
         return exons;
     }
 
+    private static class ConversionException extends RuntimeException {
+        private final BedRecord rec;
+
+        private ConversionException(final BedRecord rec, final Exception cause) {
+            super(cause);
+            this.rec = rec;
+        }
+
+        private BedRecord rec() {
+            return rec;
+        }
+    }
 
     /**
      * Main.
@@ -345,8 +354,8 @@ public final class FilterConsensus implements Callable<Integer> {
     public static void main(final String[] args) {
         Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
-        FileArgument inputBamFile = new FileArgument("i", "input-bam-file", "input BAM file", true);
-        FileArgument inputGenomicFile = new FileArgument("x", "input-genomic-range-file", "input file of genomic ranges, space-delimited exon chrom:start-end", true);
+        FileArgument bamFile = new FileArgument("i", "bam-file", "input BAM file of consensus sequences", true);
+        FileArgument bedFile = new FileArgument("x", "bed-file", "input BED file of genomic regions", true);
         FileArgument outputFile = new FileArgument("o", "output-file", "output FASTA file, default stdout", false);
         StringArgument gene = new StringArgument("g", "gene", "gene name, written to the FASTA headers", true);
         Switch cdna = new Switch("c", "cdna", "output cDNA from the same contig (phased consensus sequence) in FASTA format");
@@ -354,7 +363,7 @@ public final class FilterConsensus implements Callable<Integer> {
         DoubleArgument minimumBreadth = new DoubleArgument("b", "minimum-breadth-of-coverage", "filter contigs less than minimum, default " + DEFAULT_MINIMUM_BREADTH, false);
         IntegerArgument expectedPloidy = new IntegerArgument("p", "expected-ploidy", "filter contigs more than expected ploidy, default " + DEFAULT_EXPECTED_PLOIDY, false);
 
-        ArgumentList arguments = new ArgumentList(about, help, inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy);
+        ArgumentList arguments = new ArgumentList(about, help, bamFile, bedFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy);
         CommandLine commandLine = new CommandLine(args);
 
         FilterConsensus filterConsensus = null;
@@ -370,15 +379,15 @@ public final class FilterConsensus implements Callable<Integer> {
                 System.exit(0);
             }
 
-            if (!inputBamFile.getValue().exists()) {
-                throw new IllegalArgumentException("-i, --input-bam-file must be a file that exists");
+            if (!bamFile.getValue().exists()) {
+                throw new IllegalArgumentException("-i, --bam-file must be a file that exists");
             }
-            if (!inputGenomicFile.getValue().exists()) {
-                throw new IllegalArgumentException("-x, --input-genomic-range-file must be a file that exists");
+            if (!bedFile.getValue().exists()) {
+                throw new IllegalArgumentException("-x, --bed-file must be a file that exists");
             }
 
-            filterConsensus = new FilterConsensus(inputBamFile.getValue(),
-                                                  inputGenomicFile.getValue(),
+            filterConsensus = new FilterConsensus(bamFile.getValue(),
+                                                  bedFile.getValue(),
                                                   outputFile.getValue(),
                                                   gene.getValue(),
                                                   cdna.wasFound(),
