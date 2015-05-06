@@ -226,6 +226,10 @@
               <mainClass>org.nmdp.ngs.tools.FilterInterpretableExons</mainClass>
             </program>
             <program>
+              <id>ngs-extract-expected</id>
+              <mainClass>org.nmdp.ngs.tools.ExtractExpected</mainClass>
+            </program>            
+            <program>
               <id>ngs-filter-vcf</id>
               <mainClass>org.nmdp.ngs.tools.FilterVcf</mainClass>
             </program>
