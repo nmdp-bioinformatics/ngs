@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import static org.nmdp.ngs.tools.FilterConsensus.cigarToEditList;
-import static org.nmdp.ngs.tools.FilterConsensus.readGenomicFile;
+import static org.nmdp.ngs.tools.FilterConsensus.readBedFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,8 +58,8 @@ import htsjdk.samtools.SAMRecord;
  * Unit test for FilterConsensus.
  */
 public final class FilterConsensusTest {
-    private File inputBamFile;
-    private File inputGenomicFile;
+    private File bamFile;
+    private File bedFile;
     private File outputFile;
     private String gene;
     private boolean cdna;
@@ -69,8 +69,8 @@ public final class FilterConsensusTest {
 
     @Before
     public void setUp() throws Exception {
-        inputBamFile = File.createTempFile("filterConsensusTest", ".bam");
-        inputGenomicFile = File.createTempFile("filterConsensusTest", ".txt");
+        bamFile = File.createTempFile("filterConsensusTest", ".bam");
+        bedFile = File.createTempFile("filterConsensusTest", ".bed");
         outputFile = File.createTempFile("filterConsensusTest", ".fa");
         gene = "HLA-A";
         cdna = true;
@@ -81,43 +81,37 @@ public final class FilterConsensusTest {
 
     @After
     public void tearDown() throws Exception {
-        inputBamFile.delete();
-        inputGenomicFile.delete();
+        bamFile.delete();
+        bedFile.delete();
     }
 
     @Test
     public void testConstructor() {
-        assertNotNull(new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy));
+        assertNotNull(new FilterConsensus(bamFile, bedFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy));
     }
 
     @Test
-    public void testEmptyReadGenomicFile() throws Exception {
-        Map<Integer, Allele> exons = readGenomicFile(inputGenomicFile);
+    public void testEmptyReadBedFile() throws Exception {
+        Map<Integer, Allele> exons = readBedFile(bedFile);
         assertTrue(exons.isEmpty());
     }
 
     @Test(expected=IOException.class)
-    public void testReadGenomicFileInvalidTokens() throws Exception {
-        copyResource("invalid-tokens.txt", inputGenomicFile);
-        readGenomicFile(inputGenomicFile);
+    public void testReadGenomicFileMissingName() throws Exception {
+        copyResource("missing-name.bed", bedFile);
+        readBedFile(bedFile);
     }
 
     @Test(expected=IOException.class)
-    public void testReadGenomicFileInvalidExon() throws Exception {
-        copyResource("invalid-exon.txt", inputGenomicFile);
-        readGenomicFile(inputGenomicFile);
-    }
-
-    @Test(expected=IOException.class)
-    public void testReadGenomicFileInvalidLocus() throws Exception {
-        copyResource("invalid-locus.txt", inputGenomicFile);
-        readGenomicFile(inputGenomicFile);
+    public void testReadGenomicFileInvalidName() throws Exception {
+        copyResource("invalid-name.bed", bedFile);
+        readBedFile(bedFile);
     }
 
     @Test
-    public void testReadGenomicFile() throws Exception {
-        copyResource("hla-a.txt", inputGenomicFile);
-        Map<Integer, Allele> exons = readGenomicFile(inputGenomicFile);
+    public void testReadBedFile() throws Exception {
+        copyResource("hla-a.bed", bedFile);
+        Map<Integer, Allele> exons = readBedFile(bedFile);
         assertFalse(exons.isEmpty());
         assertTrue(exons.containsKey(2));
         assertTrue(exons.containsKey(3));
@@ -131,37 +125,37 @@ public final class FilterConsensusTest {
 
     @Test
     public void testCall() throws Exception {
-        copyResource("hla-a.bam", inputBamFile);
-        copyResource("hla-a.txt", inputGenomicFile);
-        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).call();
+        copyResource("hla-a.bam", bamFile);
+        copyResource("hla-a.bed", bedFile);
+        new FilterConsensus(bamFile, bedFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).call();
     }
     
     @Test
     public void testCallPloidyDefault() throws Exception {
-        Files.write(Resources.toByteArray(getClass().getResource("testfile2.bam")), inputBamFile);
-        Files.write(Resources.toByteArray(getClass().getResource("hla-a.txt")), inputGenomicFile);
-        
-        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).call();
+        Files.write(Resources.toByteArray(getClass().getResource("testfile2.bam")), bamFile);
+        Files.write(Resources.toByteArray(getClass().getResource("hla-a.bed")), bedFile);
+
+        new FilterConsensus(bamFile, bedFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).call();
         assertEquals(4, countLines(outputFile));
     }
 
     @Test
     public void testCallPloidyThree() throws Exception {
-        Files.write(Resources.toByteArray(getClass().getResource("testfile2.bam")), inputBamFile);
-        Files.write(Resources.toByteArray(getClass().getResource("hla-a.txt")), inputGenomicFile);
-        
-        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, 3).call();
+        Files.write(Resources.toByteArray(getClass().getResource("testfile2.bam")), bamFile);
+        Files.write(Resources.toByteArray(getClass().getResource("hla-a.bed")), bedFile);
+
+        new FilterConsensus(bamFile, bedFile, outputFile, gene, cdna, removeGaps, minimumBreadth, 3).call();
         assertEquals(6, countLines(outputFile));
     }
     
     @Test
     public void testCallKirExons() throws Exception {
-        Files.write(Resources.toByteArray(getClass().getResource("2DL1_0020101.bwa.sorted.bam")), inputBamFile);
-        Files.write(Resources.toByteArray(getClass().getResource("kir-2dl1.exons.txt")), inputGenomicFile);
-        
+        Files.write(Resources.toByteArray(getClass().getResource("2DL1_0020101.bwa.sorted.bam")), bamFile);
+        Files.write(Resources.toByteArray(getClass().getResource("kir-2dl1.exons.bed")), bedFile);
+
         cdna = false;
         removeGaps = false;
-        new FilterConsensus(inputBamFile, inputGenomicFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).call();
+        new FilterConsensus(bamFile, bedFile, outputFile, gene, cdna, removeGaps, minimumBreadth, expectedPloidy).call();
         assertEquals(16, countLines(outputFile));
     }
 
