@@ -53,14 +53,14 @@ import org.biojava.bio.program.fastq.StreamListener;
  * Paired end FASTQ reads reader.
  */
 public final class PairedEndFastqReader {
-    /** Pattern for the left or first read of a paired end read, relies on convention of "<code> 1</code>" in the description line. */
-    static final Pattern LEFT = Pattern.compile("^.* 1.*$");
+    /** Pattern for the left or first read of a paired end read, relies on convention of "<code> 1</code>" or "<code>\1</code>" in the description line. */
+    static final Pattern LEFT = Pattern.compile("^.*[ \\\\]1.*$");
 
-    /** Pattern for the right or second read of a paired end read, relies on convention of "<code> 2</code>" in the description line. */
-    static final Pattern RIGHT = Pattern.compile("^.* 2.*$");
+    /** Pattern for the right or second read of a paired end read, relies on convention of "<code> 2</code>" or "<code>\2</code>" in the description line. */
+    static final Pattern RIGHT = Pattern.compile("^.*[ \\\\]2.*$");
 
-    /** Pattern for capturing the prefix of a paired end read name, relies on convention of "<code> 1</code>" or "<code> 2</code>" in the description line. */
-    static final Pattern PREFIX = Pattern.compile("^(.+) [12].*$");
+    /** Pattern for capturing the prefix of a paired end read name, relies on convention of "<code> 1</code>", "<code>\1</code>", "<code> 2</code>", or "<code>\2</code>" in the description line. */
+    static final Pattern PREFIX = Pattern.compile("^(.+)[ \\\\][12].*$");
 
 
     /**

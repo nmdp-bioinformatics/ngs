@@ -102,6 +102,16 @@ public final class InterleaveFastqTest {
     }
 
     @Test
+    public void testInterleaveFastqBackslash() throws Exception {
+        copyResource("paired_backslash_R1.fq.gz", firstFastqFile);
+        copyResource("paired_backslash_R2.fq.gz", secondFastqFile);
+        new InterleaveFastq(firstFastqFile, secondFastqFile, pairedFile, unpairedFile).call();
+
+        assertEquals(16, countFastq(pairedFile));
+        assertEquals(0, countFastq(unpairedFile));
+    }
+
+    @Test
     public void testInterleaveFastqUnpaired() throws Exception {
         copyResource("unpaired_R1.fq.gz", firstFastqFile);
         copyResource("unpaired_R2.fq.gz", secondFastqFile);
