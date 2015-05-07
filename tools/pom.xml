@@ -78,6 +78,11 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>com.squareup.okhttp</groupId>
+      <artifactId>okhttp</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -230,6 +235,18 @@
               <mainClass>org.nmdp.ngs.tools.FilterSamples</mainClass>
             </program>
             <program>
+              <id>ngs-extract-expected</id>
+              <mainClass>org.nmdp.ngs.tools.ExtractExpected</mainClass>
+            </program>
+            <program>
+              <id>ngs-extract-expected-glstrings</id>
+              <mainClass>org.nmdp.ngs.tools.ExtractExpectedGlstrings</mainClass>
+            </program>
+            <program>
+              <id>ngs-extract-expected-haploids</id>
+              <mainClass>org.nmdp.ngs.tools.ExtractExpectedHaploids</mainClass>
+            </program>
+            <program>
               <id>ngs-filter-vcf</id>
               <mainClass>org.nmdp.ngs.tools.FilterVcf</mainClass>
             </program>
@@ -348,6 +365,7 @@
     </plugins>
   </build>
   <properties>
+    <maven.build.timestamp>${maven.build.timestamp}</maven.build.timestamp>
     <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
   </properties>
 </project>
