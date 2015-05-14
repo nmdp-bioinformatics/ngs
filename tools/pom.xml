@@ -231,6 +231,10 @@
               <mainClass>org.nmdp.ngs.tools.FilterInterpretableExons</mainClass>
             </program>
             <program>
+              <id>ngs-filter-samples</id>
+              <mainClass>org.nmdp.ngs.tools.FilterSamples</mainClass>
+            </program>
+            <program>
               <id>ngs-extract-expected</id>
               <mainClass>org.nmdp.ngs.tools.ExtractExpected</mainClass>
             </program>
