@@ -28,7 +28,6 @@ import static org.dishevelled.compress.Writers.writer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
-import java.io.IOException;
 
 import java.util.concurrent.Callable;
 

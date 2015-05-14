@@ -150,7 +150,7 @@ public final class ExtractExpectedHaploids implements Callable<Integer> {
         Switch help = new Switch("h", "help", "display help message");
         FileArgument inputHmlFile = new FileArgument("i", "input-hml-file", "input HML file, default stdin", false);
         FileArgument outputFile = new FileArgument("o", "output-file", "output allele assignment file, default stdout", false);
-        
+
         ArgumentList arguments = new ArgumentList(about, help, inputHmlFile, outputFile);
         CommandLine commandLine = new CommandLine(args);
 

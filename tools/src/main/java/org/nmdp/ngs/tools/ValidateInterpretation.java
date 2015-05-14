@@ -95,7 +95,7 @@ public final class ValidateInterpretation implements Callable<Integer> {
         try {
             writer = writer(outputFile);
             ListMultimap<String, String> expected = readExpected(expectedFile);
-            ListMultimap<String, String> observed = readObserved(observedFile); 
+            ListMultimap<String, String> observed = readObserved(observedFile);
 
             for (String sample : expected.keySet()) {
                 List<String> alleles = expected.get(sample);
@@ -159,7 +159,7 @@ public final class ValidateInterpretation implements Callable<Integer> {
                 if (line == null) {
                     break;
                 }
-                        
+
                 List<String> tokens = Splitter.onPattern("\\s+").splitToList(line);
                 if (tokens.size() != 6) {
                     throw new IOException("invalid expected file format at line " + lineNumber);

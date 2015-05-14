@@ -42,7 +42,7 @@ public interface Lattice<T extends Partial> {
      * @return the greatest lattice element
      */
     T top();
-    
+
     /**
      * Return the least upper bound (also supremum).
      *
@@ -51,7 +51,7 @@ public interface Lattice<T extends Partial> {
      * @return the join of left and right
      */
     T join(T left, T right);
-    
+
     /**
      * Return the greatest lower bound (also infimum).
      *

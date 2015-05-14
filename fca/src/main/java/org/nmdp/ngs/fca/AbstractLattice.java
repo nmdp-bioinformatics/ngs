@@ -33,8 +33,6 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.Direction;
 
-import org.dishevelled.bitset.MutableBitSet;
-
 /**
  * Abstract lattice.
  *
@@ -80,7 +78,7 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
     /**
      * Find the supremum or least upper bound.
      *
-     * @param intent to find
+     * @param proposed proposed
      * @param generator starting point and tracer
      * @return vertex whose label-concept represents the supremum
      */
@@ -148,7 +146,7 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
     /**
      * Find the supremum or least upper bound.
      *
-     * @param intent to find
+     * @param proposed proposed
      * @param generator starting point and tracer
      * @return vertex whose label-concept represents the supremum
      */

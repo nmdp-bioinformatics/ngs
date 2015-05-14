@@ -52,7 +52,7 @@ public final class HmlValidationException extends Exception {
     /**
      * Create a new HML validation exception with the specified HML validation rule.
      *
-     * @param validationRule, HML validation rule, must not be null
+     * @param validationRule HML validation rule, must not be null
      */
     public HmlValidationException(final HmlValidationRule validationRule) {
         this(validationRule, null);
@@ -61,7 +61,7 @@ public final class HmlValidationException extends Exception {
     /**
      * Create a new HML validation exception with the specified HML validation rule and cause.
      *
-     * @param validationRule, HML validation rule, must not be null
+     * @param validationRule HML validation rule, must not be null
      * @param cause cause
      */
     public HmlValidationException(final HmlValidationRule validationRule, final Throwable cause) {

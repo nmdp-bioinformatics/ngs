@@ -30,12 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import java.util.concurrent.Callable;
-
-import com.google.common.base.Splitter;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -105,7 +100,7 @@ public final class ExtractExpectedGlstrings implements Callable<Integer> {
                                     sb.append(getGlstring(glstring.getUri()));
                                 }
                                 else if (glstring.getValue() != null) {
-                                    sb.append(glstring.getValue().replaceAll("\\s+",""));
+                                    sb.append(glstring.getValue().replaceAll("\\s+", ""));
                                 }
                                 writer.println(sb.toString());
                             }
@@ -134,7 +129,7 @@ public final class ExtractExpectedGlstrings implements Callable<Integer> {
     String getGlstring(final String uri) throws IOException {
         Request request = new Request.Builder().url(uri).addHeader("Accept", "text/plain").build();
         Response response = client.newCall(request).execute();
-        return response.body().string();        
+        return response.body().string();
     }
 
 
@@ -148,7 +143,7 @@ public final class ExtractExpectedGlstrings implements Callable<Integer> {
         Switch help = new Switch("h", "help", "display help message");
         FileArgument inputHmlFile = new FileArgument("i", "input-hml-file", "input HML file, default stdin", false);
         FileArgument outputFile = new FileArgument("o", "output-file", "output allele assignment file, default stdout", false);
-        
+
         ArgumentList arguments = new ArgumentList(about, help, inputHmlFile, outputFile);
         CommandLine commandLine = new CommandLine(args);
 
