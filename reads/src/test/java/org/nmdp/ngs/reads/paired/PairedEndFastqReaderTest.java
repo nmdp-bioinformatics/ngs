@@ -111,9 +111,15 @@ public final class PairedEndFastqReaderTest {
     }
 
     @Test
-    public void testPrefix() {
+    public void testPrefixSpace() {
         assertEquals("prefix", prefix(left));
         assertEquals("prefix", prefix(right));
+    }
+
+    @Test
+    public void testPrefixBackslash() {
+        assertEquals("prefix", prefix(Fastq.builder().withDescription("prefix\\1").withSequence("aaaaatttttcccccggggg").withQuality("44444222224444422222").build()));
+        assertEquals("prefix", prefix(Fastq.builder().withDescription("prefix\\2").withSequence("aaaaatttttcccccggggg").withQuality("44444222224444422222").build()));
     }
 
     @Test(expected=PairedEndFastqReaderException.class)
