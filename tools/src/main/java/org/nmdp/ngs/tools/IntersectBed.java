@@ -1,6 +1,6 @@
 /*
 
-    ngs-range  Guava ranges for genomics.
+    ngs-tools  Next generation sequencing (NGS/HTS) command line tools.
     Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it

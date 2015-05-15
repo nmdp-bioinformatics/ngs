@@ -206,7 +206,7 @@ public final class FilterConsensus implements Callable<Integer> {
 
                     Double locusLength = Double.parseDouble(fields.get(fields.size() - 1));
 
-                    if (sequenceLength/locusLength >= minimumBreadth) {
+                    if (sequenceLength / locusLength >= minimumBreadth) {
                         if (!contigs.containsKey(fields.get(0))) {
                             contigs.put(fields.get(0), ArrayListMultimap.<Integer, Allele>create());
                         }
@@ -249,7 +249,7 @@ public final class FilterConsensus implements Callable<Integer> {
 
                     cdnas.put(contig, cdnaSequence.toUpperCase());
                 }
-                
+
                 List<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>(cdnas.entrySet());
                 Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
                     @Override
@@ -257,7 +257,7 @@ public final class FilterConsensus implements Callable<Integer> {
                         return second.getValue().length() - first.getValue().length();
                     }
                 });
-                
+
                 for (Map.Entry<String, String> entry : list.subList(0, expectedPloidy > list.size() ? list.size() : expectedPloidy)) {
                   writer.println(entry.getKey() + "\n" + entry.getValue());
                 }
@@ -333,7 +333,7 @@ public final class FilterConsensus implements Callable<Integer> {
         return exons;
     }
 
-    private static class ConversionException extends RuntimeException {
+    private static final class ConversionException extends RuntimeException {
         private final BedRecord rec;
 
         private ConversionException(final BedRecord rec, final Exception cause) {

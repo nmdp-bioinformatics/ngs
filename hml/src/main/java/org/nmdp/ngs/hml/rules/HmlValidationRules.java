@@ -50,6 +50,15 @@ public final class HmlValidationRules {
             }
         };
 
+
+    /**
+     * Private no-arg constructor.
+     */
+    private HmlValidationRules() {
+        // empty
+    }
+
+
     /**
      * Return the set of HML validation rules that implement the MIRING specification.
      *

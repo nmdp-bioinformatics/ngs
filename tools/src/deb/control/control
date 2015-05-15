@@ -5,7 +5,7 @@ Architecture: all
 Depends: openjdk-7-jre-headless
 Priority: extra
 Replaces: nmdp-ngs
-Maintainer: Jeremy Anderson <janders3@nmdp.org>
+Maintainer: Jason Brelsford <jbrelsf2@nmdp.org>
 Homepage: https://github.com/nmdp-bioinformatics/ngs
 Description: Next generation sequencing (NGS/HTS) tools.
 Distribution: development

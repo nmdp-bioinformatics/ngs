@@ -195,28 +195,24 @@
               <mainClass>org.nmdp.ngs.tools.ExtractConsensus</mainClass>
             </program>
             <program>
-              <id>ngs-generate-bed</id>
-              <mainClass>org.nmdp.ngs.tools.GenerateBed</mainClass>
+              <id>ngs-extract-expected-glstrings</id>
+              <mainClass>org.nmdp.ngs.tools.ExtractExpectedGlstrings</mainClass>
             </program>
             <program>
-              <id>ngs-generate-paired-end-reads</id>
-              <mainClass>org.nmdp.ngs.tools.GeneratePairedEndReads</mainClass>
-            </program>
-            <program>
-              <id>ngs-generate-reads</id>
-              <mainClass>org.nmdp.ngs.tools.GenerateReads</mainClass>
+              <id>ngs-extract-expected-haploids</id>
+              <mainClass>org.nmdp.ngs.tools.ExtractExpectedHaploids</mainClass>
             </program>
             <program>
               <id>ngs-fasta-to-fastq</id>
               <mainClass>org.nmdp.ngs.tools.FastaToFastq</mainClass>
             </program>
             <program>
-              <id>ngs-fastq-to-fasta</id>
-              <mainClass>org.nmdp.ngs.tools.FastqToFasta</mainClass>
-            </program>
-            <program>
               <id>ngs-fastq-description</id>
               <mainClass>org.nmdp.ngs.tools.FastqDescription</mainClass>
+            </program>
+            <program>
+              <id>ngs-fastq-to-fasta</id>
+              <mainClass>org.nmdp.ngs.tools.FastqToFasta</mainClass>
             </program>
             <program>
               <id>ngs-fastq-to-ssake</id>
@@ -235,20 +231,20 @@
               <mainClass>org.nmdp.ngs.tools.FilterSamples</mainClass>
             </program>
             <program>
-              <id>ngs-extract-expected</id>
-              <mainClass>org.nmdp.ngs.tools.ExtractExpected</mainClass>
-            </program>
-            <program>
-              <id>ngs-extract-expected-glstrings</id>
-              <mainClass>org.nmdp.ngs.tools.ExtractExpectedGlstrings</mainClass>
-            </program>
-            <program>
-              <id>ngs-extract-expected-haploids</id>
-              <mainClass>org.nmdp.ngs.tools.ExtractExpectedHaploids</mainClass>
-            </program>
-            <program>
               <id>ngs-filter-vcf</id>
               <mainClass>org.nmdp.ngs.tools.FilterVcf</mainClass>
+            </program>
+            <program>
+              <id>ngs-generate-bed</id>
+              <mainClass>org.nmdp.ngs.tools.GenerateBed</mainClass>
+            </program>
+            <program>
+              <id>ngs-generate-paired-end-reads</id>
+              <mainClass>org.nmdp.ngs.tools.GeneratePairedEndReads</mainClass>
+            </program>
+            <program>
+              <id>ngs-generate-reads</id>
+              <mainClass>org.nmdp.ngs.tools.GenerateReads</mainClass>
             </program>
             <program>
               <id>ngs-hsp-to-bed</id>

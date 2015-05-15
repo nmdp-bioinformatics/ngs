@@ -166,7 +166,7 @@ public final class Concept implements Partial<Concept> {
         Concept concept = (Concept) right;
         return concept.extent == this.extent && concept.intent == this.intent;
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hashCode(extent, intent);

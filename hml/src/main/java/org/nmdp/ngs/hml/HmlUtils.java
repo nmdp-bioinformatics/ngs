@@ -60,6 +60,14 @@ import org.nmdp.ngs.hml.jaxb.Sequence;
 public final class HmlUtils {
 
     /**
+     * Private no-arg constructor.
+     */
+    private HmlUtils() {
+        // empty
+    }
+
+
+    /**
      * Create and return a new HML Sequence from the specified sequence.
      *
      * @param sequence sequence, must not be null, and alphabet must be DNA
@@ -144,6 +152,7 @@ public final class HmlUtils {
      * Return the Hmlid element from the specified HML document, if any.
      *
      * @param hml HML document, must not be null
+     * @return the Hmlid element from the specified HML document, if any
      */
     public static Hmlid getHmlid(final Hml hml) {
         checkNotNull(hml);
