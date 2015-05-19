@@ -30,7 +30,6 @@ import static org.dishevelled.compress.Writers.writer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,6 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import org.apache.commons.lang.StringUtils;
 import org.dishevelled.commandline.ArgumentList;
 import org.dishevelled.commandline.CommandLine;
 import org.dishevelled.commandline.CommandLineParseException;
@@ -51,14 +49,7 @@ import org.dishevelled.commandline.Switch;
 import org.dishevelled.commandline.Usage;
 import org.dishevelled.commandline.argument.FileArgument;
 import org.dishevelled.commandline.argument.IntegerArgument;
-import org.dishevelled.commandline.argument.StringArgument;
-import org.nmdp.ngs.hml.HmlReader;
-import org.nmdp.ngs.hml.jaxb.AlleleAssignment;
-import org.nmdp.ngs.hml.jaxb.Glstring;
-import org.nmdp.ngs.hml.jaxb.Haploid;
-import org.nmdp.ngs.hml.jaxb.Hml;
-import org.nmdp.ngs.hml.jaxb.Sample;
-import org.nmdp.ngs.hml.jaxb.Typing;
+import org.dishevelled.commandline.argument.StringListArgument;
 
 /**
  * Validate interpretation.
@@ -66,12 +57,12 @@ import org.nmdp.ngs.hml.jaxb.Typing;
 public final class ValidateInterpretation implements Callable<Integer> {
     private final File observedFile;
     private final File outputFile;
-    private static boolean HaploidBoolean;
-    private static boolean GlstringBoolean;    
+    private final File expectedFile; 
     private final int resolution;
+    private final List<String> lociList;
     private final boolean printSummary;
     static final int DEFAULT_RESOLUTION = 2;
-    private static List<String> lociList;
+    
     private static final String USAGE = "ngs-extract-expected-haploids -i expected.xml | ngs-validate-interpretation -b observed.txt -g -l  [args]";
     
     /**
@@ -85,28 +76,29 @@ public final class ValidateInterpretation implements Callable<Integer> {
      * @param HaploidBoolean flag to use Haploid object from the HML
      * @param GlstringBoolean flag to use Glstring object from the HML
      */
-    public ValidateInterpretation(final File observedFile, List<String> lociList, final File outputFile, final int resolution, final boolean printSummary) {
-        checkNotNull(observedFile);
+    public ValidateInterpretation(final File expectedFile, final File observedFile, final List<String> lociList, final File outputFile, final int resolution, final boolean printSummary) {
+    	checkNotNull(observedFile);
         checkArgument(resolution > 0 && resolution < 5, "resolution must be in the range [1..4]");
         this.observedFile = observedFile;
+        this.expectedFile = expectedFile;
         this.outputFile = outputFile;
         this.resolution = resolution;
         this.printSummary = printSummary;
-        ValidateInterpretation.lociList = lociList;
+        this.lociList = lociList;
     }
 
 
     @Override
     public Integer call() throws Exception {
         PrintWriter writer = null;
+        
         int passes = 0;
         int failures = 0;
         try {
             writer = writer(outputFile);
-            Map<String, SubjectTyping> expected = readExpected();
-            Map<String, SubjectTyping> observed = readObserved(observedFile);	
-
-            
+            Map<String, SubjectTyping> expected = readExpected(expectedFile,lociList);
+            Map<String, SubjectTyping> observed = readObserved(observedFile,lociList);	
+   
             for (String sample : expected.keySet()) {
             	for(String loc : lociList){
 
@@ -172,27 +164,33 @@ public final class ValidateInterpretation implements Callable<Integer> {
     }
     
 
-     static Map<String, SubjectTyping> readExpected() throws IOException {
+     static Map<String, SubjectTyping> readExpected(final File expectedFile, final List<String> lociList) throws IOException {
 
+    	BufferedReader reader = null;
         Map<String, SubjectTyping> expected = new HashMap<String, SubjectTyping>();
         
     	try{
-    		BufferedReader reader  =  new BufferedReader(new InputStreamReader(System.in));
-     
+    		
+    		reader = reader(expectedFile);
+
     		String input;
-    		while((input=reader.readLine())!=null){
-    			
+            int lineNumber = 1;
+            while((input=reader.readLine())!=null){
+            	
+
     			List<String> idGenotype  = Splitter.onPattern("\t").splitToList(input.replaceAll("[\n\r ]", "")); 			
+    			
+                if (idGenotype.size() != 2) {
+                    throw new IOException("invalid expected file format at line " + lineNumber);
+                }
+
     			String subjectID         = idGenotype.get(0);
     			String genotype          = idGenotype.get(1);
-    			
-    			//System.out.println("Expected subjectID: "  + subjectID);
-    			
                 List<String> alleles     = Splitter.onPattern("[+]+").splitToList(genotype);                   
               	List<String> loci        = Splitter.onPattern("[*]").splitToList(alleles.get(0));
               	
                 SubjectTyping subject    = expected.get(subjectID);
-                if(subject == null){
+                if(subject == null){	
                 	subject  = new SubjectTyping(lociList);
                 	expected.put(subjectID, subject);
                 }
@@ -200,120 +198,87 @@ public final class ValidateInterpretation implements Callable<Integer> {
                 subject.addTyping(loci.get(0), alleles.get(0));
                 subject.addTyping(loci.get(1), alleles.get(1));
                 
-    		}
-     
-    	}catch(IOException io){
-    		io.printStackTrace();
-    	}
+                lineNumber++;
+            }
+    		
+    		
+    	}finally {
+	            try {
+	                reader.close();
+	            }
+	            catch (Exception e) {
+	            	 e.printStackTrace();
+	            	 System.exit(1);
+	            }
+	        }
         
         
         return expected;
     }
 
     
-    static Map<String, SubjectTyping> readObserved(final File observedFile) throws IOException {
+    static Map<String, SubjectTyping> readObserved(final File observedFile, final List<String> lociList) throws IOException {
        
         Map<String, SubjectTyping> observed = new HashMap<String, SubjectTyping>();
         
         BufferedReader reader = null;
-        if (isHML(observedFile)) {
-            reader = reader(observedFile);
-            Hml hml = HmlReader.read(reader);
-            for (Sample sample : hml.getSample()) {
-                String id = sample.getId();
-                SubjectTyping subject  = new SubjectTyping(lociList); 
-                
-                for (Typing typing : sample.getTyping()) {
-                   for (AlleleAssignment alleleAssignment : typing.getAlleleAssignment()) {
-                	   List<Haploid> HapList = new ArrayList<Haploid>();
-                	   for (Object glstring : alleleAssignment.getPropertyAndHaploidAndGenotypeList()){
-                           String classType  = glstring.getClass().toString();
-                           String objectType = classType.substring(classType.indexOf("jaxb.") + 5,classType.length());
-                           
-                           if(objectType.equals("Haploid") && HaploidBoolean){
-                               Haploid hap = (Haploid)glstring;
-                               HapList.add(hap);
-                               
-                           }else if(objectType.equals("Glstring") && GlstringBoolean){
-                        	   Glstring gl = (Glstring)glstring;
- 	                          List<String> Alleles = Splitter.onPattern("[+]+").splitToList(gl.getValue().replaceAll("[\n\r ]", ""));                         
- 	                       	  List<String> loci    = Splitter.onPattern("*").splitToList(Alleles.get(0));
- 	                       	  
- 	                       	  subject.addTyping("HLA-" + loci.get(0), Alleles.get(0));
- 	                       	  subject.addTyping("HLA-" + loci.get(0), Alleles.get(1));
- 	                       	  
-                           }
-                           
-                	   }
-                	   if(HaploidBoolean){
-                		   String hlaTyping1 = HapList.get(0).getLocus() + "*" +HapList.get(0).getType();
-                		   String hlaTyping2 = HapList.get(1).getLocus() + "*" +HapList.get(1).getType();
-                		   subject.addTyping(HapList.get(0).getLocus(), hlaTyping1);
-                		   subject.addTyping(HapList.get(0).getLocus(), hlaTyping2);
-                	   }
-                   }
+        try {
+        	reader = reader(observedFile);
+        	
+            int lineNumber = 1;
+            String previousLoc = null;
+            while (reader.ready()) {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
                 }
-            }
-        }else{ 	
-	        try {
-	        	reader = reader(observedFile);
-	        	
-	            int lineNumber = 1;
-	            String previousLoc = null;
-	            while (reader.ready()) {
-	                String line = reader.readLine();
-	                if (line == null) {
-	                    break;
-	                }
-	
-	                List<String> tokens = Splitter.onPattern("\\s+").splitToList(line);
-	                if (tokens.size() != 2) {
-	                    throw new IOException("invalid observed file format at line " + lineNumber);
-	                }
-	                ///mnt/common/data/incoming/ucla/ex014/final/1367-7100-3_S26_L001_RX_001.fastq.contigs.bwa.sorted.bam
-	                
-	                String sample = tokens.get(0);
 
-	                String subjectID = sample;
-	                if (sample.matches("(.+)\\.bam")) {
-	                	List<String> filePath  = Splitter.onPattern("(/)|(\\.)").splitToList(sample);  
-	                	String sampleId        = filePath.get(filePath.size()-6);
-	                	List<String> subId     = Splitter.onPattern("(_)").splitToList(sampleId); 
-	                	subjectID = subId.get(0);  	
-	                	//System.out.println("Observed subjectID: "  + subjectID);
-	                }
-	                
-	                String interpretation = tokens.get(1);
-	
-	                
-	                SubjectTyping subject = observed.get(subjectID);
-	                if(subject == null){
-	                	subject  = new SubjectTyping(lociList);
-	                	observed.put(subjectID, subject);
-	                }
-	                
-	                if(interpretation.matches("HLA(.+)")){
-	                	String locus = getLocusFromInterp(interpretation);
-	                	previousLoc = locus;
-	                	subject.addTyping(locus, interpretation);
-	                }else{
-	                	if(previousLoc != null){
-	                		subject.addSeq(previousLoc, interpretation);
-	                	}
-	                }
-	              
-	                lineNumber++;
-	            }
-	        }
-	        finally {
-	            try {
-	                reader.close();
-	            }
-	            catch (Exception e) {
-	                // ignore
-	            }
-	        }
+                List<String> tokens = Splitter.onPattern("\\s+").splitToList(line);
+                if (tokens.size() != 2) {
+                    throw new IOException("invalid observed file format at line " + lineNumber);
+                }
+
+                String sample = tokens.get(0);
+
+                String subjectID = sample;
+                if (sample.matches("(.+)\\.bam")) {
+                	List<String> filePath  = Splitter.onPattern("(/)|(\\.)").splitToList(sample);  
+                	String sampleId        = filePath.get(filePath.size()-6);
+                	List<String> subId     = Splitter.onPattern("(_)").splitToList(sampleId); 
+                	subjectID = subId.get(0);
+                }
+                
+                String interpretation = tokens.get(1);
+
+                
+                SubjectTyping subject = observed.get(subjectID);
+                if(subject == null){
+                	subject  = new SubjectTyping(lociList);
+                	observed.put(subjectID, subject);
+                }
+                
+                if(interpretation.matches("HLA(.+)")){
+                	String locus = getLocusFromInterp(interpretation);
+                	previousLoc = locus;
+                	subject.addTyping(locus, interpretation);
+                }else{
+                	if(previousLoc != null){
+                		subject.addSeq(previousLoc, interpretation);
+                	}
+                }
+              
+                lineNumber++;
+            }
         }
+        finally {
+            try {
+                reader.close();
+            }
+            catch (Exception e) {
+                // ignore
+            }
+        }
+        
         return observed;
     }
 
@@ -437,24 +402,23 @@ public final class ValidateInterpretation implements Callable<Integer> {
         Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
         
+        FileArgument expectedFile  = new FileArgument("e", "expected-file", "expected interpretation file", false);
         FileArgument observedFile  = new FileArgument("b", "observed-file", "observed interpretation file", true);
         FileArgument outputFile    = new FileArgument("o", "output-file", "output file, default stdout", false);
-        IntegerArgument resolution = new IntegerArgument("r", "resolution", "resolution, must be in the range [1..4], default " + DEFAULT_RESOLUTION, false);       
-        StringArgument loci        = new StringArgument("l", "loci", "list of loci that will be validated", false);
-        Switch printSummary        = new Switch("s", "summary", "print summary");
-
-        ArgumentList arguments = new ArgumentList(about, help, observedFile, outputFile, resolution, printSummary);
-
+        IntegerArgument resolution = new IntegerArgument("r", "resolution", "resolution, must be in the range [1..4], default " + DEFAULT_RESOLUTION, false);
+        
+        StringListArgument loci = new StringListArgument("l", "loci", "list of loci that will be validated", false);
+        Switch printSummary     = new Switch("s", "summary", "print summary");
+        ArgumentList arguments  = new ArgumentList(about, help, expectedFile, observedFile, outputFile, resolution, loci, printSummary);
         CommandLine commandLine = new CommandLine(args);
 
-        String lociString  = loci.getValue() == null ? "HLA-A,HLA-B,HLA-C,HLA-DRB1,HLA-DQB1" : loci.getValue();
-        
-        List<String> locList = Splitter.on(",").splitToList(lociString);
-        
         ValidateInterpretation validateInterpretation = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
+            
+            List<String> locList  = loci.getValue() == null ? Splitter.on(",").splitToList("HLA-A,HLA-B,HLA-C,HLA-DRB1,HLA-DQB1") : loci.getValue();
+            
             if (about.wasFound()) {
                 About.about(System.out);
                 System.exit(0);
@@ -463,8 +427,8 @@ public final class ValidateInterpretation implements Callable<Integer> {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-           // Map<String, SubjectTyping> subs = new HashMap<String, SubjectTyping>();
-            validateInterpretation = new ValidateInterpretation( observedFile.getValue(), locList, outputFile.getValue(), resolution.getValue(DEFAULT_RESOLUTION), printSummary.wasFound());
+
+            validateInterpretation = new ValidateInterpretation( expectedFile.getValue(), observedFile.getValue(), locList, outputFile.getValue(), resolution.getValue(DEFAULT_RESOLUTION), printSummary.wasFound());
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
