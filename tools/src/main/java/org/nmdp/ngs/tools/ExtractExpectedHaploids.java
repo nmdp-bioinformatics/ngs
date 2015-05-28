@@ -86,7 +86,11 @@ public final class ExtractExpectedHaploids implements Callable<Integer> {
             for (Sample sample : hml.getSample()) {
                 String sampleId = sample.getId();
                 for (Typing typing : sample.getTyping()) {
+                    String geneFamily = typing.getGeneFamily();
                     for (AlleleAssignment alleleAssignment : typing.getAlleleAssignment()) {
+                        String alleleDb = alleleAssignment.getAlleleDb();
+                        String alleleVersion = alleleAssignment.getAlleleVersion();
+
                         ListMultimap<String, Haploid> haploidsByLocus = ArrayListMultimap.create();
                         for (Object child : alleleAssignment.getPropertyAndHaploidAndGenotypeList()) {
                             if (child instanceof Haploid) {
@@ -100,6 +104,15 @@ public final class ExtractExpectedHaploids implements Callable<Integer> {
                             StringBuilder sb = new StringBuilder();
                             sb.append(sampleId);
                             sb.append("\t");
+                            sb.append(locus);
+                            sb.append("\t");
+                            sb.append(geneFamily);
+                            sb.append("\t");
+                            sb.append(alleleDb == null ? "" : alleleDb);
+                            sb.append("\t");
+                            sb.append(alleleVersion == null ? "" : alleleVersion);
+                            sb.append("\t");
+
                             // note only the first two haploids per locus are considered
                             sb.append(toGenotype(haploids.get(0), haploids.size() > 1 ? haploids.get(1) : null));
                             writer.println(sb.toString());

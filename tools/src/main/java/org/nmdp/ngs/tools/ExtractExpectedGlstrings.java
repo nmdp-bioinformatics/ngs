@@ -87,14 +87,25 @@ public final class ExtractExpectedGlstrings implements Callable<Integer> {
             for (Sample sample : hml.getSample()) {
                 String sampleId = sample.getId();
                 for (Typing typing : sample.getTyping()) {
+                    String geneFamily = typing.getGeneFamily();
                     for (AlleleAssignment alleleAssignment : typing.getAlleleAssignment()) {
+                        String alleleDb = alleleAssignment.getAlleleDb();
+                        String alleleVersion = alleleAssignment.getAlleleVersion();
                         for (Object child : alleleAssignment.getPropertyAndHaploidAndGenotypeList()) {
                             if (child instanceof Glstring) {
                                 Glstring glstring = (Glstring) child;
 
                                 StringBuilder sb = new StringBuilder();
                                 sb.append(sampleId);
+                                // locus is not available for glstring elements
+                                sb.append("\t\t");
+                                sb.append(geneFamily);
                                 sb.append("\t");
+                                sb.append(alleleDb == null ? "" : alleleDb);
+                                sb.append("\t");
+                                sb.append(alleleVersion == null ? "" : alleleVersion);
+                                sb.append("\t");
+
                                 // prefer uri if both are specified
                                 if (glstring.getUri() != null) {
                                     sb.append(getGlstring(glstring.getUri()));
