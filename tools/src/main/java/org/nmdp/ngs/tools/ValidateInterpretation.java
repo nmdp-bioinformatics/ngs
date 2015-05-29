@@ -24,7 +24,6 @@ package org.nmdp.ngs.tools;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import static org.dishevelled.compress.Readers.reader;
 import static org.dishevelled.compress.Writers.writer;
 
@@ -32,14 +31,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import com.google.common.base.Splitter;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -49,23 +47,25 @@ import org.dishevelled.commandline.CommandLineParseException;
 import org.dishevelled.commandline.CommandLineParser;
 import org.dishevelled.commandline.Switch;
 import org.dishevelled.commandline.Usage;
-
 import org.dishevelled.commandline.argument.FileArgument;
 import org.dishevelled.commandline.argument.IntegerArgument;
+import org.dishevelled.commandline.argument.StringArgument;
+import org.dishevelled.commandline.argument.StringListArgument;
 
 /**
  * Validate interpretation.
  */
 public final class ValidateInterpretation implements Callable<Integer> {
-    private final File expectedFile;
     private final File observedFile;
     private final File outputFile;
+    private final File expectedFile; 
     private final int resolution;
+    private final List<String> lociList;
     private final boolean printSummary;
     static final int DEFAULT_RESOLUTION = 2;
-    private static final String USAGE = "ngs-validate-interpretation -e expected.txt -b observed.txt [args]";
-
-
+    
+    private static final String USAGE = "ngs-extract-expected-haploids -i expected.xml | ngs-validate-interpretation -b observed.txt -g -l  [args]";
+    
     /**
      * Validate interpretation.
      *
@@ -74,60 +74,76 @@ public final class ValidateInterpretation implements Callable<Integer> {
      * @param outputFile output file, if any
      * @param resolution minimum fields of resolution, must be in the range [1..4]
      * @param printSummary print summary report
+     * @param HaploidBoolean flag to use Haploid object from the HML
+     * @param GlstringBoolean flag to use Glstring object from the HML
      */
-    public ValidateInterpretation(final File expectedFile, final File observedFile, final File outputFile, final int resolution, final boolean printSummary) {
-        checkNotNull(expectedFile);
-        checkNotNull(observedFile);
+    public ValidateInterpretation(final File expectedFile, final File observedFile, final List<String> lociList, final File outputFile, final int resolution, final boolean printSummary) {
+    	checkNotNull(observedFile);
         checkArgument(resolution > 0 && resolution < 5, "resolution must be in the range [1..4]");
-        this.expectedFile = expectedFile;
         this.observedFile = observedFile;
+        this.expectedFile = expectedFile;
         this.outputFile = outputFile;
         this.resolution = resolution;
         this.printSummary = printSummary;
+        this.lociList = lociList;
     }
 
 
     @Override
     public Integer call() throws Exception {
         PrintWriter writer = null;
+        
         int passes = 0;
         int failures = 0;
         try {
             writer = writer(outputFile);
-            ListMultimap<String, String> expected = readExpected(expectedFile);
-            ListMultimap<String, String> observed = readObserved(observedFile);
-
+            Map<String, SubjectTyping> expected = readExpected(expectedFile,lociList);
+            Map<String, SubjectTyping> observed = readObserved(observedFile,lociList);	
+   
             for (String sample : expected.keySet()) {
-                List<String> alleles = expected.get(sample);
-                List<String> interpretations = observed.get(sample);
+            	
+            	if(observed.get(sample) != null){        		
+            		
+            		for(String loc : lociList){
 
-                for (String expectedAllele : alleles) {
-                    boolean result = false;
-                    for (String interpretation : interpretations) {
-                        List<String> interpretedAlleles = Splitter.onPattern("[/|]+").splitToList(interpretation);
-                        List<String> found = new ArrayList<String>();
-                        for (String interpretedAllele : interpretedAlleles) {
-                            if (matchByField(expectedAllele, interpretedAllele) >= resolution) {
-                                found.add(interpretedAllele);
-                            }
-                        }
-
-                        if (!found.isEmpty()) {
-                            result = true;
-                        }
-                    }
-
-                    if (result) {
-                        passes++;
-                    }
-                    else {
-                        failures++;
-                    }
-
-                    if (!printSummary) {
-                        writer.println((result ? "PASS" : "FAIL") + "\t" + sample + "\t" + expectedAllele);
-                    }
-                }
+		                List<String> alleles = expected.get(sample).getTyping(loc);
+		                List<String> interpretations = observed.get(sample).getTyping(loc);
+	
+		                if(interpretations.size() != 0){
+			                for (String expectedAllele : alleles) {
+			                    boolean result = false;
+			                    
+			                    for (String interpretation : interpretations) {
+		                  	
+			                        List<String> interpretedAlleles = Splitter.onPattern("[/|]+").splitToList(interpretation);
+			                        List<String> found = new ArrayList<String>();
+			                                     
+			                        for (String interpretedAllele : interpretedAlleles) {
+			                            if (matchByField(expectedAllele, interpretedAllele) >= resolution) {
+			                                found.add(interpretedAllele);
+			                            }                            
+			                        }
+			
+			                        if (!found.isEmpty()) {
+			                            result = true;
+			                        }
+			                    }
+			                    
+	
+			                    if (result) {
+			                        passes++;
+			                    }
+			                    else {
+			                        failures++;
+			                    }
+			
+			                    if (!printSummary) {
+			                        writer.println((result ? "PASS" : "FAIL") + "\t" + sample + "\t" + expectedAllele + "\t" + expected.get(sample).getExperiment());
+			                    }
+			                }
+	            		}
+            		}
+            	}
             }
 
             if (printSummary) {
@@ -142,76 +158,133 @@ public final class ValidateInterpretation implements Callable<Integer> {
                 writer.close();
             }
             catch (Exception e) {
-                // ignore
+           	 e.printStackTrace();
+           	 System.exit(1);
             }
         }
     }
+    
 
-    static ListMultimap<String, String> readExpected(final File expectedFile) throws IOException {
-        BufferedReader reader = null;
-        ListMultimap<String, String> expected = ArrayListMultimap.create();
-        try {
-            reader = reader(expectedFile);
+     static Map<String, SubjectTyping> readExpected(final File expectedFile, final List<String> lociList) throws IOException {
 
+    	BufferedReader reader = null;
+        Map<String, SubjectTyping> expected = new HashMap<String, SubjectTyping>();
+        
+        // Get experiment from file
+        String fullFileName = expectedFile.toString();
+        List<String> fileParts  = Splitter.onPattern("/").splitToList(fullFileName);
+        String fileName = fileParts.get(fileParts.size()-1);
+        
+        List<String> fileNameParts  = Splitter.onPattern("_").splitToList(fileName);
+        String experiment = fileNameParts.get(0);
+        
+        
+    	try{
+    		
+    		reader = reader(expectedFile);
+
+    		String input;
             int lineNumber = 1;
-            while (reader.ready()) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-
-                List<String> tokens = Splitter.onPattern("\\s+").splitToList(line);
-                if (tokens.size() != 6) {
+            while((input=reader.readLine())!=null){
+            	
+    			List<String> idGenotype  = Splitter.onPattern("\t").splitToList(input.replaceAll("[\n\r ]", "")); 			
+    			
+                if (idGenotype.size() != 6) {
                     throw new IOException("invalid expected file format at line " + lineNumber);
                 }
 
-                String sample = tokens.get(0);
-                String locus = tokens.get(1);
-                String regionsFile = tokens.get(2);
-                String zygosity = tokens.get(3);
-                String firstAllele = tokens.get(4);
-                String secondAllele = tokens.get(5);
-
-                expected.put(sample, firstAllele);
-                expected.put(sample, secondAllele);
-
+    			String subjectID         = idGenotype.get(0);
+    			String locus         	 = idGenotype.get(1); 	
+    			String geneFamily        = idGenotype.get(2);
+    			String alleleDb          = idGenotype.get(3);
+    			String alleleVersion     = idGenotype.get(4);
+    			//String uri             = idGenotype.get(4);
+    			
+    			String genotype          = idGenotype.get(5);
+    			
+                List<String> alleles     = Splitter.onPattern("[+]+").splitToList(genotype);                   
+              	List<String> loci        = Splitter.onPattern("[*]").splitToList(alleles.get(0));
+              	
+                SubjectTyping subject    = expected.get(subjectID);
+                if(subject == null){	
+                	subject  = new SubjectTyping(lociList, experiment);
+                	expected.put(subjectID, subject);
+                }
+                
+                subject.addTyping(loci.get(0), alleles.get(0));
+                subject.addTyping(loci.get(1), alleles.get(1));
+                
                 lineNumber++;
             }
-        }
-        finally {
+    		
+    		
+    	}finally {
             try {
                 reader.close();
             }
             catch (Exception e) {
-                // ignore
+            	 e.printStackTrace();
+            	 System.exit(1);
             }
         }
+    
+        
         return expected;
     }
 
-    static ListMultimap<String, String> readObserved(final File observedFile) throws IOException {
+    
+    static Map<String, SubjectTyping> readObserved(final File observedFile, final List<String> lociList) throws IOException {
+       
+        Map<String, SubjectTyping> observed = new HashMap<String, SubjectTyping>();
+        
         BufferedReader reader = null;
-        ListMultimap<String, String> observed = ArrayListMultimap.create();
         try {
-            reader = reader(observedFile);
+        		
+    		reader = reader(observedFile);
 
+    		String input;
             int lineNumber = 1;
-            while (reader.ready()) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
+            String previousLoc = null;
+            while((input=reader.readLine())!=null){
+            		
+                List<String> tokens = Splitter.onPattern("\\t").splitToList(input);
 
-                List<String> tokens = Splitter.onPattern("\\s+").splitToList(line);
-                if (tokens.size() != 2) {
+                if (tokens.size() != 7) {
                     throw new IOException("invalid observed file format at line " + lineNumber);
                 }
-
-                String sample = tokens.get(0);
-                String interpretation = tokens.get(1);
-
-                observed.put(sample, interpretation);
-
+                
+               
+                String sample 			 = tokens.get(0);
+                String locus 			 = tokens.get(1);
+    			String geneFamily        = tokens.get(2);
+    			String alleleDb          = tokens.get(3);
+    			String alleleVersion     = tokens.get(4);
+                String interpretation 	 = tokens.get(5);
+                String sequence 		 = tokens.get(6);
+                
+                String subjectID = sample;
+                if (sample.matches("(.+)\\.bam")) {
+                	List<String> filePath  = Splitter.onPattern("(/)|(\\.)").splitToList(sample);  
+                	String sampleId        = filePath.get(filePath.size()-6);
+                	List<String> subId     = Splitter.onPattern("(_)").splitToList(sampleId); 
+                	subjectID = subId.get(0);
+                }
+                
+                
+                SubjectTyping subject = observed.get(subjectID);
+                if(subject == null){
+                	subject  = new SubjectTyping(lociList,"");
+                	observed.put(subjectID, subject);
+                }
+                
+            	previousLoc = locus;
+            	subject.addTyping(locus, interpretation);
+            
+            	if(previousLoc != null){
+            		subject.addSeq(previousLoc, sequence);
+            	}
+                
+              
                 lineNumber++;
             }
         }
@@ -223,9 +296,18 @@ public final class ValidateInterpretation implements Callable<Integer> {
                 // ignore
             }
         }
+        
         return observed;
     }
 
+    
+    static String getLocusFromInterp(String interp){
+    	List<String> interpretedAlleles = Splitter.onPattern("[/|]+").splitToList(interp);
+    	List<String> lociAllele = Splitter.onPattern("[*]").splitToList(interpretedAlleles.get(0));
+    	return lociAllele.get(0);
+    }
+    
+    
     static int matchByField(final String firstAllele, final String secondAllele) {
         checkNotNull(firstAllele);
         checkNotNull(secondAllele);
@@ -241,6 +323,99 @@ public final class ValidateInterpretation implements Callable<Integer> {
         return smallest;
     }
 
+    static boolean isHML(final File hmlFile) {
+    	String file = hmlFile.toString();
+        if (file.matches("(.+)\\.hml") || file.matches("(.+)\\.xml")) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    static String removeLocus(String locusAllele){
+    	List<String> alleleParts = Splitter.on("*").splitToList(locusAllele);
+    	String allele = alleleParts.get(1);
+    	return allele;
+    }
+  
+  
+    public static class SubjectTyping{
+    	
+    	private List<String> lociList;
+    	final String experimentNumber;
+        final ListMultimap<String, String> typingList     = ArrayListMultimap.create(); 
+        final ListMultimap<String, String> seqList        = ArrayListMultimap.create();    	
+        final ListMultimap<String, String> typingListTrim = ArrayListMultimap.create();
+    	
+    	public SubjectTyping(List<String> lociList, String experimentNumber) {
+    		super();
+    		this.lociList = lociList;
+    		this.experimentNumber = experimentNumber;
+    	}
+    	
+    	public void addTyping(String locus, String typing){
+    		//locus exists in list
+			lociList = lociList == null ? Splitter.on(",").splitToList("HLA-A,HLA-B,HLA-C,HLA-DRB1,HLA-DQB1") 
+					: lociList;
+   	
+    		if(lociList.contains(locus)){
+    			typingList.put(locus, typing);
+    			String noLocus = typing.replaceAll(locus +"[*]", "");
+    			typingListTrim.put(locus,noLocus);
+    		}
+    	}
+    	
+    	public void addSeq(String locus, String sequence){
+    		if(locus !=null && lociList.contains(locus)){
+    			seqList.put(locus, sequence);
+    		}
+    	}
+    	
+    	public String getExperiment(){
+    		return experimentNumber;
+    	}
+
+    	public List<String> getTyping(String locus) {
+    		return typingList.get(locus);
+    	}
+    	
+    	public List<String> getTrimedTyping(String locus) {
+    		return typingListTrim.get(locus);
+    	}
+    	
+    	public List<String> getSeq(String locus) {
+    		return seqList.get(locus);
+    	}    	
+    	
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((lociList == null) ? 0 : lociList.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			SubjectTyping other = (SubjectTyping) obj;
+			if (lociList == null) {
+				if (other.lociList != null)
+					return false;
+			} else if (!lociList.equals(other.lociList))
+				return false;
+			return true;
+		}
+
+    }    
+    
     /**
      * Main.
      *
@@ -249,19 +424,25 @@ public final class ValidateInterpretation implements Callable<Integer> {
     public static void main(final String[] args) {
         Switch about = new Switch("a", "about", "display about message");
         Switch help = new Switch("h", "help", "display help message");
-        FileArgument expectedFile = new FileArgument("e", "expected-file", "expected interpretation file", true);
-        FileArgument observedFile = new FileArgument("b", "observed-file", "observed interpretation file", true);
-        FileArgument outputFile = new FileArgument("o", "output-file", "output file, default stdout", false);
+        
+        FileArgument expectedFile  = new FileArgument("e", "expected-file", "expected interpretation file", false);
+        FileArgument observedFile  = new FileArgument("b", "observed-file", "observed interpretation file", true);
+        FileArgument outputFile    = new FileArgument("o", "output-file", "output file, default stdout", false);
         IntegerArgument resolution = new IntegerArgument("r", "resolution", "resolution, must be in the range [1..4], default " + DEFAULT_RESOLUTION, false);
-        Switch printSummary = new Switch("s", "summary", "print summary");
-
-        ArgumentList arguments = new ArgumentList(about, help, expectedFile, observedFile, outputFile, resolution, printSummary);
+        
+        
+        StringListArgument loci = new StringListArgument("l", "loci", "list of loci that will be validated", false);
+        Switch printSummary     = new Switch("s", "summary", "print summary");
+        ArgumentList arguments  = new ArgumentList(about, help, expectedFile, observedFile, outputFile, resolution, loci, printSummary);
         CommandLine commandLine = new CommandLine(args);
 
         ValidateInterpretation validateInterpretation = null;
         try
         {
             CommandLineParser.parse(commandLine, arguments);
+            
+            List<String> locList  = loci.getValue() == null ? Splitter.on(",").splitToList("HLA-A,HLA-B,HLA-C,HLA-DRB1,HLA-DQB1") : loci.getValue();
+            
             if (about.wasFound()) {
                 About.about(System.out);
                 System.exit(0);
@@ -270,7 +451,8 @@ public final class ValidateInterpretation implements Callable<Integer> {
                 Usage.usage(USAGE, null, commandLine, arguments, System.out);
                 System.exit(0);
             }
-            validateInterpretation = new ValidateInterpretation(expectedFile.getValue(), observedFile.getValue(), outputFile.getValue(), resolution.getValue(DEFAULT_RESOLUTION), printSummary.wasFound());
+
+            validateInterpretation = new ValidateInterpretation( expectedFile.getValue(), observedFile.getValue(), locList, outputFile.getValue(), resolution.getValue(DEFAULT_RESOLUTION), printSummary.wasFound());
         }
         catch (CommandLineParseException e) {
             if (about.wasFound()) {
