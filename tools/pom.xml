@@ -203,6 +203,10 @@
               <mainClass>org.nmdp.ngs.tools.ExtractExpectedHaploids</mainClass>
             </program>
             <program>
+              <id>ngs-extract-samples-fastq</id>
+              <mainClass>org.nmdp.ngs.tools.ExtractSamplesFastq</mainClass>
+            </program>            
+            <program>
               <id>ngs-fasta-to-fastq</id>
               <mainClass>org.nmdp.ngs.tools.FastaToFastq</mainClass>
             </program>
