@@ -1,4 +1,3 @@
-sample0 interpretation0-0
-sample0 interpretation0-1
-sample1 interpretation1-0
-sample1 interpretation1-1
+sample0	HLA-A	HLA	IMGT	3.17.0	HLA-A*03:01:01/HLA-A*03:01:01	ATCGATCGATCG
+sample1	HLA-A	HLA	IMGT	3.17.0	HLA-A*03:01:01/HLA-A*03:01:01	ATCGATCGATCG
+sample2	HLA-A	HLA	IMGT	3.17.0	HLA-A*03:01:01/HLA-A*03:01:01	ATCGATCGATCG
