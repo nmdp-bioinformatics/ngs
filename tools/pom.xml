@@ -113,6 +113,16 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>org.nmdp.gl</groupId>
+      <artifactId>gl-client</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nmdp.gl</groupId>
+      <artifactId>gl-client-local</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>org.nmdp.ngs</groupId>
       <artifactId>ngs-align</artifactId>
       <scope>compile</scope>

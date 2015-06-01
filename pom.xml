@@ -180,6 +180,16 @@
         <version>1.0</version>
       </dependency>
       <dependency>
+	<groupId>org.nmdp.gl</groupId>
+	<artifactId>gl-client</artifactId>
+	<version>1.0</version>
+      </dependency>
+      <dependency>
+	<groupId>org.nmdp.gl</groupId>
+	<artifactId>gl-client-local</artifactId>
+	<version>1.0</version>
+      </dependency>
+      <dependency>
         <groupId>com.github.samtools</groupId>
         <artifactId>htsjdk</artifactId>
         <version>1.132</version>

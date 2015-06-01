@@ -23,16 +23,22 @@
 package org.nmdp.ngs.tools;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import static org.nmdp.ngs.tools.ValidateInterpretation.matchByField;
-import static org.nmdp.ngs.tools.ValidateInterpretation.readExpected;
-import static org.nmdp.ngs.tools.ValidateInterpretation.readObserved;
-import static org.nmdp.ngs.tools.ValidateInterpretation.SubjectTyping;
+import static org.nmdp.ngs.tools.ValidateInterpretation.read;
+import static org.nmdp.ngs.tools.ValidateInterpretation.sameLocus;
 
 import java.io.File;
 import java.io.IOException;
+
 import java.util.List;
+
+import com.google.common.base.Charsets;
+
+import com.google.common.collect.ListMultimap;
 
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
@@ -43,6 +49,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.nmdp.gl.AlleleList;
+import org.nmdp.gl.Genotype;
+
+import org.nmdp.gl.client.GlClient;
+
+import org.nmdp.gl.client.local.LocalGlClient;
+
+import org.nmdp.ngs.tools.ValidateInterpretation.Interpretation;
+
 /**
  * Unit test for ValidateInterpretation.
  */
@@ -51,46 +66,65 @@ public final class ValidateInterpretationTest {
     private File observedFile;
     private File outputFile;
     private int resolution;
+    private List<String> loci;
     private boolean printSummary;
-    private List<String> lociList;
+    private GlClient glclient;
+    private AlleleList alleleList0;
+    private AlleleList alleleList1;
+    private AlleleList alleleList2;
+    private ValidateInterpretation validateInterpretation;
 
     @Before
     public void setUp() throws Exception {
         expectedFile = File.createTempFile("validateInterpretationTest", "txt");
         observedFile = File.createTempFile("validateInterpretationTest", "txt");
+        outputFile = File.createTempFile("validateInterpretationTest", "txt");
         resolution = ValidateInterpretation.DEFAULT_RESOLUTION;
+        loci = ValidateInterpretation.DEFAULT_LOCI;
         printSummary = false;
+        glclient = LocalGlClient.create();
+        alleleList0 = glclient.createAlleleList("HLA-A*03:01:01/HLA-A*03:01:01");
+        alleleList1 = glclient.createAlleleList("HLA-A*03:01:02/HLA-A*03:01:03");
+        alleleList2 = glclient.createAlleleList("HLA-C*05:24/HLA-C*05:25");
+
+        validateInterpretation = new ValidateInterpretation(expectedFile, observedFile, outputFile, resolution, loci, printSummary, glclient);
     }
 
     @After
     public void tearDown() throws Exception {
         expectedFile.delete();
         observedFile.delete();
+        outputFile.delete();
     }
 
-//    @Test(expected=NullPointerException.class)
-//    public void testConstructorNullExpectedFile() {
-//        new ValidateInterpretation(null, observedFile, lociList, outputFile, resolution, printSummary);
-//    }
+    @Test(expected=IllegalArgumentException.class)
+    public void testConstructorNullExpectedFileAndObservedFile() {
+        new ValidateInterpretation(null, null, outputFile, resolution, loci, printSummary, glclient);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testConstructorResolutionTooLow() {
+        new ValidateInterpretation(expectedFile, observedFile, outputFile, 0, loci, printSummary, glclient);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testConstructorResolutionTooHigh() {
+        new ValidateInterpretation(expectedFile, observedFile, outputFile, 5, loci, printSummary, glclient);
+    }
 
     @Test(expected=NullPointerException.class)
-    public void testConstructorNullObservedFile() {
-        new ValidateInterpretation(expectedFile, null, lociList, outputFile, resolution, printSummary);
+    public void testConstructorNullLoci() {
+        new ValidateInterpretation(expectedFile, observedFile, outputFile, resolution, null, printSummary, glclient);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testConstructorNullResolutionTooLow() {
-        new ValidateInterpretation(expectedFile, observedFile, lociList, outputFile, 0, printSummary);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testConstructorNullResolutionTooHigh() {
-        new ValidateInterpretation(expectedFile, observedFile, lociList, outputFile, 5, printSummary);
+    @Test(expected=NullPointerException.class)
+    public void testConstructorNullGlclient() {
+        new ValidateInterpretation(expectedFile, observedFile, outputFile, resolution, loci, printSummary, null);
     }
 
     @Test
     public void testConstructor() {
-        assertNotNull(new ValidateInterpretation(expectedFile, observedFile, lociList, outputFile, resolution, printSummary));
+        assertNotNull(validateInterpretation);
     }
 
     @Test(expected=NullPointerException.class)
@@ -115,50 +149,185 @@ public final class ValidateInterpretationTest {
         assertEquals(0, matchByField("HLA-DRB1*13:01:01", "HLA-DRB3*01:01:02:02"));
     }
 
+    @Test(expected=NullPointerException.class)
+    public void testSameLocusNullAlleleList0() {
+        sameLocus(null, alleleList1);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testSameLocusNullAlleleList1() {
+        sameLocus(alleleList0, null);
+    }
+
+    @Test
+    public void testSameLocus() {
+        assertTrue(sameLocus(alleleList0, alleleList1));
+        assertFalse(sameLocus(alleleList0, alleleList2));
+    }
+
     @Test
     public void testReadExpectedEmpty() throws Exception {
-        assertTrue(readExpected(expectedFile,lociList).isEmpty());
+        assertTrue(read(expectedFile).isEmpty());
     }
 
     @Test(expected=IOException.class)
     public void testReadExpectedInvalid() throws Exception {
         copyResource("expected-invalid.txt", expectedFile);
-        readExpected(expectedFile,lociList);
+        read(expectedFile);
     }
 
     @Test
     public void testReadExpected() throws Exception {
         copyResource("expected.txt", expectedFile);
-        Map<String, SubjectTyping> expected = readExpected(expectedFile,lociList);
+        ListMultimap<String, Interpretation> expected = read(expectedFile);
         assertNotNull(expected);
-//        assertTrue(expected.get("sample0").getTyping("HLA-A").contains("firstAllele0"));
-//        assertTrue(expected.get("sample0").getTyping("HLA-A").contains("secondAllele0"));
-//        assertTrue(expected.get("sample1").getTyping("HLA-A").contains("firstAllele1"));
-//        assertTrue(expected.get("sample1").getTyping("HLA-A").contains("secondAllele1"));
-//        assertTrue(expected.get("sample2").getTyping("HLA-A").contains("firstAllele2"));
-//        assertTrue(expected.get("sample2").getTyping("HLA-A").contains("secondAllele2"));
+        assertEquals(1, expected.get("sample0").size());
+        assertEquals("HLA-A*03:01:01+HLA-A*03:01:01", expected.get("sample0").get(0).glstring());
+        assertEquals(1, expected.get("sample2").size());
+        assertEquals("HLA-A*03:01:01+HLA-A*03:01:02", expected.get("sample2").get(0).glstring());
     }
 
     @Test
     public void testReadObservedEmpty() throws Exception {
-        assertTrue(readObserved(observedFile,lociList).isEmpty());
+        assertTrue(read(observedFile).isEmpty());
     }
 
     @Test(expected=IOException.class)
     public void testReadObservedInvalid() throws Exception {
         copyResource("observed-invalid.txt", observedFile);
-        readObserved(observedFile,lociList);
+        read(observedFile);
     }
 
     @Test
     public void testReadObserved() throws Exception {
         copyResource("observed.txt", observedFile);
-        Map<String, SubjectTyping> observed = readObserved(observedFile,lociList);
+        ListMultimap<String, Interpretation> observed = read(observedFile);
         assertNotNull(observed);
-//        assertTrue(observed.get("sample0").contains("interpretation0-0"));
-//        assertTrue(observed.get("sample0").contains("interpretation0-1"));
-//        assertTrue(observed.get("sample1").contains("interpretation1-0"));
-//        assertTrue(observed.get("sample1").contains("interpretation1-1"));
+        assertEquals(1, observed.get("sample0").size());
+        assertEquals("HLA-A*03:01:01/HLA-A*03:01:01", observed.get("sample0").get(0).glstring());
+        assertEquals(1, observed.get("sample2").size());
+        assertEquals("HLA-A*03:01:02/HLA-A*03:01:03", observed.get("sample2").get(0).glstring());
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testShouldValidateNullInterpretation() {
+        validateInterpretation.shouldValidate(null, alleleList0);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testShouldValidateNullAlleleList() {
+        Interpretation interpretation = Interpretation.builder().withLocus("HLA-A").build();
+        validateInterpretation.shouldValidate(interpretation, null);
+    }
+
+    @Test
+    public void testShouldValidate() {
+        Interpretation interpretation = Interpretation.builder().withLocus("HLA-A").build();
+        assertTrue(validateInterpretation.shouldValidate(interpretation, alleleList0));
+    }
+
+    @Test
+    public void testShouldValidateLocusNotInLoci() {
+        Interpretation interpretation = Interpretation.builder().withLocus("HLA-G").build();
+        assertFalse(validateInterpretation.shouldValidate(interpretation, alleleList0));
+    }
+
+    @Test
+    public void testShouldValidateNonMatchingLoci() {
+        Interpretation interpretation = Interpretation.builder().withLocus("HLA-A").build();
+        assertFalse(validateInterpretation.shouldValidate(interpretation, alleleList2));
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testAsAlleleListNullInterpretation() throws Exception {
+        validateInterpretation.asAlleleList(null);
+    }
+
+    @Test
+    public void testAsAlleleList() throws Exception {
+        Interpretation interpretation = Interpretation.builder().withGlstring("HLA-A*01:01:01:01/HLA-A*01:01:01:02N").build();
+        AlleleList alleleList = validateInterpretation.asAlleleList(interpretation);
+        assertNotNull(alleleList);
+        assertEquals("HLA-A*01:01:01:01/HLA-A*01:01:01:02N", alleleList.getGlstring());
+    }
+
+    @Test(expected=IOException.class)
+    public void testAsAlleleListInvalidSyntax() throws Exception {
+        Interpretation interpretation = Interpretation.builder().withGlstring("invalid syntax").build();
+        validateInterpretation.asAlleleList(interpretation);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void testAsGenotypeNullInterpretation() throws Exception {
+        validateInterpretation.asGenotype(null);
+    }
+
+    @Test
+    public void testAsGenotype() throws Exception {
+        Interpretation interpretation = Interpretation.builder().withGlstring("HLA-A*01:01:01:01+HLA-A*01:01:01:02N").build();
+        Genotype genotype = validateInterpretation.asGenotype(interpretation);
+        assertNotNull(genotype);
+        assertEquals("HLA-A*01:01:01:01+HLA-A*01:01:01:02N", genotype.getGlstring());
+    }
+
+    @Test(expected=IOException.class)
+    public void testAsGenotypeInvalidSyntax() throws Exception {
+        Interpretation interpretation = Interpretation.builder().withGlstring("invalid syntax").build();
+        validateInterpretation.asGenotype(interpretation);
+    }
+
+    @Test
+    public void testValidateInterpretationResolution1() throws Exception {
+        copyResource("expected.txt", expectedFile);
+        copyResource("observed.txt", observedFile);
+        ValidateInterpretation resolution1 = new ValidateInterpretation(expectedFile, observedFile, outputFile, 1, loci, printSummary, glclient);
+        Integer result = resolution1.call();
+        for (String output : Files.readLines(outputFile, Charsets.UTF_8)) {
+            assertTrue(output.startsWith("PASS"));
+        }
+    }
+
+    @Test
+    public void testValidateInterpretation() throws Exception {
+        copyResource("expected.txt", expectedFile);
+        copyResource("observed.txt", observedFile);
+        Integer result = validateInterpretation.call();
+        for (String output : Files.readLines(outputFile, Charsets.UTF_8)) {
+            assertTrue(output.startsWith("PASS"));
+        }
+    }
+
+    @Test
+    public void testValidateInterpretationResolution3() throws Exception {
+        copyResource("expected.txt", expectedFile);
+        copyResource("observed.txt", observedFile);
+        ValidateInterpretation resolution3 = new ValidateInterpretation(expectedFile, observedFile, outputFile, 3, loci, printSummary, glclient);
+        Integer result = resolution3.call();
+
+        int passes = 0;
+        int failures = 0;
+        for (String output : Files.readLines(outputFile, Charsets.UTF_8)) {
+            if (output.startsWith("PASS")) {
+                passes++;
+            }
+            else {
+                failures++;
+                assertTrue(output.contains("HLA-A*03:01:01"));
+            }
+        }
+        assertEquals(5, passes);
+        assertEquals(1, failures);
+    }
+
+    @Test
+    public void testValidateInterpretationResolution4() throws Exception {
+        copyResource("expected.txt", expectedFile);
+        copyResource("observed.txt", observedFile);
+        ValidateInterpretation resolution4 = new ValidateInterpretation(expectedFile, observedFile, outputFile, 4, loci, printSummary, glclient);
+        Integer result = resolution4.call();
+        for (String output : Files.readLines(outputFile, Charsets.UTF_8)) {
+            assertTrue(output.startsWith("FAIL"));
+        }
     }
 
     private static void copyResource(final String name, final File file) throws Exception {
