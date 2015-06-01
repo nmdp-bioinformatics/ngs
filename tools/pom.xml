@@ -138,7 +138,7 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.seqdoop</groupId>
+      <groupId>com.github.samtools</groupId>
       <artifactId>htsjdk</artifactId>
       <scope>compile</scope>
     </dependency>
