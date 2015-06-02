@@ -77,10 +77,12 @@ public final class ExtractConsensus implements Callable<Integer> {
             Hml hml = HmlReader.read(reader);
             for (Sample sample : hml.getSample()) {
                 String id = sample.getId();
+                int typingCount = 0;
                 for (Typing typing : sample.getTyping()) {
+                    typingCount++;
                     for (ConsensusSequence consensusSequence : typing.getConsensusSequence()) {
                         int cons = 0;
-                        try (PrintWriter writer = writer(new File(id + "_" + cons + ".fa.gz"))) {
+                        try (PrintWriter writer = writer(new File(id + "_" + typingCount + "_" + cons + ".fa.gz"))) {
                             int blocks = 0;
                             for (ConsensusSequenceBlock consensusSequenceBlock : consensusSequence.getConsensusSequenceBlock()) {
                                 StringBuilder sb = new StringBuilder(1200);
