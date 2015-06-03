@@ -1,4 +1,5 @@
 org.nmdp.ngs.align
+org.nmdp.ngs.fca
 org.nmdp.ngs.feature
 org.nmdp.ngs.feature.parser
 org.nmdp.ngs.gtr
