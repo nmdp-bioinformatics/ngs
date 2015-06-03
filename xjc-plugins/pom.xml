@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.nmdp.ngs</groupId>
     <artifactId>ngs-multimodule</artifactId>
-    <version>1.8.1</version>
+    <version>1.9-SNAPSHOT</version>
   </parent>
   <artifactId>ngs-xjc-plugins</artifactId>
   <name>ngs-xjc-plugins</name>
