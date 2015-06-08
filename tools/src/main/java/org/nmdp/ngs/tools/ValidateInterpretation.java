@@ -43,6 +43,9 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 
+import com.google.common.io.CharStreams;
+import com.google.common.io.LineProcessor;
+
 import org.dishevelled.commandline.ArgumentList;
 import org.dishevelled.commandline.CommandLine;
 import org.dishevelled.commandline.CommandLineParseException;
@@ -242,31 +245,40 @@ public final class ValidateInterpretation implements Callable<Integer> {
 
     static ListMultimap<String, Interpretation> read(final File file) throws IOException {
         BufferedReader reader = null;
-        ListMultimap<String, Interpretation> interpretations = ArrayListMultimap.create();
-        Interpretation.Builder builder = Interpretation.builder();
+        final ListMultimap<String, Interpretation> interpretations = ArrayListMultimap.create();
+        final Interpretation.Builder builder = Interpretation.builder();
         try {
             reader = reader(file);
-            while (reader.ready()) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                String[] tokens = line.split("\t");
-                if (tokens.length < 6) {
-                    throw new IOException("illegal interpretation format, expected at least 6 columns, found " + tokens.length);
-                }
-                Interpretation interpretation = builder.reset()
-                    .withSample(tokens[0])
-                    .withLocus(tokens[1])
-                    .withGeneFamily(tokens[2])
-                    .withAlleleDb(tokens[3])
-                    .withAlleleVersion(tokens[4])
-                    .withGlstring(tokens[5])
-                    .withConsensus(tokens.length > 6 ? tokens[6] : null)
-                    .build();
+            CharStreams.readLines(reader, new LineProcessor<Void>() {
+                    private int count = 0;
 
-                interpretations.put(interpretation.sample(), interpretation);
-            }
+                    @Override
+                    public boolean processLine(final String line) throws IOException {
+                        String[] tokens = line.split("\t");
+                        if (tokens.length < 6) {
+                            throw new IOException("illegal interpretation format, expected at least 6 columns, found " + tokens.length + "\nline=" + line);
+                        }
+                        Interpretation interpretation = builder.reset()
+                            .withSample(tokens[0])
+                            .withLocus(tokens[1])
+                            .withGeneFamily(tokens[2])
+                            .withAlleleDb(tokens[3])
+                            .withAlleleVersion(tokens[4])
+                            .withGlstring(tokens[5])
+                            .withConsensus(tokens.length > 6 ? tokens[6] : null)
+                            .build();
+
+                        interpretations.put(interpretation.sample(), interpretation);
+                        count++;
+                        return true;
+                    }
+
+                    @Override
+                    public Void getResult() {
+                        return null;
+                    }
+                });
+
             return interpretations;
         }
         finally {
