@@ -122,45 +122,55 @@ public final class ValidateInterpretation implements Callable<Integer> {
             ListMultimap<String, Interpretation> expected = read(expectedFile);
             ListMultimap<String, Interpretation> observed = read(observedFile);
 
+            
+            
             // for each sample in observed
             for (String sample : observed.keySet()) {
-                for (Interpretation o : observed.get(sample)) {
-                    AlleleList observedAlleleList = asAlleleList(o);
-                    if (shouldValidate(o, observedAlleleList)) {
-
-                        // for each matching sample in expected
-                        for (Interpretation e : expected.get(sample)) {
-                            Genotype expectedGenotype = asGenotype(e);
-                            for (Haplotype expectedHaplotype : expectedGenotype.getHaplotypes()) {
-                                for (AlleleList expectedAlleleList : expectedHaplotype.getAlleleLists()) {
-                                    if (sameLocus(observedAlleleList, expectedAlleleList)) {
+            	
+            // for each matching sample in expected
+            for (Interpretation e : expected.get(sample)) {
+                Genotype expectedGenotype = asGenotype(e);
+                for (Haplotype expectedHaplotype : expectedGenotype.getHaplotypes()) {
+                    for (AlleleList expectedAlleleList : expectedHaplotype.getAlleleLists()) {
 
                                         // for each pair of expected and observed alleles
                                         for (Allele expectedAllele : expectedAlleleList.getAlleles()) {
                                             boolean match = false;
 
-                                            for (Allele observedAllele : observedAlleleList.getAlleles()) {
-                                                if (matchByField(expectedAllele.getGlstring(), observedAllele.getGlstring()) >= resolution) {
-                                                    match = true;
-                                                    break;
-                                                }
-                                            }
+                    		                for (Interpretation o : observed.get(sample)) {
+                    		                    AlleleList observedAlleleList = asAlleleList(o);
+                                            
+                    		                    if (sameLocus(observedAlleleList, expectedAlleleList)) {
+	                    		                    if (shouldValidate(o, observedAlleleList)) {
+			                                            for (Allele observedAllele : observedAlleleList.getAlleles()) {
+			                                                if (matchByField(expectedAllele.getGlstring(), observedAllele.getGlstring()) >= resolution) {
+			                                                    match = true;
+			                                                    break;
+			                                                }
+			                                            }
+	                    		                    }
+                    		                    }
+	                                            if (match) {
+	                                                passes++;
+	                                            }
+	                                            else {
+	                                                failures++;
+	                                            }
+	
 
-                                            if (match) {
-                                                passes++;
-                                            }
-                                            else {
-                                                failures++;
-                                            }
-
-                                            if (!printSummary) {
-                                                writer.println((match ? "PASS" : "FAIL") + "\t" + sample + "\t" + expectedAllele);
-                                            }
                                         }
+                                        if (!printSummary) {
+                                            writer.println((match ? "PASS" : "FAIL") + "\t" + sample + "\t" + expectedAllele);
+                                        }
+                    		                
                                     }
-                                }
+                                        
+                               
+                                    
+                                    
                             }
-                        }
+                        
+                        
                     }
                 }
             }

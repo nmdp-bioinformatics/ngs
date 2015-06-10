@@ -203,7 +203,7 @@ public final class ValidateInterpretationTest {
         copyResource("observed.txt", observedFile);
         ListMultimap<String, Interpretation> observed = read(observedFile);
         assertNotNull(observed);
-        assertEquals(1, observed.get("sample0").size());
+        assertEquals(2, observed.get("sample0").size());
         assertEquals("HLA-A*03:01:01/HLA-A*03:01:01", observed.get("sample0").get(0).glstring());
         assertEquals(1, observed.get("sample2").size());
         assertEquals("HLA-A*03:01:02/HLA-A*03:01:03", observed.get("sample2").get(0).glstring());
@@ -293,6 +293,7 @@ public final class ValidateInterpretationTest {
         copyResource("observed.txt", observedFile);
         Integer result = validateInterpretation.call();
         for (String output : Files.readLines(outputFile, Charsets.UTF_8)) {
+        	System.out.println(output);
             assertTrue(output.startsWith("PASS"));
         }
     }
