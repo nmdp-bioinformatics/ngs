@@ -293,7 +293,6 @@ public final class ValidateInterpretationTest {
         copyResource("observed.txt", observedFile);
         Integer result = validateInterpretation.call();
         for (String output : Files.readLines(outputFile, Charsets.UTF_8)) {
-        	System.out.println(output);
             assertTrue(output.startsWith("PASS"));
         }
     }
