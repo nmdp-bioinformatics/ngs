@@ -181,7 +181,7 @@ public final class ValidateInterpretationTest {
         copyResource("expected.txt", expectedFile);
         ListMultimap<String, Interpretation> expected = read(expectedFile);
         assertNotNull(expected);
-        assertEquals(1, expected.get("sample0").size());
+        assertEquals(2, expected.get("sample0").size());
         assertEquals("HLA-A*03:01:01+HLA-A*03:01:01", expected.get("sample0").get(0).glstring());
         assertEquals(1, expected.get("sample2").size());
         assertEquals("HLA-A*03:01:01+HLA-A*03:01:02", expected.get("sample2").get(0).glstring());
@@ -203,7 +203,7 @@ public final class ValidateInterpretationTest {
         copyResource("observed.txt", observedFile);
         ListMultimap<String, Interpretation> observed = read(observedFile);
         assertNotNull(observed);
-        assertEquals(2, observed.get("sample0").size());
+        assertEquals(6, observed.get("sample0").size());
         assertEquals("HLA-A*03:01:01/HLA-A*03:01:01", observed.get("sample0").get(0).glstring());
         assertEquals(1, observed.get("sample2").size());
         assertEquals("HLA-A*03:01:02/HLA-A*03:01:03", observed.get("sample2").get(0).glstring());
@@ -315,7 +315,7 @@ public final class ValidateInterpretationTest {
                 assertTrue(output.contains("HLA-A*03:01:01"));
             }
         }
-        assertEquals(5, passes);
+        assertEquals(7, passes);
         assertEquals(1, failures);
     }
 
