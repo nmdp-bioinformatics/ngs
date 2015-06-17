@@ -142,14 +142,12 @@ public final class ValidateInterpretation implements Callable<Integer> {
             							AlleleList observedAlleleList = asAlleleList(o);
 
             							if (sameLocus(observedAlleleList, expectedAlleleList)) {
-            								if (shouldValidate(o, observedAlleleList)) {
-            									for (Allele observedAllele : observedAlleleList.getAlleles()) {
-            										if (matchByField(expectedAllele.getGlstring(), observedAllele.getGlstring()) >= resolution) {
-            											match = true;
-            											break;
-            										}
-            									}
-            								}
+        									for (Allele observedAllele : observedAlleleList.getAlleles()) {
+        										if (matchByField(expectedAllele.getGlstring(), observedAllele.getGlstring()) >= resolution) {
+        											match = true;
+        											break;
+        										}
+        									}
             							}
             							if (match) {
             								passes++;
