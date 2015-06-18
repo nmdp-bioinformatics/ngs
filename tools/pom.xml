@@ -213,6 +213,10 @@
               <mainClass>org.nmdp.ngs.tools.ExtractExpectedHaploids</mainClass>
             </program>
             <program>
+              <id>ngs-extract-blast</id>
+              <mainClass>org.nmdp.ngs.tools.ExtractBlast</mainClass>
+            </program>            
+            <program>
               <id>ngs-fasta-to-fastq</id>
               <mainClass>org.nmdp.ngs.tools.FastaToFastq</mainClass>
             </program>
