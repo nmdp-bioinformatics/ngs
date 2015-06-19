@@ -216,7 +216,7 @@ public final class ExtractBlast implements Callable<Integer> {
     	public void addTyping(String typing){
     		//locus exists in list
     		if(alleleRank <= alleleCutoff){
-    			typingList.add(typing);
+    			typingList.add("HLA-" + typing);
     		}
     		alleleRank++;
     	}
