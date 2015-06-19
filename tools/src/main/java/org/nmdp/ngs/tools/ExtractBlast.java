@@ -233,7 +233,7 @@ public final class ExtractBlast implements Callable<Integer> {
     	public String getLocus(){
     		String allele = typingList.get(0);
     		List<String> alleleParts = Splitter.on("*").splitToList(allele);
-        	String locus = alleleParts.get(0);
+        	String locus = "HLA-" + alleleParts.get(0);
     		return locus;
     	}
 
