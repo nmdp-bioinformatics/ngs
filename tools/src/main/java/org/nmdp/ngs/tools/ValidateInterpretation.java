@@ -122,45 +122,51 @@ public final class ValidateInterpretation implements Callable<Integer> {
             ListMultimap<String, Interpretation> expected = read(expectedFile);
             ListMultimap<String, Interpretation> observed = read(observedFile);
 
+            
+            
             // for each sample in observed
             for (String sample : observed.keySet()) {
-                for (Interpretation o : observed.get(sample)) {
-                    AlleleList observedAlleleList = asAlleleList(o);
-                    if (shouldValidate(o, observedAlleleList)) {
+            	
+            // for each matching sample in expected
+            	for (Interpretation e : expected.get(sample)) {
+            		Genotype expectedGenotype = asGenotype(e);
+            		for (Haplotype expectedHaplotype : expectedGenotype.getHaplotypes()) {
+            			for (AlleleList expectedAlleleList : expectedHaplotype.getAlleleLists()) {
+            				if (shouldValidate(e, expectedAlleleList)) {
+            					// for each pair of expected and observed alleles
+            					for (Allele expectedAllele : expectedAlleleList.getAlleles()) {
 
-                        // for each matching sample in expected
-                        for (Interpretation e : expected.get(sample)) {
-                            Genotype expectedGenotype = asGenotype(e);
-                            for (Haplotype expectedHaplotype : expectedGenotype.getHaplotypes()) {
-                                for (AlleleList expectedAlleleList : expectedHaplotype.getAlleleLists()) {
-                                    if (sameLocus(observedAlleleList, expectedAlleleList)) {
+            						boolean match = false;
 
-                                        // for each pair of expected and observed alleles
-                                        for (Allele expectedAllele : expectedAlleleList.getAlleles()) {
-                                            boolean match = false;
+            						for (Interpretation o : observed.get(sample)) {
+            							AlleleList observedAlleleList = asAlleleList(o);
 
-                                            for (Allele observedAllele : observedAlleleList.getAlleles()) {
-                                                if (matchByField(expectedAllele.getGlstring(), observedAllele.getGlstring()) >= resolution) {
-                                                    match = true;
-                                                    break;
-                                                }
-                                            }
+            							if (sameLocus(observedAlleleList, expectedAlleleList)) {
+        									for (Allele observedAllele : observedAlleleList.getAlleles()) {
+        										if (matchByField(expectedAllele.getGlstring(), observedAllele.getGlstring()) >= resolution) {
+        											match = true;
+        											break;
+        										}
+        									}
+            							}
+            							if (match) {
+            								passes++;
+            							}
+            							else {
+            								failures++;
+            							}
 
-                                            if (match) {
-                                                passes++;
-                                            }
-                                            else {
-                                                failures++;
-                                            }
 
-                                            if (!printSummary) {
-                                                writer.println((match ? "PASS" : "FAIL") + "\t" + sample + "\t" + expectedAllele);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+            						}
+            						if (!printSummary) {
+            							writer.println((match ? "PASS" : "FAIL") + "\t" + sample + "\t" + expectedAllele);
+            						}
+            					}
+
+            				}
+
+            			}
+
                     }
                 }
             }
