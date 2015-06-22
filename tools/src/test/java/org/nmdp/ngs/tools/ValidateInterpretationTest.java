@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Charsets;
 
@@ -42,8 +43,6 @@ import com.google.common.collect.ListMultimap;
 
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;

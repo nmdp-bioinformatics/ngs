@@ -81,7 +81,7 @@ public final class ValidateInterpretation implements Callable<Integer> {
     static final int DEFAULT_RESOLUTION = 2;
     static final List<String> DEFAULT_LOCI = ImmutableList.of("HLA-A", "HLA-B", "HLA-C", "HLA-DRB1", "HLA-DQB1");
     private static final String USAGE = "ngs-validate-interpretation -e expected.txt -b observed.txt -r 2 -l \"HLA-A,HLA-B\"";
-    
+
 
     /**
      * Validate interpretation.
@@ -94,7 +94,13 @@ public final class ValidateInterpretation implements Callable<Integer> {
      * @param printSummary print summary report
      * @param glclient genotype list client, must not be null
      */
-    public ValidateInterpretation(final File expectedFile, final File observedFile, final File outputFile, final int resolution, final List<String> loci, final boolean printSummary, final GlClient glclient) {
+    public ValidateInterpretation(final File expectedFile,
+                                  final File observedFile,
+                                  final File outputFile,
+                                  final int resolution,
+                                  final List<String> loci,
+                                  final boolean printSummary,
+                                  final GlClient glclient) {
         checkNotNull(loci);
         checkNotNull(glclient);
         checkArgument(expectedFile != null || observedFile != null, "at least one of expected or observed file must not be null");
@@ -122,51 +128,42 @@ public final class ValidateInterpretation implements Callable<Integer> {
             ListMultimap<String, Interpretation> expected = read(expectedFile);
             ListMultimap<String, Interpretation> observed = read(observedFile);
 
-            
-            
             // for each sample in observed
             for (String sample : observed.keySet()) {
-            	
-            // for each matching sample in expected
-            	for (Interpretation e : expected.get(sample)) {
-            		Genotype expectedGenotype = asGenotype(e);
-            		for (Haplotype expectedHaplotype : expectedGenotype.getHaplotypes()) {
-            			for (AlleleList expectedAlleleList : expectedHaplotype.getAlleleLists()) {
-            				if (shouldValidate(e, expectedAlleleList)) {
-            					// for each pair of expected and observed alleles
-            					for (Allele expectedAllele : expectedAlleleList.getAlleles()) {
 
-            						boolean match = false;
+                // for each interpretation in expected with matching sample
+                for (Interpretation e : expected.get(sample)) {
+                    Genotype expectedGenotype = asGenotype(e);
+                    for (Haplotype expectedHaplotype : expectedGenotype.getHaplotypes()) {
+                        for (AlleleList expectedAlleleList : expectedHaplotype.getAlleleLists()) {
+                            if (shouldValidate(e, expectedAlleleList)) {
 
-            						for (Interpretation o : observed.get(sample)) {
-            							AlleleList observedAlleleList = asAlleleList(o);
-
-            							if (sameLocus(observedAlleleList, expectedAlleleList)) {
-        									for (Allele observedAllele : observedAlleleList.getAlleles()) {
-        										if (matchByField(expectedAllele.getGlstring(), observedAllele.getGlstring()) >= resolution) {
-        											match = true;
-        											break;
-        										}
-        									}
-            							}
-            							if (match) {
-            								passes++;
-            							}
-            							else {
-            								failures++;
-            							}
-
-
-            						}
-            						if (!printSummary) {
-            							writer.println((match ? "PASS" : "FAIL") + "\t" + sample + "\t" + expectedAllele);
-            						}
-            					}
-
-            				}
-
-            			}
-
+                                // for each pair of expected and observed alleles
+                                for (Allele expectedAllele : expectedAlleleList.getAlleles()) {
+                                    boolean match = false;
+                                    for (Interpretation o : observed.get(sample)) {
+                                        AlleleList observedAlleleList = asAlleleList(o);
+                                        if (sameLocus(observedAlleleList, expectedAlleleList)) {
+                                            for (Allele observedAllele : observedAlleleList.getAlleles()) {
+                                                if (matchByField(expectedAllele.getGlstring(), observedAllele.getGlstring()) >= resolution) {
+                                                    match = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (match) {
+                                            passes++;
+                                        }
+                                        else {
+                                            failures++;
+                                        }
+                                    }
+                                    if (!printSummary) {
+                                        writer.println((match ? "PASS" : "FAIL") + "\t" + sample + "\t" + expectedAllele);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
