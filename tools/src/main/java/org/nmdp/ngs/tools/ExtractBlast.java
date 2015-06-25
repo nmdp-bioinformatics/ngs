@@ -131,7 +131,11 @@ public final class ExtractBlast implements Callable<Integer> {
         
     }
 
-
+    /**
+     * Extract consensus sequences from a file in HML format.
+     *
+     * @param inputHmlFile input HML file, if any
+     */
     static Map<String, String> readFasta(final File inputFastqFile) throws IOException, NoSuchElementException, BioException{
     	
     	BufferedReader reader = null;
@@ -162,6 +166,11 @@ public final class ExtractBlast implements Callable<Integer> {
     	
     } 
     
+    /**
+     * Extract consensus sequences from a file in HML format.
+     *
+     * @param inputHmlFile input HML file, if any
+     */
     static HashMap<String, BlastResults> readBlast(final int alleleCutoff, final File inputBlastFile) throws IOException{
     	
         BufferedReader reader = null;
@@ -188,7 +197,7 @@ public final class ExtractBlast implements Callable<Integer> {
             
         }finally {
             try {
-            	//fastqReader.close();
+            	reader.close();
             }
             catch (Exception e) {
             	 e.printStackTrace();
@@ -201,7 +210,11 @@ public final class ExtractBlast implements Callable<Integer> {
     	
     }  
     
-    
+    /**
+     * Extract consensus sequences from a file in HML format.
+     *
+     * @param inputHmlFile input HML file, if any
+     */  
     static String getSubjectId(final File fastaFile){
     	String fileAsString = fastaFile.toString();
     	List<String> alleleParts = Splitter.on("_").splitToList(fileAsString);
@@ -209,11 +222,16 @@ public final class ExtractBlast implements Callable<Integer> {
     	return pathParts.get(pathParts.size()-1);
     }
     
+    /**
+     * Extract consensus sequences from a file in HML format.
+     *
+     * @param inputHmlFile input HML file, if any
+     */
     public static class BlastResults{
     	
     	private int alleleRank = 1;
     	final int alleleCutoff;
-        final List<String> typingList     = new ArrayList<String>(); 
+        final List<String> typingList                     = new ArrayList<String>(); 
         final ListMultimap<String, String> seqList        = ArrayListMultimap.create();    	
         final ListMultimap<String, String> typingListTrim = ArrayListMultimap.create();
     	
@@ -224,10 +242,10 @@ public final class ExtractBlast implements Callable<Integer> {
     	
     	public void addTyping(String typing){
     		//locus exists in list
-    		if(alleleRank <= alleleCutoff && !typingList.contains(typing)){
+    		if(alleleRank <= alleleCutoff && typingList.contains("HLA-" + typing) == false){
     			typingList.add("HLA-" + typing);
+    			alleleRank++;
     		}
-    		alleleRank++;
     	}
 
     	public List<String> getTypingList() {	
