@@ -90,8 +90,7 @@ public class ConceptLattice<G, M> extends AbstractLattice<Concept> {
         return added.getProperty(LABEL);
     }
 
-    // todo:  this should be typed
-    public final List getObjects() {
+    public final List<G> getObjects() {
         return objects;
     }
 
