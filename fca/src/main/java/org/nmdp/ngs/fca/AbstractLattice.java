@@ -49,10 +49,17 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
     protected int order;
 
     protected static final String LABEL = "label";
+    protected static final String COLOR = "color";
 
     protected AbstractLattice(final Graph lattice) {
         checkNotNull(lattice);
         this.lattice = lattice;
+        direction = Partial.Order.Direction.FORWARD;
+        top = lattice.addVertex(null); // TODO: pass in a first property -- easy for IntervalLattice, requires some work for ConceptLattice
+        bottom = top;
+        color = 0;
+        order = 0;
+        size = 1;
     }
 
     protected boolean filter(final Vertex source, final Vertex target) {
@@ -62,6 +69,10 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
     }
 
     private boolean filter(final Vertex source, final T right) {
+        if(source.getProperty(LABEL) == null) {
+            return false;
+        }
+        
         T sourceConcept = source.getProperty(LABEL);
         return filter(sourceConcept, right);
     }
@@ -89,7 +100,9 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
             max = false;
             for (Edge edge : generator.getEdges(Direction.BOTH)) {
                 Vertex target = edge.getVertex(Direction.OUT);
-
+                
+                System.out.println("supremum: filter(" + target.getProperty(LABEL) + ", " + generator.getProperty(LABEL) + ")");
+                
                 if (filter(target, generator)) {
                     continue;
                 }
@@ -116,9 +129,16 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
     private Edge addUndirectedEdge(final Vertex source, final Vertex target, final String weight) {
         T sourceConcept = source.getProperty("label");
         T targetConcept = target.getProperty("label");
+        
+        if(sourceConcept.equals(targetConcept)) {
+            System.out.println("SOURCE == TARGET");
+            System.exit(0);
+        }
+        
         Partial.Order.Direction direction = this.direction;
 
         if (targetConcept.relation(sourceConcept).gte()) {
+            System.out.println("REVERSE DIRECTION");
             direction = Partial.Order.Direction.REVERSE;
         }
 
@@ -155,10 +175,12 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
         generator = supremum(proposed, generator);
 
         if (filter(generator, proposed) && filter(proposed, generator)) {
+            System.out.println("RETURNING GENERATOR");
             return generator;
         }
         List parents = new ArrayList<>();
-        for (Vertex target : lattice.getVertices()) {
+        for (Edge edge : generator.getEdges(Direction.BOTH)) {
+            Vertex target = edge.getVertex(Direction.OUT);
             if (filter(target, generator)) {
                 continue;
             }
@@ -198,14 +220,22 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
         T generatorConcept = generator.getProperty(LABEL);
 
         Vertex child = add((T) proposed.union(generatorConcept));
-        addUndirectedEdge(generator, child, "");
+        
+        System.out.println("addUndirectedEdge(" + generator.getProperty(LABEL) + ", " + child.getProperty(LABEL) + ")");
+        
+        if(!generator.getProperty(LABEL).equals(child.getProperty(LABEL))) {
+           addUndirectedEdge(generator, child, ""); 
+        }
+        
         bottom = filter(bottom, proposed) ? child : bottom;
 
         for (Iterator it = parents.iterator(); it.hasNext();) {
             Vertex parent = (Vertex) it.next();
             if (!parent.equals(generator)) {
                 removeUndirectedEdge(parent, generator);
-                addUndirectedEdge(parent, child, "");
+                if(!generator.getProperty(LABEL).equals(child.getProperty(LABEL))) {
+                    addUndirectedEdge(parent, child, "");
+                }
             }
         }
         return child;
