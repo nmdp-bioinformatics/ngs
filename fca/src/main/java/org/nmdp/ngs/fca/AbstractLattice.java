@@ -100,9 +100,7 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
             max = false;
             for (Edge edge : generator.getEdges(Direction.BOTH)) {
                 Vertex target = edge.getVertex(Direction.OUT);
-                
-                System.out.println("supremum: filter(" + target.getProperty(LABEL) + ", " + generator.getProperty(LABEL) + ")");
-                
+
                 if (filter(target, generator)) {
                     continue;
                 }
@@ -130,15 +128,9 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
         T sourceConcept = source.getProperty("label");
         T targetConcept = target.getProperty("label");
         
-        if(sourceConcept.equals(targetConcept)) {
-            System.out.println("SOURCE == TARGET");
-            System.exit(0);
-        }
-        
         Partial.Order.Direction direction = this.direction;
 
         if (targetConcept.relation(sourceConcept).gte()) {
-            System.out.println("REVERSE DIRECTION");
             direction = Partial.Order.Direction.REVERSE;
         }
 
@@ -175,7 +167,6 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
         generator = supremum(proposed, generator);
 
         if (filter(generator, proposed) && filter(proposed, generator)) {
-            System.out.println("RETURNING GENERATOR");
             return generator;
         }
         List parents = new ArrayList<>();
@@ -220,12 +211,7 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
         T generatorConcept = generator.getProperty(LABEL);
 
         Vertex child = add((T) proposed.union(generatorConcept));
-        
-        System.out.println("addUndirectedEdge(" + generator.getProperty(LABEL) + ", " + child.getProperty(LABEL) + ")");
-        
-        if(!generator.getProperty(LABEL).equals(child.getProperty(LABEL))) {
-           addUndirectedEdge(generator, child, ""); 
-        }
+        addUndirectedEdge(generator, child, ""); 
         
         bottom = filter(bottom, proposed) ? child : bottom;
 
@@ -233,9 +219,7 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
             Vertex parent = (Vertex) it.next();
             if (!parent.equals(generator)) {
                 removeUndirectedEdge(parent, generator);
-                if(!generator.getProperty(LABEL).equals(child.getProperty(LABEL))) {
-                    addUndirectedEdge(parent, child, "");
-                }
+                addUndirectedEdge(parent, child, "");
             }
         }
         return child;

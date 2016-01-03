@@ -30,14 +30,10 @@ package org.nmdp.ngs.fca;
 public interface Partial<T> {
 
     /**
-     * Enumerated partial orderings that extends natural (complete) orderings for
-     * comparable objects. For example, real numbers are completely ordered in the
-     * normal way using greater-than, less-than, and equal to operators. Sets of
-     * real numbers, by contrast, are partially ordered by inclusion using subset,
-     * superset, and equals, respectively. A third possibility exists where sets
-     * are disjoint (intersection results in the null set). We call these sets
-     * non-comparable and define another ordering category that extends to all
-     * partially ordered objects.
+     * Enumerated partial orders that extends natural (complete) orders for
+     * comparable objects.
+     * @see <a href="https://en.wikipedia.org/wiki/Partially_ordered_set">
+     * partial order</a>
      */
     public static enum Order {
 

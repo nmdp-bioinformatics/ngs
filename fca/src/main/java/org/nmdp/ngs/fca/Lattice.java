@@ -60,6 +60,8 @@ public interface Lattice<T extends Partial> {
      * @return the meet of left and right
      */
     T meet(T left, T right);
+    
+    //boolean covers(T left, T right);
 
     /**
      * Return the countable measure of left and right.

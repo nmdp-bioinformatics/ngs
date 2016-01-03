@@ -47,9 +47,9 @@ public final class IntervalLatticeTest {
         // TODO: there's a bug revealed if you swap z and y -- test commutative
         
         intervals.insert(x);
-        
-        intervals.insert(z);
         intervals.insert(y);
+        intervals.insert(z);
+        
         intervals.insert(w);
         
         System.out.println(intervals);
