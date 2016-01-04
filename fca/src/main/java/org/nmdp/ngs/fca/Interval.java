@@ -37,11 +37,26 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.RangeSet;
 
-public class Interval<C extends Comparable> implements Partial<Interval<C>>, Comparable<Interval<C>> {
+/**
+ * For spatial or temporal intervals defined by lower and upper comparable
+ * endpoints. This class wraps com.google.common.collect.Range and is endowed
+ * with a dimension to support programmatic frameworks for intervals in
+ * multidimensional space or time.
+ * @param <C> comparable endpoint type
+ */
+public class Interval<C extends Comparable> implements Partial<Interval<C>>,
+                                                       Comparable<Interval<C>> {
     private int dimension;
     private Range<C> range;
     
+    /**
+     * The one and only dimensionless interval with no values
+     */
     public final static Interval NULL = new Interval<>();
+    
+    /**
+     * The one and only dimensionless interval with every value
+     */
     public final static Interval MAGIC = new Interval<>(Range.all());
     
     /**
@@ -106,21 +121,39 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>, Com
         }
     }
     
+    /**
+     * Construct the null interval.
+     * @see #NULL
+     */
     private Interval() {
         dimension = 0;
         range = null;
     }
     
+    /**
+     * Construct an interval with dimension but no values.
+     * @param dimension as specified
+     */
     private Interval(int dimension) {
         this();
         this.dimension = dimension;
     }
     
+    /**
+     * Construct an interval with no dimension but specified values.
+     * @param range as specified
+     * @see #MAGIC
+     */
     private Interval(final Range<C> range) {
         this();
         this.range = range;
     }
     
+    /**
+     * Construct an interval with specified dimension and values.
+     * @param dimension as specified (at least zero)
+     * @param range as specified (cannot be null)
+     */
     public Interval(int dimension, final Range<C> range) {
         checkArgument(Range.atLeast(0).contains(dimension));
         checkNotNull(range);
@@ -133,6 +166,11 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>, Com
         return this.range.upperBoundType() == BoundType.OPEN ? BoundType.CLOSED : BoundType.OPEN;
     }
     
+    /**
+     * Get the partial order between two intervals.
+     * @param that interval
+     * @return partial order enumerated type
+     */
     @Override
     public Partial.Order relation(final Interval<C> that) {
         if(this.equals(that)) {
@@ -173,7 +211,8 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>, Com
         
         if(this.dimension == that.dimension) {
             if(this.isConnected(that)) {
-                return new Interval(this.dimension, this.range.intersection(that.range));
+                return new Interval(this.dimension,
+                                    this.range.intersection(that.range));
             }
             return new Interval(this.dimension);
         }
@@ -264,17 +303,22 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>, Com
      * @see #behind() 
      * @see #intersect(org.nmdp.ngs.fca.Interval) 
      * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html#removeAll-java.util.Collection-">
-     * removeAll </a>
+     * java.util.Collection.removeAll</a>
+     * @see <a href="https://en.wikipedia.org/wiki/Complement_(set_theory)">
+     * complement</a>
      */
     @Beta
     public Difference<C> minus(final Interval<C> that) {
-        return new Difference(this.intersect(that.ahead()), this.intersect(that.behind()));
+        return new Difference(this.intersect(that.ahead()),
+                              this.intersect(that.behind()));
     }
     
     /**
      * Experimental method to find the complement of this interval.
      * @return the complement
-     * @see #minus(org.nmdp.ngs.fca.Interval) 
+     * @see #minus(org.nmdp.ngs.fca.Interval)
+     * @see <a href="https://en.wikipedia.org/wiki/Complement_(set_theory)">
+     * complement</a>
      */
     @Beta
     public Difference<C> complement() {
@@ -294,7 +338,9 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>, Com
         if(this.range.equals(Range.all())) {
             return new Interval(this.dimension);
         }
-        return new Interval(this.dimension, Range.downTo(this.range.upperEndpoint(), reverse(this.range.upperBoundType())));
+        return new Interval(this.dimension,
+                            Range.downTo(this.range.upperEndpoint(),
+                            reverse(this.range.upperBoundType())));
     }
     
     /**
@@ -310,7 +356,9 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>, Com
         if(this.range.equals(Range.all())) {
             return new Interval(this.dimension);
         }
-        return new Interval(this.dimension, Range.upTo(this.range.lowerEndpoint(), reverse(this.range.lowerBoundType())));
+        return new Interval(this.dimension,
+                            Range.upTo(this.range.lowerEndpoint(),
+                            reverse(this.range.lowerBoundType())));
     }
     
     /**
@@ -345,7 +393,8 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>, Com
         if(this.hasNone() || that.hasNone()) {
             return false;
         }
-        return this.dimension == that.dimension && this.range.upperEndpoint().compareTo(that.range.lowerEndpoint()) < 0;
+        return this.dimension == that.dimension &&
+               this.range.upperEndpoint().compareTo(that.range.lowerEndpoint()) < 0;
     }
     
     /**
@@ -466,6 +515,10 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>, Com
         return false;
     }
     
+    /**
+     * Get the string representation of this interval.
+     * @return interval string
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -483,11 +536,19 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>, Com
         return sb.toString();
     }
     
-     @Override
+    /**
+     * Get the hash representation of this interval.
+     * @return interval hash code
+     */
+    @Override
     public int hashCode() {
         return Objects.hashCode(dimension, range);
     }
     
+    /**
+     * Get the range representation of this interval.
+     * @return the dimensionless range
+     */
     public Range<C> toRange() {
         return range;
     }

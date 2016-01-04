@@ -106,7 +106,28 @@ public final class IntervalTest {
     
     @Test
     public void testComplement() {
-        System.out.println("a.complement() = " + a.complement());
+        Range range;
+        ImmutableRangeSet.Builder builder;
+        Interval.Difference difference;
+        
+        difference = a.complement();
+        range = Range.lessThan(2);
+        builder = ImmutableRangeSet.builder().add(range);
+        range = Range.greaterThan(4);
+        builder.add(range);
+        assertEquals(difference.getRanges(), builder.build());
+        assertEquals(difference.getDimension(), 1);
+        
+        difference = Interval.MAGIC.complement();
+        builder = ImmutableRangeSet.builder();
+        assertEquals(difference.getRanges(), builder.build());
+        assertEquals(difference.getDimension(), 0);
+        
+        difference = Interval.NULL.complement();
+        range = Range.all();
+        builder = ImmutableRangeSet.builder().add(range);
+        assertEquals(difference.getRanges(), builder.build());
+        assertEquals(difference.getDimension(), 0);
     }
     
     @Test
