@@ -23,8 +23,6 @@
 package org.nmdp.ngs.fca;
 
 import com.google.common.annotations.Beta;
-import javax.measure.Unit;
-import javax.measure.quantity.Length;
 
 import com.google.common.base.Objects;
 
