@@ -26,8 +26,7 @@ import com.google.common.collect.Range;
 
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
-import java.time.LocalDateTime;
-import java.time.Month;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,22 +56,22 @@ public final class IntervalLatticeTest {
     
     @Test
     public void testSetup() {
-        IntervalLattice<LocalDateTime> dates = new IntervalLattice<>(new TinkerGraph());
+        IntervalLattice<Date> dates = new IntervalLattice<>(new TinkerGraph());
         
         
-        LocalDateTime d1 = LocalDateTime.of(2015, Month.NOVEMBER, 15, 0, 0);
-        LocalDateTime d3 = LocalDateTime.of(2015, Month.DECEMBER, 12, 0, 0);
-        LocalDateTime d4 = LocalDateTime.of(2015, Month.DECEMBER, 10, 0, 0);
-        LocalDateTime d5 = LocalDateTime.of(2015, Month.DECEMBER, 14, 0, 0);
-        LocalDateTime d6 = LocalDateTime.of(2015, Month.DECEMBER, 11, 0, 0);
-        LocalDateTime d7 = LocalDateTime.of(2015, Month.DECEMBER, 16, 0, 0);
-        LocalDateTime d8 = LocalDateTime.of(2015, Month.OCTOBER, 1, 0, 0);
-        LocalDateTime d9 = LocalDateTime.of(2015, Month.OCTOBER, 2, 0, 0);
+        Date d1 = new Date(2015, 11, 15, 0, 0);
+        Date d3 = new Date(2015, 12, 12, 0, 0);
+        Date d4 = new Date(2015, 12, 10, 0, 0);
+        Date d5 = new Date(2015, 12, 14, 0, 0);
+        Date d6 = new Date(2015, 12, 11, 0, 0);
+        Date d7 = new Date(2015, 12, 16, 0, 0);
+        Date d8 = new Date(2015, 10, 1, 0, 0);
+        Date d9 = new Date(2015, 10, 2, 0, 0);
         
-        Interval<LocalDateTime> a = new Interval<>(1, Range.closed(d1, d3));
-        Interval<LocalDateTime> b = new Interval<>(1, Range.closed(d4, d5));
-        Interval<LocalDateTime> c = new Interval<>(1, Range.closed(d6, d7));
-        Interval<LocalDateTime> d = new Interval<>(1, Range.closed(d8, d9));
+        Interval<Date> a = new Interval<>(1, Range.closed(d1, d3));
+        Interval<Date> b = new Interval<>(1, Range.closed(d4, d5));
+        Interval<Date> c = new Interval<>(1, Range.closed(d6, d7));
+        Interval<Date> d = new Interval<>(1, Range.closed(d8, d9));
         
         System.out.println("a.before(b) ? " + a.before(b));
         System.out.println("d.before(b) ? " + d.before(b));

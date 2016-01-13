@@ -31,9 +31,7 @@ import com.google.common.collect.Range;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.BoundType;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableRangeSet;
-import com.google.common.collect.RangeSet;
 
 /**
  * For spatial or temporal intervals defined by lower and upper comparable
@@ -67,7 +65,7 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>,
     @Beta
     public final class Difference<C extends Comparable> {
         private int dimension;
-        private ImmutableRangeSet<C> ranges;
+        private final ImmutableRangeSet<C> ranges;
         
         /**
          * Construct a new Difference, which may have zero, one, or two non-null
@@ -161,7 +159,8 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>,
     }
     
     private BoundType reverse(final BoundType type) {
-        return this.range.upperBoundType() == BoundType.OPEN ? BoundType.CLOSED : BoundType.OPEN;
+        return this.range.upperBoundType() == BoundType.OPEN ? BoundType.CLOSED
+                                                             : BoundType.OPEN;
     }
     
     /**
@@ -459,7 +458,9 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>,
      */
     public boolean starts(final Interval<C> that) {
         checkNotNull(this.range, that.range);
-        return this.dimension == that.dimension && this.range.lowerEndpoint().compareTo(that.range.lowerEndpoint()) == 0 && this.range.upperEndpoint().compareTo(that.range.upperEndpoint()) < 0;
+        return this.dimension == that.dimension &&
+               this.range.lowerEndpoint().compareTo(that.range.lowerEndpoint()) == 0 &&
+               this.range.upperEndpoint().compareTo(that.range.upperEndpoint()) < 0;
     }
     
     /**
@@ -473,7 +474,9 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>,
      */
     public boolean ends(final Interval<C> that) {
         checkNotNull(this.range, that.range);
-        return this.dimension == that.dimension && this.range.upperEndpoint().compareTo(that.range.upperEndpoint()) == 0 && this.range.lowerEndpoint().compareTo(that.range.lowerEndpoint()) > 0;
+        return this.dimension == that.dimension &&
+               this.range.upperEndpoint().compareTo(that.range.upperEndpoint()) == 0 &&
+               this.range.lowerEndpoint().compareTo(that.range.lowerEndpoint()) > 0;
     }
     
     /** Test if two intervals are equal.
