@@ -40,8 +40,8 @@ import com.google.common.collect.ImmutableRangeSet;
  * multidimensional space or time.
  * @param <C> comparable endpoint type
  */
-public class Interval<C extends Comparable> implements Partial<Interval<C>>,
-                                                       Comparable<Interval<C>> {
+public class Interval<C extends Comparable> extends PartiallyOrdered<Interval<C>>
+                                            implements Comparable<Interval<C>> {
     private int dimension;
     private Range<C> range;
     
@@ -167,7 +167,7 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>,
      * Get the partial order between two intervals.
      * @param that interval
      * @return partial order enumerated type
-     */
+     
     @Override
     public Partial.Order relation(final Interval<C> that) {
         if(this.equals(that)) {
@@ -181,6 +181,7 @@ public class Interval<C extends Comparable> implements Partial<Interval<C>>,
         } 
         return Partial.Order.NONCOMPARABLE;
     }
+    * /
     
     /**
      * Find the intersection of two intervals.

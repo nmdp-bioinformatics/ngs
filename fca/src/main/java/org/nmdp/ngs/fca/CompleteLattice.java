@@ -34,16 +34,18 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.Direction;
 
 /**
- * Abstract lattice.
+ * Complete lattice.
  *
  * @param <T> type
+ * @see <a href="https://en.wikipedia.org/wiki/Complete_lattice"> complete
+ * lattice </a>
  */
-public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
+public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lattice<T> {
     protected Graph lattice;
     protected Vertex bottom;
     protected Vertex top;
 
-    protected Partial.Order.Direction direction;
+    //protected Partial.Order.Direction direction;
     protected int color;
     protected int size;
     protected int order;
@@ -51,10 +53,9 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
     protected static final String LABEL = "label";
     protected static final String COLOR = "color";
 
-    protected AbstractLattice(final Graph lattice) {
+    protected CompleteLattice(final Graph lattice) {
         checkNotNull(lattice);
         this.lattice = lattice;
-        direction = Partial.Order.Direction.FORWARD;
         top = lattice.addVertex(null); // TODO: pass in a first property -- easy for IntervalLattice, requires some work for ConceptLattice
         bottom = top;
         color = 0;
@@ -83,7 +84,7 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
     }
 
     private boolean filter(final T right, final T left) {
-        return right.relation(left).greaterOrEqual();
+        return right.isGreaterOrEqualTo(left);
     }
 
     /**
@@ -127,12 +128,6 @@ public abstract class AbstractLattice<T extends Partial> implements Lattice<T> {
     private Edge addUndirectedEdge(final Vertex source, final Vertex target, final String weight) {
         T sourceConcept = source.getProperty("label");
         T targetConcept = target.getProperty("label");
-        
-        Partial.Order.Direction direction = this.direction;
-
-        if (targetConcept.relation(sourceConcept).gte()) {
-            direction = Partial.Order.Direction.REVERSE;
-        }
 
         lattice.addEdge(null, source, target, weight);
         Edge edge = lattice.addEdge(null, target, source, weight);

@@ -32,7 +32,7 @@ import org.dishevelled.bitset.MutableBitSet;
 /**
  * Formal concept.
  */
-public final class Concept implements Partial<Concept> {
+public final class Concept extends PartiallyOrdered<Concept> {
     private final MutableBitSet extent;
     private final MutableBitSet intent;
 
@@ -130,27 +130,27 @@ public final class Concept implements Partial<Concept> {
             return new Concept(extent, intent);
         }
     }
-
-    /**
-     * Define the partial ordering of two concepts.
-     *
-     * @param that that concept
-     * @return partial ordering of this and that concept
-     */
+    
     @Override
-    public Order relation(final Concept that) {
-        MutableBitSet meet = (MutableBitSet) new MutableBitSet().or(this.intent).and(that.intent);
-
-        if (this.intent.equals(that.intent)) {
-            return Partial.Order.EQUAL;
-        }
-        if (this.intent.equals(meet)) {
-            return Partial.Order.LESS;
-        }
-        if (that.intent.equals(meet)) {
-            return Partial.Order.GREATER;
-        }
-        return Partial.Order.NONCOMPARABLE;
+    public boolean isLessThan(final Concept that) {
+        MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(this.intent).and(that.intent);
+        return this.intent.equals(bits);
+    }
+    
+    @Override
+    public boolean isLessOrEqualTo(final Concept that) {
+        return this.isLessThan(that) || this.equals(that);
+    }
+    
+    @Override
+    public boolean isGreaterThan(final Concept that) {
+        MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(this.intent).and(that.intent);
+        return that.intent.equals(bits);
+    }
+    
+    @Override
+    public boolean isGreaterOrEqualTo(final Concept that) {
+        return this.isGreaterThan(that) || this.equals(that);
     }
 
     @Override

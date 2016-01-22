@@ -148,41 +148,34 @@ public final class ConceptTest {
     }
 
     @Test
-    public void testEqual() {
-        assertEquals(X.relation(X), Partial.Order.EQUAL);
+    public void testLessThan() {
+        assertTrue(X.isLessThan(S));
     }
 
     @Test
-    public void testLess() {
-        assertEquals(X.relation(S), Partial.Order.LESS);
-        assertTrue(X.relation(S).less());
+    public void testGreaterThan() {
+        assertTrue(S.isGreaterThan(X));
     }
 
     @Test
-    public void testGreater() {
-        assertEquals(S.relation(X), Partial.Order.GREATER);
-        assertTrue(S.relation(X).greater());
+    public void testNoncomparableTo() {
+        assertTrue(W.isNonComparableTo(X));
     }
 
     @Test
-    public void testNoncomparable() {
-        assertEquals(W.relation(X), Partial.Order.NONCOMPARABLE);
+    public void testGreaterOrEqualTo() {
+        assertTrue(X.isGreaterOrEqualTo(X));
+        assertFalse(X.isGreaterOrEqualTo(S));
+        assertTrue(S.isGreaterOrEqualTo(X));
+        assertFalse(W.isGreaterOrEqualTo(X));
     }
 
     @Test
-    public void testGreaterOrEqual() {
-        assertTrue(X.relation(X).greaterOrEqual());
-        assertFalse(X.relation(S).greaterOrEqual());
-        assertTrue(S.relation(X).greaterOrEqual());
-        assertFalse(W.relation(X).greaterOrEqual());
-    }
-
-    @Test
-    public void testLessOrEqual() {
-        assertTrue(X.relation(X).lessOrEqual());
-        assertTrue(X.relation(S).lessOrEqual());
-        assertFalse(S.relation(X).lessOrEqual());
-        assertFalse(W.relation(X).lessOrEqual());
+    public void testLessOrEqualTo() {
+        assertTrue(X.isLessOrEqualTo(X));
+        assertTrue(X.isLessOrEqualTo(S));
+        assertFalse(S.isLessOrEqualTo(X));
+        assertFalse(W.isLessOrEqualTo(X));
     }
 
     @Test

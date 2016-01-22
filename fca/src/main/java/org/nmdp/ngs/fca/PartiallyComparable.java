@@ -22,12 +22,14 @@
 */
 package org.nmdp.ngs.fca;
 
+import com.google.common.collect.DiscreteDomain;
+
 /**
- * Partial ordering.
- *
- * @param <T> type of object
+ * Partially ordered sets.
+ * @param <C> 
+ * @param <P> 
  */
-public interface Partial<T> {
+public interface PartiallyComparable<C extends Comparable, P> {
 
     /**
      * Enumerated partial orders that extends natural (complete) orders for
@@ -116,11 +118,11 @@ public interface Partial<T> {
      * @param that partially ordered object
      * @return partial ordering
      */
-    Order relation(T that); // todo: <? extends T> ?
+    Order relation(P that); // todo: <? extends T> ?
+    
+    P intersect(P that);
 
-    T intersect(T that);
+    P union(P that);
 
-    T union(T that);
-
-    double measure();
+    long measure(DiscreteDomain<C> domain);
 }

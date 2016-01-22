@@ -44,6 +44,7 @@ public final class IntervalTest {
         y = new Interval<>(1, Range.open(4, 8));
     }
     
+    /*
     @Test
     public void testRelation() {
         assertTrue(a.relation(a) == Partial.Order.EQUAL);
@@ -53,6 +54,7 @@ public final class IntervalTest {
         assertTrue(a.relation(Interval.MAGIC).lte());
         assertTrue(Interval.MAGIC.relation(a).gte());
     }
+    */
     
     @Test
     public void testIntersect() {

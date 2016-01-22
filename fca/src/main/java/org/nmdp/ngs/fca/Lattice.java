@@ -27,7 +27,7 @@ package org.nmdp.ngs.fca;
  *
  * @param <T> type of partially ordered objects
  */
-public interface Lattice<T extends Partial> {
+public interface Lattice<T extends PartiallyOrdered> {
 
     /**
      * Return the least lattice element.

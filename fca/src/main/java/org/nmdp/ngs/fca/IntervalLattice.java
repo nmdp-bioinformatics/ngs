@@ -27,7 +27,7 @@ import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.Edge;
 
-public class IntervalLattice<C extends Comparable<?>> extends AbstractLattice<Interval<C>> {
+public class IntervalLattice<C extends Comparable<?>> extends CompleteLattice<Interval<C>> {
     
     public IntervalLattice(final Graph graph) {
         super(graph);

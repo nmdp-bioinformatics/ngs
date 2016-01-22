@@ -38,7 +38,7 @@ import org.dishevelled.bitset.MutableBitSet;
  * @param <G> object type
  * @param <M> attribute type
  */
-public class ConceptLattice<G, M> extends AbstractLattice<Concept> {
+public class ConceptLattice<G, M> extends CompleteLattice<Concept> {
     protected List<G> objects;
     protected List<M> attributes;
 
@@ -51,7 +51,7 @@ public class ConceptLattice<G, M> extends AbstractLattice<Concept> {
         top = lattice.addVertex(null);
         top.setProperty("label", new Concept(new MutableBitSet(), ones));
         top.setProperty("color", color);
-        direction = Partial.Order.Direction.FORWARD;
+        //direction = Partial.Order.Direction.FORWARD;
         size = 1;
         order = 0;
         bottom = top;
