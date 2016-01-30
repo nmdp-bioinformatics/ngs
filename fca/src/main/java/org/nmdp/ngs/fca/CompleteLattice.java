@@ -40,7 +40,7 @@ import com.tinkerpop.blueprints.Direction;
  * @see <a href="https://en.wikipedia.org/wiki/Complete_graph"> complete
  * graph </a>
  */
-public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lattice<T> {
+public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lattice<E> {
     protected Graph graph;
     protected Vertex bottom;
     protected Vertex top;
@@ -66,26 +66,26 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
     }
 
     protected boolean filter(final Vertex source, final Vertex target) {
-        T sourceConcept = source.getProperty(LABEL);
-        T targetConcept = target.getProperty(LABEL);
+        E sourceConcept = source.getProperty(LABEL);
+        E targetConcept = target.getProperty(LABEL);
         return filter(sourceConcept, targetConcept);
     }
 
-    private boolean filter(final Vertex source, final T right) {
+    private boolean filter(final Vertex source, final E right) {
         if(source.getProperty(LABEL) == null) {
             return false;
         }
         
-        T sourceConcept = source.getProperty(LABEL);
+        E sourceConcept = source.getProperty(LABEL);
         return filter(sourceConcept, right);
     }
 
-    private boolean filter(final T left, final Vertex target) {
-        T targetConcept = target.getProperty(LABEL);
+    private boolean filter(final E left, final Vertex target) {
+        E targetConcept = target.getProperty(LABEL);
         return filter(left, targetConcept);
     }
 
-    private boolean filter(final T right, final T left) {
+    private boolean filter(final E right, final E left) {
         return right.isGreaterOrEqualTo(left);
     }
 
@@ -97,7 +97,7 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
      * @return vertex whose label-concept represents the supremum
      */
     // todo:  modifies generator parameter
-    protected Vertex supremum(final T proposed, Vertex generator) {
+    protected Vertex supremum(final E proposed, Vertex generator) {
         boolean max = true;
         while (max) {
             max = false;
@@ -118,8 +118,39 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
         }
         return generator;
     }
+    
+    public boolean add(final E label) {
+        if(label == null) {
+            throw new IllegalArgumentException("cannot add null element");
+        }
+        
+        int previousSize = size;
+        this.insert(label);
+        return size > previousSize;
+    }
+    
+    public E find(final E element) {
+        return this.meet(element, this.top());
+    }
+    
+    public boolean contains(final E element) {
+        return this.find(element).equals(element);
+    }
+    
+    public boolean containsAll(final CompleteLattice that) {
+        for(Vertex vertex : that.graph.getVertices()) {
+            if(!this.contains((E) vertex.getProperty(LABEL))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public Iterator iterator() {
+        return (Iterator) graph.getVertices();
+    }
 
-    private Vertex insert(final T label) {
+    private Vertex insert(final E label) {
         Vertex child = graph.addVertex(null);
         child.setProperty("label", label);
         child.setProperty("color", color);
@@ -128,9 +159,6 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
     }
 
     private Edge addUndirectedEdge(final Vertex source, final Vertex target, final String weight) {
-        T sourceConcept = source.getProperty("label");
-        T targetConcept = target.getProperty("label");
-
         graph.addEdge(null, source, target, weight);
         Edge edge = graph.addEdge(null, target, source, weight);
         ++order;
@@ -160,12 +188,13 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
      * @return vertex whose label-concept represents the supremum
      */
     // todo:  modifies generator parameter
-    protected Vertex addIntent(T proposed, Vertex generator) {
+    protected Vertex addIntent(final E proposed, Vertex generator) {
         generator = supremum(proposed, generator);
 
         if (filter(generator, proposed) && filter(proposed, generator)) {
             return generator;
         }
+        
         List parents = new ArrayList<>();
         for (Edge edge : generator.getEdges(Direction.BOTH)) {
             Vertex target = edge.getVertex(Direction.OUT);
@@ -175,9 +204,9 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
 
             Vertex candidate = target;
             if (!filter(target, proposed) && !filter(proposed, target)) {
-                T targetConcept = target.getProperty(LABEL);
+                E targetConcept = target.getProperty(LABEL);
                 // MutableBitSet meet = (MutableBitSet) new MutableBitSet().or(targetConcept.intent()).and(proposed.intent());
-                T intersect = (T) targetConcept.intersect(proposed);
+                E intersect = (E) targetConcept.intersect(proposed);
                 candidate = addIntent(intersect, candidate);
             }
 
@@ -205,9 +234,9 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
             }
         }
 
-        T generatorConcept = generator.getProperty(LABEL);
+        E generatorLabel = generator.getProperty(LABEL);
 
-        Vertex child = insert((T) proposed.union(generatorConcept));
+        Vertex child = insert((E) proposed.union(generatorLabel));
         addUndirectedEdge(generator, child, ""); 
         
         bottom = filter(bottom, proposed) ? child : bottom;
@@ -231,27 +260,27 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
     }
 
     @Override
-    public final T bottom() {
+    public final E bottom() {
         return bottom.getProperty(LABEL);
     }
 
     @Override
-    public final T top() {
+    public final E top() {
         return top.getProperty(LABEL);
     }
 
     @Override
-    public T join(final T left, final T right) {
-        return supremum((T) left.union(right), top).getProperty(LABEL);
+    public E join(final E left, final E right) {
+        return supremum((E) left.union(right), top).getProperty(LABEL);
     }
 
     @Override
-    public T meet(final T left, final T right) {
-        return supremum((T) left.intersect(right), top).getProperty(LABEL);
+    public E meet(final E left, final E right) {
+        return supremum((E) left.intersect(right), top).getProperty(LABEL);
     }
 
     @Override
-    public double measure(final T left, final T right) {
+    public double measure(final E left, final E right) {
         //Concept concept = leastUpperBound(right);
         //Concept meet = left.meet(leastUpperBound(left), concept);
         // T meet = this.meet(left, right);

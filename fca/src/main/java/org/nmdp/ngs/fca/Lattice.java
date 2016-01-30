@@ -46,7 +46,7 @@ public interface Lattice<E extends PartiallyOrdered> { // extends Collection<E> 
     E top();
 
     /**
-     * Return the least upper bound (also supremum).
+     * Return the least upper bound (supremum).
      *
      * @param left element
      * @param right element
@@ -55,7 +55,7 @@ public interface Lattice<E extends PartiallyOrdered> { // extends Collection<E> 
     E join(E left, E right);
 
     /**
-     * Return the greatest lower bound (also infimum).
+     * Return the greatest lower bound (infimum).
      *
      * @param left element
      * @param right element
