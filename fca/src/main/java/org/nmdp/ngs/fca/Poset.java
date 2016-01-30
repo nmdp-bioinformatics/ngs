@@ -22,11 +22,42 @@
 */
 package org.nmdp.ngs.fca;
 
-public class BinaryRelation<T extends Relatable> {
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+public final class Poset<C extends Comparable> extends PartiallyOrdered<Poset<C>> {
+    public final Set<C> set;
     
-    public BinaryRelation() {}
-    
-    public boolean apply(final T left, final T right) {
-        return left.apply(right);
+    public Poset(final Set<C> set) {
+        this.set = set;
     }
+
+    @Override
+    public Poset<C> intersect(Poset<C> that) {
+        Set<C> intersection = new HashSet<>(set);
+        intersection.retainAll(that.set);
+        return new Poset(intersection);
+    }
+
+    @Override
+    public Poset<C> union(Poset<C> that) {
+        Set<C> union = new HashSet<>(set);
+        union.addAll(that.set);
+        return new Poset(union);
+    }
+
+    @Override
+    public double measure() {
+        return set.size();
+    }
+    
+
+    
+    @Override
+    public String toString() {
+        return set.toString();
+    }
+
 }

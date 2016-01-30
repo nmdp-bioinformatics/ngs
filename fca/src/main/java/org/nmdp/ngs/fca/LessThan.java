@@ -22,11 +22,18 @@
 */
 package org.nmdp.ngs.fca;
 
-public class BinaryRelation<T extends Relatable> {
+public class LessThan<T extends Relatable> extends BinaryRelation<T> {
+    public LessThan() {
+        super();
+    }
     
-    public BinaryRelation() {}
-    
+    @Override  
     public boolean apply(final T left, final T right) {
-        return left.apply(right);
+        return left.isLessThan(right);
+    }
+    
+    @Override
+    public String toString() {
+        return "LessThan";
     }
 }

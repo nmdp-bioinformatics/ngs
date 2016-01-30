@@ -22,11 +22,30 @@
 */
 package org.nmdp.ngs.fca;
 
-public class BinaryRelation<T extends Relatable> {
+public abstract class TotallyOrdered<T extends TotallyOrdered> extends Binary<T> implements Comparable<T> {
     
-    public BinaryRelation() {}
+    @Override
+    public boolean apply(final T that) {
+        return this.compareTo(that) == 0;
+    }
     
-    public boolean apply(final T left, final T right) {
-        return left.apply(right);
+    @Override
+    public boolean isLessOrEqualTo(final T that) {
+        return this.isLessThan(that) || this.apply(that);
+    }
+    
+    @Override
+    public boolean isLessThan(final T that) {
+        return this.compareTo(that) == -1;
+    }
+    
+    @Override
+    public boolean isGreaterOrEqualTo(final T that) {
+        return this.isGreaterThan(that) || this.apply(that);
+    }
+    
+    @Override
+    public boolean isGreaterThan(final T that) {
+        return this.compareTo(that) == 1;
     }
 }

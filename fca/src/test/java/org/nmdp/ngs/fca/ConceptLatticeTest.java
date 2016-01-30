@@ -23,27 +23,15 @@
 package org.nmdp.ngs.fca;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 import static org.nmdp.ngs.fca.TestUtil.list;
 import static org.nmdp.ngs.fca.TestUtil.bits;
 
-import java.util.BitSet;
-
-import org.dishevelled.bitset.MutableBitSet;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
-import com.tinkerpop.blueprints.Graph;
-import com.tinkerpop.blueprints.Edge;
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.Direction;
-
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -69,29 +57,20 @@ public final class ConceptLatticeTest {
         bd = list("b", "d");
         af = list("a", "f");
 
-        lattice = new ConceptLattice<String, String>(new TinkerGraph(), abcdefg);
-        lattice.insert("S", abdf);
-        lattice.insert("T", abde);
-        lattice.insert("U", abdefg);
-        lattice.insert("V", acef);
-        lattice.insert("W", bd);
-        lattice.insert("X", af);
+        lattice = new ConceptLattice(new TinkerGraph(), 7);
+
+        lattice.insert(new Concept(bits(0), bits(0, 1, 3, 5)));
+        lattice.insert(new Concept(bits(1), bits(0, 1, 3, 4)));
+        lattice.insert(new Concept(bits(2), bits(0, 1, 3, 4, 5, 6)));
+        lattice.insert(new Concept(bits(3), bits(0, 2, 4, 5)));
+        lattice.insert(new Concept(bits(4), bits(1, 3)));
+        lattice.insert(new Concept(bits(5), bits(0, 5)));
 
         STUVWX = list("S", "T", "U", "V", "W", "X");
     }
 
     @Test
-    public void testGetAttributes() {
-        assertEquals(lattice.getAttributes(), abcdefg);
-    }
-
-    @Test
-    public void testGetObjects() {
-        assertEquals(lattice.getObjects(), STUVWX);
-    }
-
-    @Test
-    public void testInsert() {
+    public void testAdd() {
         Concept top = (Concept) lattice.top();
         Concept bottom = (Concept) lattice.bottom();
 
@@ -103,66 +82,10 @@ public final class ConceptLatticeTest {
         assertEquals(lattice.size(), 12);
     }
 
-    /*
-    @Test
-    public void testLeastUpperBound() {
-        MutableBitSet bits = new MutableBitSet();
-
-        Concept concept = lattice.leastUpperBound(abcdefg);
-
-        bits.clear(0, bits.capacity()); // {}
-        assertEquals(concept.extent(), bits);
-
-        bits.clear(0, bits.capacity());
-        bits.set(0, 7); // {abcdefg}
-        assertEquals(concept.intent(), bits);
-
-        concept = lattice.leastUpperBound(acef);
-        bits.clear(0, bits.capacity());
-        bits.flip(3); // {V}
-        assertEquals(concept.extent(), bits);
-
-        bits.clear(0, bits.capacity());
-        bits.flip(0); bits.flip(2); bits.flip(4); bits.flip(5); // {acef}
-        assertEquals(concept.intent(), bits);
-
-        List ae = new ImmutableList.Builder<String>().add("a").add("e").build();
-        concept = lattice.leastUpperBound(ae);
-
-        bits.clear(0, bits.capacity());
-        bits.flip(1); bits.flip(2); bits.flip(3); // {TUV}
-        assertEquals(concept.extent(), bits);
-
-        bits.clear(0, bits.capacity());
-        bits.flip(0); bits.flip(4); // {ae}
-        assertEquals(concept.intent(), bits);
-
-        List empty = new ImmutableList.Builder<String>().build();
-        concept = lattice.leastUpperBound(empty);
-
-        bits.clear(0, bits.capacity());
-        bits.set(0, 6); // {STUVWX}
-        assertEquals(concept.extent(), bits);
-
-        bits.clear(0, bits.capacity()); // {}
-        assertEquals(concept.intent(), bits);
-
-        concept = lattice.leastUpperBound(bd, af);
-
-        bits.clear(0, bits.capacity());
-        bits.flip(0); bits.flip(2); // {SU}
-        assertEquals(concept.extent(), bits);
-
-        bits.clear(0, bits.capacity());
-        bits.flip(0); bits.flip(1); bits.flip(3); bits.flip(5); // {abdf}
-        assertEquals(concept.intent(), bits);
-    }    
-    */
-
     @Test
     public void testMeet() {
-        Concept left = (Concept) lattice.meet(lattice.top(), Concept.builder().withAttributes(bd, abcdefg).build());
-        Concept right = (Concept) lattice.meet(lattice.top(), Concept.builder().withAttributes(af, abcdefg).build());
+        Concept left = (Concept) lattice.meet(lattice.top(), new Concept(bits(), bits(1, 3)));// Concept.builder().withAttributes(bd, abcdefg).build());
+        Concept right = (Concept) lattice.meet(lattice.top(), new Concept(bits(), bits(0, 5))); //Concept.builder().withAttributes(af, abcdefg).build());
 
         assertEquals(left.intent(), bits(1, 3));
         assertEquals(right.intent(), bits(0, 5));
@@ -172,8 +95,8 @@ public final class ConceptLatticeTest {
 
     @Test
     public void testJoin() {
-        Concept left = (Concept) lattice.join(lattice.bottom(), Concept.builder().withAttributes(bd, abcdefg).build());
-        Concept right = (Concept) lattice.join(lattice.bottom(), Concept.builder().withAttributes(af, abcdefg).build());
+        Concept left = (Concept) lattice.join(lattice.bottom(), new Concept(bits(), bits(1, 3)));//Concept.builder().withAttributes(bd, abcdefg).build());
+        Concept right = (Concept) lattice.join(lattice.bottom(), new Concept(bits(), bits(0, 5))); //Concept.builder().withAttributes(af, abcdefg).build());
 
         assertEquals(left.intent(), bits(1, 3));
         assertEquals(right.intent(), bits(0, 5));
@@ -183,13 +106,33 @@ public final class ConceptLatticeTest {
 
     @Test
     public void testMeasure() {
-        Concept V = Concept.builder().withObjects(list("V"), STUVWX).withAttributes(acef, abcdefg).build();
-        Concept W = Concept.builder().withObjects(list("W"), STUVWX).withAttributes(bd, abcdefg).build();
-        Concept Z = Concept.builder().withObjects(list("Z"), STUVWX).withAttributes(list("a"), abcdefg).build();
+        Concept V = new Concept(bits(3), bits(0, 2, 4, 5)); //Concept.builder().withObjects(list("V"), STUVWX).withAttributes(acef, abcdefg).build();
+        Concept W = new Concept(bits(4), bits(1, 3)); // Concept.builder().withObjects(list("W"), STUVWX).withAttributes(bd, abcdefg).build();
+        Concept Z = new Concept(bits(6), bits(0)); //Concept.builder().withObjects(list("Z"), STUVWX).withAttributes(list("a"), abcdefg).build();
 
         assertEquals(0.0, lattice.measure(V, W), 0.0);
         assertEquals(0.0, lattice.measure(W, V), 0.0);
         assertEquals(0.2, lattice.measure(V, Z), 0.01);
         assertEquals(1.0, lattice.measure(Z, V), 0.0);
+    }
+    
+    @Test
+    public void testSize() {
+        assertEquals(new ConceptLattice(new TinkerGraph(), 7).size(), 1);
+        assertEquals(lattice.size(), 12);
+    }
+    
+    @Test
+    public void testIsEmpty() {
+        assertTrue(new ConceptLattice(new TinkerGraph(), 7).isEmpty());
+        assertFalse(lattice.isEmpty());
+    }
+    
+    @Test
+    public void testToArray() {
+        Object[] concepts = lattice.toArray();
+        assertEquals(concepts.length, 12);
+        assertEquals(concepts[0], new Concept(bits(), bits(0, 1, 2, 3, 4, 5, 6)));
+        assertEquals(concepts[11], new Concept(bits(2, 3), bits(0, 4, 5)));
     }
 }

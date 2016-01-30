@@ -22,11 +22,35 @@
 */
 package org.nmdp.ngs.fca;
 
-public class BinaryRelation<T extends Relatable> {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+
+import static org.nmdp.ngs.fca.TestUtil.list;
+import static org.nmdp.ngs.fca.TestUtil.bits;
+
+import java.util.BitSet;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
+
+import org.dishevelled.bitset.MutableBitSet;
+import org.dishevelled.bitset.ImmutableBitSet;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.Rule;
+
+public class TotallyOrderedTest {
+    String a, b, c;
     
-    public BinaryRelation() {}
-    
-    public boolean apply(final T left, final T right) {
-        return left.apply(right);
+    @Before
+    public void setUp() {
+    }
+
+    @Test
+    public void testApply() {
     }
 }

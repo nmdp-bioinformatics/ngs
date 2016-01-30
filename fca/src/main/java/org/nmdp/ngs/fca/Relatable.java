@@ -22,11 +22,15 @@
 */
 package org.nmdp.ngs.fca;
 
-public class BinaryRelation<T extends Relatable> {
+import com.google.common.base.Predicate;
+
+public interface Relatable<T> extends Predicate<T> {
     
-    public BinaryRelation() {}
+    public boolean isLessOrEqualTo(T that);
     
-    public boolean apply(final T left, final T right) {
-        return left.apply(right);
-    }
+    public boolean isLessThan(T that);
+    
+    public boolean isGreaterOrEqualTo(T that);
+    
+    public boolean isGreaterThan(T that);
 }

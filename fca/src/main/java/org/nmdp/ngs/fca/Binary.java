@@ -22,11 +22,16 @@
 */
 package org.nmdp.ngs.fca;
 
-public class BinaryRelation<T extends Relatable> {
+import java.util.Comparator;
+
+/**
+ * 
+ * @param <T> type
+ */
+public abstract class Binary<T extends Relatable> implements Relatable<T> {
     
-    public BinaryRelation() {}
-    
-    public boolean apply(final T left, final T right) {
-        return left.apply(right);
-    }
+    @Override
+    public boolean apply(final T that) {
+        return this.equals(that);
+    }   
 }

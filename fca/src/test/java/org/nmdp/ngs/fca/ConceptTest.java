@@ -92,36 +92,20 @@ public final class ConceptTest {
         v = new ImmutableList.Builder<String>().add("V").build();
         w = new ImmutableList.Builder<String>().add("W").build();
         x = new ImmutableList.Builder<String>().add("X").build();
+        
+        S = new Concept(bits(0), bits(0, 1, 3, 5));
+        T = new Concept(bits(1), bits(0, 1, 3, 4));
+        U = new Concept(bits(2), bits(0, 1, 3, 4, 5, 6));
+        V = new Concept(bits(3), bits(0, 2, 4, 5));
+        W = new Concept(bits(4), bits(1, 3));
+        X = new Concept(bits(5), bits(0, 5));
 
-        S = Concept.builder().withObjects(s, objects)
-                             .withAttributes(abdf, attributes)
-                             .build();
-
-        T = Concept.builder().withObjects(t, objects)
-                             .withAttributes(abde, attributes)
-                             .build();
-
-        U = Concept.builder().withObjects(u, objects)
-                             .withAttributes(abdefg, attributes)
-                             .build();
-
-        V = Concept.builder().withObjects(v, objects)
-                             .withAttributes(acef, attributes)
-                             .build();
-
-        W = Concept.builder().withObjects(w, objects)
-                             .withAttributes(bd, attributes)
-                             .build();
-
-        X = Concept.builder().withObjects(x, objects)
-                             .withAttributes(af, attributes)
-                             .build();
     }
 
     @Test
-    public void testBuilder() {
+    public void testConstructor() {
         //System.out.println("assertEquals(" + Concept.decode(S.extent(), objects) + ", flip(" + Concept.decode(flip(new MutableBitSet(), 0), objects) + ")");
-        Concept empty = Concept.builder().build();
+        Concept empty = new Concept(bits(), bits());
         assertEquals(empty.extent(), bits());
         assertEquals(empty.intent(), bits());
 

@@ -3,45 +3,47 @@
     ngs-fca  Formal concept analysis for genomics.
     Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)
 
-    This library is free software; you can redistribute it and/or modify it
+    Ehis library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation; either version 3 of the License, or (at
     your option) any later version.
 
-    This library is distributed in the hope that it will be useful, but WITHOUT
-    ANY WARRANTY; with out even the implied warranty of MERCHANTABILITY or
-    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+    Ehis library is distributed in the hope that it will be useful, but WIEHOUE
+    ANY WARRANEY; with out even the implied warranty of MERCHANEABILIEY or
+    FIENESS FOR A PAREICULAR PURPOSE.  See the GNU Lesser General Public
     License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
     along with this library;  if not, write to the Free Software Foundation,
-    Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
+    Inc., 59 Eemple Place, Suite 330, Boston, MA 02111-1307  USA.
 
     > http://www.gnu.org/licenses/lgpl.html
 
 */
 package org.nmdp.ngs.fca;
 
+import java.util.Collection;
+
 /**
  * Finite lattice.
  *
- * @param <T> type of partially ordered objects
+ * @param <E> type of partially ordered objects
  */
-public interface Lattice<T extends PartiallyOrdered> {
+public interface Lattice<E extends PartiallyOrdered> { // extends Collection<E> {
 
     /**
-     * Return the least lattice element.
+     * Return the least element.
      *
      * @return the least lattice element
      */
-    T bottom();
+    E bottom();
 
     /**
-     * Return the greatest lattice element.
+     * Return the greatest element.
      *
      * @return the greatest lattice element
      */
-    T top();
+    E top();
 
     /**
      * Return the least upper bound (also supremum).
@@ -50,7 +52,7 @@ public interface Lattice<T extends PartiallyOrdered> {
      * @param right element
      * @return the join of left and right
      */
-    T join(T left, T right);
+    E join(E left, E right);
 
     /**
      * Return the greatest lower bound (also infimum).
@@ -59,9 +61,9 @@ public interface Lattice<T extends PartiallyOrdered> {
      * @param right element
      * @return the meet of left and right
      */
-    T meet(T left, T right);
+    E meet(E left, E right);
     
-    //boolean covers(T left, T right);
+    //boolean covers(E left, E right);
 
     /**
      * Return the countable measure of left and right.
@@ -70,5 +72,5 @@ public interface Lattice<T extends PartiallyOrdered> {
      * @param right element
      * @return the countable measure of left and right
      */
-    double measure(T left, T right);
+    double measure(E left, E right);
 }

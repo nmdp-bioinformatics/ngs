@@ -34,14 +34,14 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.Direction;
 
 /**
- * Complete lattice.
+ * Complete graph.
  *
  * @param <T> type
- * @see <a href="https://en.wikipedia.org/wiki/Complete_lattice"> complete
- * lattice </a>
+ * @see <a href="https://en.wikipedia.org/wiki/Complete_graph"> complete
+ * graph </a>
  */
 public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lattice<T> {
-    protected Graph lattice;
+    protected Graph graph;
     protected Vertex bottom;
     protected Vertex top;
 
@@ -53,12 +53,14 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
     protected static final String LABEL = "label";
     protected static final String COLOR = "color";
 
-    protected CompleteLattice(final Graph lattice) {
-        checkNotNull(lattice);
-        this.lattice = lattice;
-        top = lattice.addVertex(null); // TODO: pass in a first property -- easy for IntervalLattice, requires some work for ConceptLattice
-        bottom = top;
+    protected CompleteLattice(final Graph graph) {
+        checkNotNull(graph);
+        this.graph = graph;
+
         color = 0;
+        top = graph.addVertex(null); // TODO: pass in a first property -- easy for IntervalLattice, requires some work for ConceptLattice
+        top.setProperty(COLOR, color);
+        bottom = top;
         order = 0;
         size = 1;
     }
@@ -117,8 +119,8 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
         return generator;
     }
 
-    private Vertex add(final T label) {
-        Vertex child = lattice.addVertex(null);
+    private Vertex insert(final T label) {
+        Vertex child = graph.addVertex(null);
         child.setProperty("label", label);
         child.setProperty("color", color);
         ++size;
@@ -129,8 +131,8 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
         T sourceConcept = source.getProperty("label");
         T targetConcept = target.getProperty("label");
 
-        lattice.addEdge(null, source, target, weight);
-        Edge edge = lattice.addEdge(null, target, source, weight);
+        graph.addEdge(null, source, target, weight);
+        Edge edge = graph.addEdge(null, target, source, weight);
         ++order;
         return edge;
     }
@@ -138,12 +140,12 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
     private void removeUndirectedEdge(final Vertex source, final Vertex target) {
         for (Edge edge : source.getEdges(Direction.BOTH)) {
             if (edge.getVertex(Direction.OUT).equals(target)) {
-                lattice.removeEdge(edge);
+                graph.removeEdge(edge);
                 break;
             }
 
             if (edge.getVertex(Direction.IN).equals(target)) {
-                lattice.removeEdge(edge);
+                graph.removeEdge(edge);
                 break;
             }
         }
@@ -205,7 +207,7 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
 
         T generatorConcept = generator.getProperty(LABEL);
 
-        Vertex child = add((T) proposed.union(generatorConcept));
+        Vertex child = insert((T) proposed.union(generatorConcept));
         addUndirectedEdge(generator, child, ""); 
         
         bottom = filter(bottom, proposed) ? child : bottom;
@@ -254,5 +256,20 @@ public abstract class CompleteLattice<T extends PartiallyOrdered> implements Lat
         //Concept meet = left.meet(leastUpperBound(left), concept);
         // T meet = this.meet(left, right);
         return (double) join(left, right).measure() / meet(right, top()).measure();
+    }
+    
+    public boolean isEmpty() {
+        return bottom == top;
+    }
+    
+    public Object[] toArray() {
+        Object[] array = new Object[size];
+        
+        int i = 0;
+        for(Vertex vertex : graph.getVertices()) {
+            array[i++] = vertex.getProperty(LABEL);
+        }
+
+        return array;
     }
 }

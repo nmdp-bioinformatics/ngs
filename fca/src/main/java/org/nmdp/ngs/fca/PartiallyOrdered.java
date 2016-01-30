@@ -22,24 +22,29 @@
 */
 package org.nmdp.ngs.fca;
 
-public abstract class PartiallyOrdered<T extends PartiallyOrdered> implements BinaryRelation<T> {
+public abstract class PartiallyOrdered<T extends PartiallyOrdered> extends Binary<T> {
 
+    @Override
     public boolean apply(final T that) {
-        return this.equals(this.intersect(that)) || this.equals(that);
+        return this.equals(this.intersect(that));// || super.apply(that);
     }
     
+    @Override
     public boolean isLessOrEqualTo(final T that) {
         return this.apply(that);
     }
     
+    @Override
     public boolean isLessThan(final T that) {
         return isLessOrEqualTo(that) && !this.equals(that);
     }
     
+    @Override
     public boolean isGreaterOrEqualTo(final T that) {
-        return that.equals(this.intersect(that)) || this.equals(that);
+        return that.equals(this.intersect(that));// || this.equals(that);
     }
     
+    @Override
     public boolean isGreaterThan(final T that) {
         return isGreaterOrEqualTo(that) && !this.equals(that);
     }

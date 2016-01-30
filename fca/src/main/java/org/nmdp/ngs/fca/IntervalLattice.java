@@ -26,14 +26,14 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.Edge;
+import java.util.Collection;
+import java.util.Iterator;
 
 public class IntervalLattice<C extends Comparable<?>> extends CompleteLattice<Interval<C>> {
     
     public IntervalLattice(final Graph graph) {
         super(graph);
-        
-        top.setProperty(LABEL, Interval.MAGIC);
-        top.setProperty(COLOR, color);
+        top.setProperty(LABEL, Interval.MAGIC);    
     }
     
     public Interval<C> insert(final Interval<C> interval) {
@@ -43,7 +43,7 @@ public class IntervalLattice<C extends Comparable<?>> extends CompleteLattice<In
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("digraph {\n");
-        for (Vertex vertex : lattice.getVertices()) {
+        for (Vertex vertex : graph.getVertices()) {
             for (Edge edge : vertex.getEdges(Direction.BOTH)) {
                 Vertex target = edge.getVertex(Direction.OUT);
                 if (!vertex.getProperty("label").equals(target.getProperty("label"))) {
@@ -58,4 +58,6 @@ public class IntervalLattice<C extends Comparable<?>> extends CompleteLattice<In
         sb.append("}");
         return sb.toString();
     }
+
+
 }
