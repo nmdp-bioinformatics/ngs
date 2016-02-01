@@ -90,6 +90,11 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
         public E next() {
             return vertices.next().getProperty(LABEL);
         }
+        
+        @Override
+        public void remove() {
+            
+        }
     }
 
     protected boolean filter(final Vertex source, final Vertex target) {
