@@ -32,37 +32,64 @@ import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+import java.util.Collection;
 
 /**
- * Complete graph.
- *
- * @param <T> type
- * @see <a href="https://en.wikipedia.org/wiki/Complete_graph"> complete
- * graph </a>
+ * Complete Lattice.
+ * @param <E> element type
+ * @see <a href="https://en.wikipedia.org/wiki/Complete_lattice">complete
+ * lattice </a>
  */
 public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lattice<E> {
     protected Graph graph;
-    protected Vertex bottom;
-    protected Vertex top;
-
-    //protected Partial.Order.Direction direction;
-    protected int color;
-    protected int size;
-    protected int order;
+    protected Vertex top, bottom;
+    protected int color, size, order;
 
     protected static final String LABEL = "label";
     protected static final String COLOR = "color";
 
+    /**
+     * Construct a complete lattice assigned to a designated graph (backend).
+     * @param graph assignment
+     */
     protected CompleteLattice(final Graph graph) {
         checkNotNull(graph);
         this.graph = graph;
-
+        order = 0;
         color = 0;
+        
         top = graph.addVertex(null); // TODO: pass in a first property -- easy for IntervalLattice, requires some work for ConceptLattice
         top.setProperty(COLOR, color);
         bottom = top;
-        order = 0;
         size = 1;
+    }
+    
+    /**
+     * Construct a complete lattice assigned to a cached (in-memory) graph
+     * (backend).
+     */
+    protected CompleteLattice() {
+        this(new TinkerGraph());
+    }
+    
+    public class Iterator<E extends PartiallyOrdered> implements java.util.Iterator<E> {
+        private final java.util.Iterator<Vertex> vertices;
+
+
+        public Iterator(final Graph graph) {
+            vertices = graph.getVertices().iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return vertices.hasNext();
+        }
+
+        @Override
+        public E next() {
+            return vertices.next().getProperty(LABEL);
+        }
     }
 
     protected boolean filter(final Vertex source, final Vertex target) {
@@ -91,12 +118,10 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
 
     /**
      * Find the supremum or least upper bound.
-     *
-     * @param proposed proposed
-     * @param generator starting point and tracer
-     * @return vertex whose label-concept represents the supremum
+     * @param proposed element
+     * @param generator element
+     * @return supremum vertex
      */
-    // todo:  modifies generator parameter
     protected Vertex supremum(final E proposed, Vertex generator) {
         boolean max = true;
         while (max) {
@@ -119,35 +144,48 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
         return generator;
     }
     
-    public boolean add(final E label) {
-        if(label == null) {
-            throw new IllegalArgumentException("cannot add null element");
-        }
-        
-        int previousSize = size;
-        this.insert(label);
-        return size > previousSize;
-    }
-    
     public E find(final E element) {
         return this.meet(element, this.top());
     }
-    
+
     public boolean contains(final E element) {
         return this.find(element).equals(element);
     }
-    
-    public boolean containsAll(final CompleteLattice that) {
-        for(Vertex vertex : that.graph.getVertices()) {
-            if(!this.contains((E) vertex.getProperty(LABEL))) {
+
+    /**
+     *
+     * @param collection
+     * @return
+     */
+    public boolean containsAll(final Collection<? extends E> collection) {
+        for(E element : collection) {
+            if(!this.contains(element)) {
                 return false;
             }
         }
         return true;
     }
     
+    @Override
+    public boolean covers(final E left, final E right) {
+        Vertex found = this.supremum(left, top);
+
+        if(found != bottom) {
+            for(Edge edge : found.getEdges(Direction.IN)) {
+                Vertex target = edge.getVertex(Direction.OUT);
+
+                if(target.getProperty(LABEL).equals(right)) {
+                    return right.isLessThan(left);
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    @Override
     public Iterator iterator() {
-        return (Iterator) graph.getVertices();
+        return new Iterator(graph);
     }
 
     private Vertex insert(final E label) {
@@ -181,13 +219,11 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     }
 
     /**
-     * Find the supremum or least upper bound.
-     *
-     * @param proposed proposed
-     * @param generator starting point and tracer
-     * @return vertex whose label-concept represents the supremum
+     * 
+     * @param proposed element
+     * @param generator vertex
+     * @return 
      */
-    // todo:  modifies generator parameter
     protected Vertex addIntent(final E proposed, Vertex generator) {
         generator = supremum(proposed, generator);
 
@@ -212,7 +248,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
 
             boolean add = true;
             List doomed = new ArrayList<>();
-            for (Iterator it = parents.iterator(); it.hasNext();) {
+            for (java.util.Iterator it = parents.iterator(); it.hasNext();) {
                 Vertex parent = (Vertex) it.next();
 
                 if (filter(parent, candidate)) {
@@ -224,7 +260,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
                 }
             }
 
-            for (Iterator it = doomed.iterator(); it.hasNext();) {
+            for (java.util.Iterator it = doomed.iterator(); it.hasNext();) {
                 Vertex vertex = (Vertex) it.next();
                 parents.remove(vertex);
             }
@@ -241,7 +277,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
         
         bottom = filter(bottom, proposed) ? child : bottom;
 
-        for (Iterator it = parents.iterator(); it.hasNext();) {
+        for (java.util.Iterator it = parents.iterator(); it.hasNext();) {
             Vertex parent = (Vertex) it.next();
             if (!parent.equals(generator)) {
                 removeUndirectedEdge(parent, generator);
@@ -287,18 +323,43 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
         return (double) join(left, right).measure() / meet(right, top()).measure();
     }
     
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("digraph {\n");
+       
+        for (Vertex vertex : graph.getVertices()) {
+            for (Edge edge : vertex.getEdges(Direction.BOTH)) {
+                Vertex target = edge.getVertex(Direction.OUT);
+                
+                E sourceElement = vertex.getProperty(LABEL);
+                E targetElement = target.getProperty(LABEL);
+                
+                if (!sourceElement.equals(targetElement)) {
+                    if (!filter(sourceElement, targetElement)) {
+                        sb.append(" \"" + sourceElement);
+                        sb.append("\" -> \"" + targetElement);
+                        sb.append("\"[label=\"" + edge.getLabel() + "\"]\n");
+                    }
+                }
+            }
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+    
     public boolean isEmpty() {
         return bottom == top;
     }
     
     public Object[] toArray() {
-        Object[] array = new Object[size];
-        
+        return this.toArray(new Object[size]);
+    }
+    
+    public <E> E[] toArray(E[] elements) {
         int i = 0;
-        for(Vertex vertex : graph.getVertices()) {
-            array[i++] = vertex.getProperty(LABEL);
+        for(Object element : this) {
+            elements[i++] = (E) element;
         }
-
-        return array;
+        return elements;
     }
 }

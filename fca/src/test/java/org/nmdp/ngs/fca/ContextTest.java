@@ -25,13 +25,26 @@ package org.nmdp.ngs.fca;
 import com.google.common.collect.Range;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 import org.junit.Test;
 
+import static org.nmdp.ngs.fca.TestUtil.bits;
+
 public class ContextTest {
+    List<Poset<String>> ABC;
+    
+    @Before
+    public void setUp() {
+        ABC = Poset.singletons(Arrays.asList("a", "b", "c"));
+    }
     
     @Test
     public void testSetUp() {
+        
         List<Interval<Integer>> a = new ArrayList<>();
         List<Interval<Integer>> b = new ArrayList<>();
         
@@ -72,5 +85,61 @@ public class ContextTest {
     @Test
     public void testBuilder() {
         
+    }
+    
+        
+    @Test
+    public void testDown() {
+        Context powerset = Context.powerset(ABC);
+        ConceptLattice lattice = powerset.asConceptLattice(new TinkerGraph());
+        
+        ConceptLattice downset = Context.down(lattice).asConceptLattice(new TinkerGraph());
+        System.out.println("DOWN = " + downset);
+    }
+    
+    @Test
+    public void testDownset() {
+        ConceptLattice powerset = Context.powerset(ABC).asConceptLattice(new TinkerGraph());
+        Context downset = Context.downset(powerset);
+        
+        assertEquals(downset.getObjects().size(), 8);
+        assertEquals(downset.getAttributes().size(), 8);
+        assertTrue(downset.getRelation() instanceof NotGreaterOrEqual);
+        
+        ConceptLattice lattice = downset.asConceptLattice(new TinkerGraph());
+        
+        assertEquals(lattice.size(), 20);
+        assertEquals(lattice.top(), new Concept(bits(), bits(0, 1, 2, 3, 4, 5, 6, 7)));
+        assertEquals(lattice.bottom(), new Concept(bits(0, 1, 2, 3, 4, 5, 6, 7), bits()));
+    }
+    
+    @Test
+    public void testPowerset() {
+        Context powerset = Context.powerset(ABC);
+
+        assertEquals(powerset.getObjects(), ABC);
+        assertEquals(powerset.getAttributes(), ABC);
+        assertTrue(powerset.getRelation() instanceof NotEqual);
+        
+        ConceptLattice lattice = powerset.asConceptLattice(new TinkerGraph());
+                
+        assertEquals(lattice.size(), 8);
+        assertEquals(lattice.top(), new Concept(bits(), bits(0, 1, 2)));
+        assertEquals(lattice.bottom(), new Concept(bits(0, 1, 2), bits()));
+    }
+    
+    @Test
+    public void testAntichain() {
+        Context antichain = Context.antichain(ABC);
+        
+        assertEquals(antichain.getObjects(), ABC);
+        assertEquals(antichain.getAttributes(), ABC);
+        assertTrue(antichain.getRelation() instanceof Equal);
+        
+        ConceptLattice lattice = antichain.asConceptLattice(new TinkerGraph());
+        
+        assertEquals(lattice.size(), 5);
+        assertEquals(lattice.top(), new Concept(bits(), bits(0, 1, 2)));
+        assertEquals(lattice.bottom(), new Concept(bits(0, 1, 2), bits()));
     }
 }

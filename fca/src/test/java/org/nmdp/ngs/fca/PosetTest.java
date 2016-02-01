@@ -35,6 +35,8 @@ import java.util.BitSet;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,28 +46,80 @@ import org.dishevelled.bitset.ImmutableBitSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 
 public class PosetTest {
-    private Poset<String> a, b, c;
+    private Poset<String> A, B, C, AB, AD, ABC;
+    
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
     
     @Before
     public void SetUp() {
-        a = new Poset<>(new HashSet<String>());
-        a.set.add("x");
-        a.set.add("y");
-        a.set.add("z");
-        
-        b = new Poset<>(new HashSet<String>());
-        b.set.add("x");
-        b.set.add("z");
-        
+        A = new Poset<>(new HashSet<>(Arrays.asList("a")));
+        B = new Poset<>(new HashSet<>(Arrays.asList("b")));
+        C = new Poset<>(new HashSet<>(Arrays.asList("c")));
+        AB = new Poset<>(new HashSet<>(Arrays.asList("a", "b")));
+        AD = new Poset<>(new HashSet<>(Arrays.asList("a", "d")));
+        ABC = new Poset<>(new HashSet<>(Arrays.asList("a", "b", "c")));
     }
     
     @Test
     public void testIntersect() {
-        System.out.println("INTERSECT");
-        System.out.println(a.intersect(b));
-        System.out.println(a.intersect(a));
+        assertEquals(A.intersect(B), new Poset<>(new HashSet<String>()));
+        assertEquals(A.intersect(A), A);
+        assertEquals(ABC.intersect(AD), A);
     }
     
+    @Test
+    public void testLessThan() {
+        assertFalse(new LessThan().apply(A, B));
+        assertTrue(new LessThan().apply(A, AB));
+        assertFalse(new LessThan().apply(AB, A));
+        assertTrue(new LessThan().apply(Poset.NULL, A));
+        assertFalse(new LessThan().apply(A, Poset.NULL));
+        assertTrue(new LessThan().apply(ABC, Poset.MAGIC));
+        assertFalse(new LessThan().apply(Poset.MAGIC, ABC));
+        
+        SetLattice<String> lattice = new SetLattice<>(new TinkerGraph());
+        lattice.insert(A);
+        lattice.insert(B);
+        lattice.insert(C);
+        lattice.insert(AB);
+        lattice.insert(AD);
+        lattice.insert(ABC);
+        System.out.println("SET LATTICE = " + lattice);
+    }
+    
+    @Test
+    public void testComparable() {
+        org.nmdp.ngs.fca.partial.Comparable comparable = new org.nmdp.ngs.fca.partial.Comparable();
+        assertFalse(comparable.apply(A, B));
+        assertFalse(comparable.apply(B, A));
+        
+        assertTrue(comparable.apply(A, AD));
+        assertTrue(comparable.apply(AD, A));
+        
+        assertFalse(comparable.apply(C, AB));
+        assertFalse(comparable.apply(AB, C));
+        
+        assertTrue(comparable.apply(ABC, Poset.MAGIC));
+        assertTrue(comparable.apply(Poset.MAGIC, ABC));
+        
+        assertTrue(comparable.apply(A, Poset.NULL));
+        assertTrue(comparable.apply(Poset.NULL, A));
+        
+        assertTrue(comparable.apply(Poset.NULL, Poset.MAGIC));
+        assertTrue(comparable.apply(Poset.MAGIC, Poset.NULL));
+    }
+    
+    @Test
+    public void testSingletons() {
+        List<Poset<String>> strings = Poset.singletons(Arrays.asList("a", "b", "c"));
+        assertEquals(strings.size(), 3);
+        assertEquals(strings.get(0), A);
+        
+        exception.expect(java.lang.IllegalArgumentException.class);
+        strings = Poset.singletons(Arrays.asList("a", "a"));
+    }
 }

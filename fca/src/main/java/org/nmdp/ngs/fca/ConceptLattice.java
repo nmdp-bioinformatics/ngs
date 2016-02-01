@@ -72,7 +72,6 @@ public class ConceptLattice extends CompleteLattice<Concept> {
         return added.getProperty(LABEL);
     }
     
-    
     @Override
     public final Concept join(final Concept left, final Concept right) {
         MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(left.intent()).or(right.intent());
@@ -80,6 +79,7 @@ public class ConceptLattice extends CompleteLattice<Concept> {
         return supremum(query, top).getProperty(LABEL);
     }
 
+    /*
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("digraph {\n");
@@ -98,5 +98,5 @@ public class ConceptLattice extends CompleteLattice<Concept> {
         sb.append("}");
         return sb.toString();
     }
-
+    */
 }

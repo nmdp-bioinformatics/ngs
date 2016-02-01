@@ -43,8 +43,8 @@ public final class ConceptLatticeTest {
     private ConceptLattice lattice;
     
     /*
-     * Example taken from Davey and Priestly "Introduction to Lattices and Order"
-     * second edition, p 77.
+     * From Davey and Priestly "Introduction to Lattices and Order" second
+     * edition, page 77.
      */
     @Before
     public void setUp() {
@@ -59,7 +59,7 @@ public final class ConceptLatticeTest {
     }
 
     @Test
-    public void testAdd() {
+    public void testInsert() {
         Concept top = (Concept) lattice.top();
         Concept bottom = (Concept) lattice.bottom();
 
@@ -69,6 +69,13 @@ public final class ConceptLatticeTest {
         assertEquals(bottom.intent(), bits());
         assertEquals(bottom.extent(), bits(0, 1, 2, 3, 4, 5));
         assertEquals(lattice.size(), 12);
+    }
+    
+    @Test
+    public void testIterator() {
+        int count = 0;
+        for(Concept concept : lattice) { count++; }
+        assertEquals(count, 12);
     }
 
     @Test
@@ -118,8 +125,45 @@ public final class ConceptLatticeTest {
     }
     
     @Test
+    public void testFind() {
+        Concept element = new Concept(bits(), bits(0, 2, 4, 5));
+        Concept found = lattice.find(element);
+        
+        assertEquals(found.intent(), element.intent());
+        assertEquals(found.extent(), bits(3));
+        assertEquals(lattice.find(new Concept(bits(), bits())), lattice.bottom());
+        assertEquals(lattice.find(new Concept(bits(), bits(0, 1, 2, 3, 4, 5, 6))), lattice.top());
+        assertEquals(lattice.find(new Concept(bits(), bits(0, 2, 4))).intent(), element.intent());
+    }
+    
+    @Test
+    public void testContains() {
+        Concept element = new Concept(bits(), bits(0, 2, 4, 5));
+        
+        assertFalse(lattice.contains(element));
+        assertFalse(lattice.contains(new Concept(bits(3), bits(0, 2, 4))));
+        assertTrue(lattice.contains(new Concept(bits(3), element.intent())));
+        assertTrue(lattice.contains(new Concept(bits(0, 1, 2, 3, 4, 5), bits())));
+        assertTrue(lattice.contains(new Concept(bits(), bits(0, 1, 2, 3, 4, 5, 6))));
+    }
+    
+    @Test
+    public void testCovers() {
+        Concept STUW = new Concept(bits(0, 1, 2, 4), bits(1, 3));
+        Concept STU = new Concept(bits(0, 1, 2), bits(0, 1, 3));
+        Concept SU = new Concept(bits(0, 2), bits(0, 1, 3, 5));
+        
+        assertFalse(lattice.covers(STUW, STU));
+        assertTrue(lattice.covers(STU, STUW));
+        assertTrue(lattice.covers(SU, STU));
+        assertFalse(lattice.covers(SU, STUW));
+        assertFalse(lattice.covers(STUW, STUW));
+    }
+    
+    @Test
     public void testToArray() {
         Object[] concepts = lattice.toArray();
         assertEquals(concepts.length, 12);
+        assertTrue(concepts[0] instanceof Concept);
     }
 }

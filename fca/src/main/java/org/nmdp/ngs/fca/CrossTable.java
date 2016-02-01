@@ -22,14 +22,24 @@
 */
 package org.nmdp.ngs.fca;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import java.util.ArrayList;
-import java.util.Iterator;
+import static com.google.common.base.Preconditions.checkArgument;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
+
 import org.dishevelled.bitset.MutableBitSet;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.collect.Range;
+
+/**
+ * CrossTable.
+ * @param <G> object type
+ * @param <M> attribute type
+ */
 public final class CrossTable<G extends Relatable,
                               M extends Relatable> implements Iterable<CrossTable.Row> {
+    private final List<Row> table;
     
     public final static class Row {
         public int index;
@@ -58,8 +68,6 @@ public final class CrossTable<G extends Relatable,
         }
     }
     
-    private final List<Row> table;
-    
     public CrossTable(final List<G> objects,
                       final List<M> attributes,
                       final BinaryRelation relation) {
@@ -78,14 +86,15 @@ public final class CrossTable<G extends Relatable,
             table.add(new Row(i, bits));
         }
     }
+  
+    public Row getRow(int index) {
+        checkArgument(Range.greaterThan(0).contains(index));
+        return table.get(index);
+    }
     
     @Override
     public Iterator<Row> iterator() {
         return table.iterator();
-    }
-    
-    public Row getRow(int index) {
-        return table.get(index);
     }
     
     @Override

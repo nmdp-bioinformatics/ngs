@@ -22,24 +22,20 @@
 */
 package org.nmdp.ngs.fca;
 
-import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Graph;
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.Edge;
-import java.util.Collection;
-import java.util.Iterator;
 
 public class IntervalLattice<C extends Comparable<?>> extends CompleteLattice<Interval<C>> {
     
     public IntervalLattice(final Graph graph) {
         super(graph);
-        top.setProperty(LABEL, Interval.MAGIC);    
+        top.setProperty(LABEL, Interval.MAGIC);  
     }
     
     public Interval<C> insert(final Interval<C> interval) {
         return super.addIntent(interval, top).getProperty(LABEL);
     }
     
+    /*
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("digraph {\n");
@@ -58,6 +54,5 @@ public class IntervalLattice<C extends Comparable<?>> extends CompleteLattice<In
         sb.append("}");
         return sb.toString();
     }
-
-
+    */
 }

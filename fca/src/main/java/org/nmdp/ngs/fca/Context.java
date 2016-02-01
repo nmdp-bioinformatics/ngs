@@ -25,6 +25,7 @@ package org.nmdp.ngs.fca;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.tinkerpop.blueprints.Graph;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.dishevelled.bitset.MutableBitSet;
@@ -36,8 +37,8 @@ import org.dishevelled.bitset.MutableBitSet;
  * footprint), a context can be represented as a cross table of rows
  * (attributes) and columns (objects). Table elements are true if the ith object
  * has attribute j. More descriptive still (but with the heaviest footprint) is
- * the lattice representation, a collection of all partially ordered concepts of
- * a given context.
+ * the lattice representation, a set of all partially ordered concepts of a
+ * given context.
  * @param <G> the type of objects
  * @param <M> the type of attributes
  */
@@ -93,25 +94,53 @@ public final class Context<G extends Relatable, M extends Relatable> {
     }
     
     public ConceptLattice asConceptLattice(final Graph graph) {
-        CrossTable table = this.asCrossTable();
         ConceptLattice lattice = new ConceptLattice(graph, attributes.size());
         
-        Iterator it = table.iterator();
+        Iterator it = this.asCrossTable().iterator();
         while(it.hasNext()) {
             CrossTable.Row row = (CrossTable.Row) it.next();
-            lattice.insert(row.asConcept(objects.size()));
+            lattice.insert(row.asConcept(attributes.size()));
         }
         
         return lattice;
     }
-
-    //public Context down() {
-        
-    //}
     
-    // public Context downset();
+    /**
+     * Calculate the isomorphic down lattice.
+     * @param <G> element type
+     * @param lattice of elements
+     * @return the down lattice of the given complete lattice
+     * @see <a href="https://en.wikipedia.org/wiki/Upper_set">upper set</a>
+     */
+    public static <G extends Relatable<?>> Context down(final CompleteLattice lattice) {
+        List<Object> elements = Arrays.asList(lattice.toArray());
+        return new Context(elements, elements, new LessOrEqual());
+    }
     
-    // public Context powerset();
+    /**
+     * Calculate the isomorphic downset lattice.
+     * @param <G> element type
+     * @param lattice of elements
+     * @return the downset lattice of a given complete lattice
+     */
+    public static <G extends Relatable<?>> Context downset(final CompleteLattice lattice) {
+        List<Object> elements = Arrays.asList(lattice.toArray());
+        return new Context(elements, elements, new NotGreaterOrEqual());
+    }
+    
+    /**
+     * Calculate the powerset lattice.
+     * @param <G> element type
+     * @param set of partially-ordered elements
+     * @return the powerset lattice
+     */
+    public static <G extends PartiallyOrdered<?>> Context powerset(final List<G> set) {
+        return new Context(set, set, new NotEqual());
+    }
+    
+    public static <G extends PartiallyOrdered<?>> Context antichain(final List<G> set) {
+        return new Context(set, set, new Equal());
+    }
     
     private static List decode(final MutableBitSet bits, final List group) {
         List members = new ArrayList();
@@ -142,6 +171,10 @@ public final class Context<G extends Relatable, M extends Relatable> {
         return attributes;
     }
     
+    public BinaryRelation getRelation() {
+        return relation;
+    }
+    
     public List decodeExtent(final Concept concept) {
         return decode(concept.extent(), objects);
     }
@@ -152,9 +185,8 @@ public final class Context<G extends Relatable, M extends Relatable> {
     
     @Override
     public String toString() {
-
-        
         StringBuilder sb = new StringBuilder();
+        
         sb.append("{\"objects\": ").append(objects.toString())
           .append(", \"attributes\": ").append(attributes.toString())
           .append(", \"relation\": ").append(relation.toString()).append("}");
