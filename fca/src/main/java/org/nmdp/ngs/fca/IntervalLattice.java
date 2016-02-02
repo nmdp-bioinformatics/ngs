@@ -27,8 +27,7 @@ import com.tinkerpop.blueprints.Graph;
 public class IntervalLattice<C extends Comparable<?>> extends CompleteLattice<Interval<C>> {
     
     public IntervalLattice(final Graph graph) {
-        super(graph);
-        top.setProperty(LABEL, Interval.MAGIC);  
+        super(graph, Interval.MAGIC);
     }
     
     public Interval<C> insert(final Interval<C> interval) {

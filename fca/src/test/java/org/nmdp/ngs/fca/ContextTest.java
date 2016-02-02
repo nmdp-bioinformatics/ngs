@@ -22,18 +22,20 @@
 */
 package org.nmdp.ngs.fca;
 
-import com.google.common.collect.Range;
-import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Arrays;
+
 import org.dishevelled.bitset.MutableBitSet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
+
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.rules.ExpectedException;
+
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import static org.nmdp.ngs.fca.TestUtil.list;
 import static org.nmdp.ngs.fca.TestUtil.bits;
@@ -93,7 +95,6 @@ public class ContextTest {
         ConceptLattice lattice = powerset.asConceptLattice(new TinkerGraph());
         
         ConceptLattice downset = Context.down(lattice).asConceptLattice(new TinkerGraph());
-        System.out.println("DOWN = " + downset);
     }
     
     @Test

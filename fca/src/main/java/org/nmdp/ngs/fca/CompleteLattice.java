@@ -22,18 +22,19 @@
 */
 package org.nmdp.ngs.fca;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
-import java.util.Collection;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 
 /**
  * Complete Lattice.
@@ -53,24 +54,17 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
      * Construct a complete lattice assigned to a designated graph (backend).
      * @param graph assignment
      */
-    protected CompleteLattice(final Graph graph) {
-        checkNotNull(graph);
+    protected CompleteLattice(final Graph graph, PartiallyOrdered top) {
+        checkNotNull(graph, top);
         this.graph = graph;
         order = 0;
         color = 0;
         
-        top = graph.addVertex(null); // TODO: pass in a first property -- easy for IntervalLattice, requires some work for ConceptLattice
-        top.setProperty(COLOR, color);
-        bottom = top;
+        this.top = graph.addVertex(null);
+        this.top.setProperty(LABEL, top);
+        this.top.setProperty(COLOR, color);
+        bottom = this.top;
         size = 1;
-    }
-    
-    /**
-     * Construct a complete lattice assigned to a cached (in-memory) graph
-     * (backend).
-     */
-    protected CompleteLattice() {
-        this(new TinkerGraph());
     }
     
     public class Iterator<E extends PartiallyOrdered> implements java.util.Iterator<E> {
@@ -149,10 +143,12 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
         return generator;
     }
     
+    @Override
     public E find(final E element) {
         return this.meet(element, this.top());
     }
 
+    @Override
     public boolean contains(final E element) {
         return this.find(element).equals(element);
     }
@@ -162,6 +158,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
      * @param collection of elements
      * @return true if lattice contains all elements of the given collection
      */
+    @Override
     public boolean containsAll(final Collection<? extends E> collection) {
         for(E element : collection) {
             if(!this.contains(element)) {
@@ -297,6 +294,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
      * The lattice size.
      * @return the number of vertexes
      */
+    @Override
     public int size() {
         return size;
     }
@@ -369,14 +367,17 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
         return sb.toString();
     }
     
+    @Override
     public boolean isEmpty() {
         return bottom == top;
     }
     
+    @Override
     public Object[] toArray() {
         return this.toArray(new Object[size]);
     }
     
+    @Override
     public <E> E[] toArray(E[] elements) {
         int i = 0;
         for(Object element : this) {

@@ -22,6 +22,8 @@
 */
 package org.nmdp.ngs.fca;
 
+import java.util.Collection;
+
 /**
  * Lattice. An iterable set of partially ordered elements.
  * @param <E> element type
@@ -39,6 +41,12 @@ public interface Lattice<E extends PartiallyOrdered> extends Iterable<E> {
      * @return the greatest lattice element
      */
     E top();
+    
+    /**
+     * The lattice size.
+     * @return the number of vertexes
+     */
+    int size();
 
     /**
      * Find the least upper bound of two elements (supremum).
@@ -64,6 +72,18 @@ public interface Lattice<E extends PartiallyOrdered> extends Iterable<E> {
      * element z where x {@literal <} z {@literal <} y.
      */
     boolean covers(E left, E right);
+    
+    E find(E element);
+    
+    boolean contains(E element);
+    
+    boolean containsAll(Collection<? extends E> collection);
+    
+    boolean isEmpty();
+    
+    Object[] toArray();
+    
+    <E> E[] toArray(E[] elements);
 
     /**
      * Calculate the measure of two elements.

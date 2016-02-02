@@ -39,14 +39,20 @@ import org.dishevelled.bitset.MutableBitSet;
  * has attribute j. More descriptive still (but with the heaviest footprint) is
  * the lattice representation, a set of all partially ordered concepts of a
  * given context.
- * @param <G> the type of objects
- * @param <M> the type of attributes
+ * @param <G> object type
+ * @param <M> attribute type
  */
 public final class Context<G extends Relatable, M extends Relatable> {
     private final List<G> objects;
     private final List<M> attributes;
     private final BinaryRelation relation;
     
+    /**
+     * Constructor. Use the builder pattern.
+     * @param objects parameter
+     * @param attributes parameter
+     * @param relation parameter
+     */
     private Context(final List<G> objects,
                     final List<M> attributes,
                     final BinaryRelation relation) {
@@ -56,43 +62,80 @@ public final class Context<G extends Relatable, M extends Relatable> {
         this.relation = relation;
     }
     
+    /**
+     * Start building.
+     * @return unparameterized Builder
+     */
     public static Builder builder() {
         return new Builder();
     }
     
+    /**
+     * Builder.
+     * @param <G> object type
+     * @param <M> attribute type
+     */
     public static final class Builder<G extends Relatable,
                                       M extends Relatable> {
         private List<G> objects;
         private List<M> attributes;
         private BinaryRelation relation;
         
+        /**
+         * Specify objects.
+         * @param objects parameter
+         * @return Builder with specified objects
+         */
         public Builder withObjects(final List<G> objects) {
             checkNotNull(objects);
             this.objects = objects;
             return this;
         }
         
+        /**
+         * Specify attributes.
+         * @param attributes parameter
+         * @return Builder with specified attributes
+         */
         public Builder withAttributes(final List<M> attributes) {
             checkNotNull(attributes);
             this.attributes = attributes;
             return this;
         }
         
+        /**
+         * Specify relation.
+         * @param relation parameter
+         * @return Builder with specified binary relation
+         */
         public Builder withRelation(final BinaryRelation relation) {
             checkNotNull(relation);
             this.relation = relation;
             return this;
         }
         
+        /**
+         * Build it.
+         * @return parameterized context
+         */
         public Context build() {
             return new Context(objects, attributes, relation);
         }
     }
     
+    /**
+     * Get the cross table for this context.
+     * @return cross table
+     */
     public CrossTable asCrossTable() {
         return new CrossTable(objects, attributes, relation);
     }
     
+    /**
+     * Get the concept lattice for this context.
+     * @param graph backend
+     * @return concept lattice
+     */
     public ConceptLattice asConceptLattice(final Graph graph) {
         ConceptLattice lattice = new ConceptLattice(graph, attributes.size());
         
@@ -138,10 +181,21 @@ public final class Context<G extends Relatable, M extends Relatable> {
         return new Context(set, set, new NotEqual());
     }
     
+    /**
+     * Calculate the antichain lattice.
+     * @param <G> element type
+     * @param set of partially-ordered elements
+     * @return the antichain lattice
+     */
     public static <G extends PartiallyOrdered<?>> Context antichain(final List<G> set) {
         return new Context(set, set, new Equal());
     }
     
+    /**
+     * Get the indexes of a bitset.
+     * @param bits parameter
+     * @return list of set bits
+     */
     public static List<Long> indexes(final MutableBitSet bits) {
         List indexes = new ArrayList();
         
@@ -187,18 +241,27 @@ public final class Context<G extends Relatable, M extends Relatable> {
     }
     
     /**
-     * 
-     * @param concept
-     * @return 
+     * Get the list of objects indexed by the concepts extent.
+     * @param concept parameter
+     * @return extent-objects
      */
     public List decodeExtent(final Concept concept) {
         return decode(concept.extent(), objects);
     }
     
+    /**
+     * Get the list of attributes indexed by the concept's intent.
+     * @param concept parameter
+     * @return intent-attributes
+     */
     public List decodeIntent(final Concept concept) {
         return decode(concept.intent(), attributes);
     }
     
+    /**
+     * Get the string representation.
+     * @return context as string
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -209,5 +272,4 @@ public final class Context<G extends Relatable, M extends Relatable> {
         
         return sb.toString();
     }
-
 }

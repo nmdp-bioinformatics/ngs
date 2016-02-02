@@ -25,12 +25,10 @@ package org.nmdp.ngs.fca;
 import java.util.List;
 import java.util.ArrayList;
 
-import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
-import java.util.Collection;
-import java.util.Iterator;
+import com.tinkerpop.blueprints.Direction;
 
 import org.dishevelled.bitset.MutableBitSet;
 
@@ -39,11 +37,14 @@ import org.dishevelled.bitset.MutableBitSet;
  */
 public class ConceptLattice extends CompleteLattice<Concept> {
     
-    public ConceptLattice(final Graph graph, long numBits) {
-        super(graph);
+    private static MutableBitSet ones(long numBits) {
         MutableBitSet ones = new MutableBitSet(numBits);
         ones.set(0, numBits);
-        top.setProperty(LABEL, new Concept(new MutableBitSet(), ones));
+        return ones;
+    }
+    
+    public ConceptLattice(final Graph graph, long numBits) {
+        super(graph, new Concept(new MutableBitSet(), ones(numBits)));
     }
     
     public Concept insert(final Concept concept) {
@@ -78,25 +79,4 @@ public class ConceptLattice extends CompleteLattice<Concept> {
         Concept query = new Concept(new MutableBitSet(), bits);
         return supremum(query, top).getProperty(LABEL);
     }
-
-    /*
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("digraph {\n");
-        for (Vertex vertex : graph.getVertices()) {
-            for (Edge edge : vertex.getEdges(Direction.BOTH)) {
-                Vertex target = edge.getVertex(Direction.OUT);
-                if (!vertex.getProperty("label").equals(target.getProperty("label"))) {
-                    Concept vertexConcept = vertex.getProperty("label");
-                    Concept targetConcept = target.getProperty("label");
-                    if (!filter(vertex, target)) {
-                        //sb.append("  \"" + Concept.decode(vertexConcept.extent(), objects) + Concept.decode(vertexConcept.intent(), attributes) + "\" -> \"" + Concept.decode(targetConcept.extent(), objects) + Concept.decode(targetConcept.intent(), attributes) + "\"[label=\"" + edge.getLabel() + "\"]\n");
-                    }
-                }
-            }
-        }
-        sb.append("}");
-        return sb.toString();
-    }
-    */
 }

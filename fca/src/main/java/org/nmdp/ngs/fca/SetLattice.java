@@ -28,8 +28,7 @@ import static org.nmdp.ngs.fca.CompleteLattice.LABEL;
 public class SetLattice<C extends Comparable<?>> extends CompleteLattice<Poset<C>> {
     
     public SetLattice(final Graph graph) {
-        super(graph);
-        top.setProperty(LABEL, Poset.MAGIC);  
+        super(graph, Poset.MAGIC);
     }
     
     public Poset<C> insert(final Poset<C> poset) {

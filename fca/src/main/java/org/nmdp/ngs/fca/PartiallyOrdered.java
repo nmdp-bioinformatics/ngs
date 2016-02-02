@@ -26,7 +26,7 @@ public abstract class PartiallyOrdered<T extends PartiallyOrdered> extends Binar
 
     @Override
     public boolean apply(final T that) {
-        return this.equals(this.intersect(that));// || super.apply(that);
+        return this.equals(this.intersect(that));
     }
     
     @Override
@@ -41,7 +41,7 @@ public abstract class PartiallyOrdered<T extends PartiallyOrdered> extends Binar
     
     @Override
     public boolean isGreaterOrEqualTo(final T that) {
-        return that.equals(this.intersect(that));// || this.equals(that);
+        return that.equals(this.intersect(that));
     }
     
     @Override
@@ -61,6 +61,5 @@ public abstract class PartiallyOrdered<T extends PartiallyOrdered> extends Binar
     
     public abstract T union(T that);
     
-    public abstract double measure();
-        
+    public abstract double measure();    
 }
