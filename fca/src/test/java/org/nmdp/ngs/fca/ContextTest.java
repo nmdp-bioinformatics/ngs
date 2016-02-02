@@ -27,66 +27,65 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.dishevelled.bitset.MutableBitSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import static org.nmdp.ngs.fca.TestUtil.list;
 import static org.nmdp.ngs.fca.TestUtil.bits;
 
 public class ContextTest {
     List<Poset<String>> ABC;
+    List<String> attributes;
+    Context<Poset<String>, Poset<String>> context;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
     
     @Before
     public void setUp() {
         ABC = Poset.singletons(Arrays.asList("a", "b", "c"));
-    }
-    
-    @Test
-    public void testSetUp() {
+        attributes = list("a", "b", "c", "d", "e", "f", "g");
         
-        List<Interval<Integer>> a = new ArrayList<>();
-        List<Interval<Integer>> b = new ArrayList<>();
-        
-        Interval<Integer> i1 = new Interval<>(1, Range.closed(2, 4));
-        Interval<Integer> i2 = new Interval<>(1, Range.closed(1, 5));
-        
-        a.add(i1);
-        a.add(i2);
-        
-        b.add(i1);
-        b.add(i2);
-        
-        boolean apply = new LessThan().apply(i2, i1);
-        
-        System.out.println(apply + " = PartiallyOrdered.LessThan.apply(" + i1 + ", " + i2 + ")");
-        
-        Context<Interval<Integer>, Interval<Integer>> context;
         context = Context.builder()
-                         .withObjects(a)
-                         .withAttributes(b)
+                         .withObjects(attributes)
+                         .withAttributes(attributes)
                          .withRelation(new LessThan())
                          .build();
-        
-        System.out.println("CONTEXT");
-        System.out.println(context);
-        
-        CrossTable table = context.asCrossTable();
-        
-        System.out.println("CROSS TABLE");
-        System.out.println(table);
-        
-        ConceptLattice lattice = context.asConceptLattice(new TinkerGraph());
-        
-        System.out.println("LATTICE");
-        System.out.println(lattice);
     }
     
     @Test
     public void testBuilder() {
-        
+        assertEquals(context.getObjects(), attributes);
+        assertEquals(context.getAttributes(), attributes);
+        assertTrue(context.getRelation() instanceof LessThan);
     }
     
+    @Test
+    public void testDecodeIntent() {
+        MutableBitSet all = bits(0, 1, 2, 3, 4, 5, 6);
+        assertEquals(context.decodeIntent(new Concept(all, bits())), list());
+        assertEquals(context.decodeIntent(new Concept(all, bits(0))), list("a"));
+        assertEquals(context.decodeIntent(new Concept(all, bits(1, 2))), list("b", "c"));
+
+        exception.expect(java.lang.IndexOutOfBoundsException.class);
+        context.decodeIntent(new Concept(all, bits(7)));
+    }
+    
+    @Test
+    public void testDecodeExtent() {
+        MutableBitSet all = bits(0, 1, 2, 3, 4, 5, 6);
+        assertEquals(context.decodeExtent(new Concept(bits(), all)), list());
+        assertEquals(context.decodeExtent(new Concept(bits(0), all)), list("a"));
+        assertEquals(context.decodeExtent(new Concept(bits(1, 2), all)), list("b", "c"));
+
+        exception.expect(java.lang.IndexOutOfBoundsException.class);
+        context.decodeExtent(new Concept(bits(7), all));
+    }
         
     @Test
     public void testDown() {

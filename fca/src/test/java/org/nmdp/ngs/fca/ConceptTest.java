@@ -55,9 +55,6 @@ public final class ConceptTest {
     
     private List objects, attributes;
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     @Before
     public void setUp() {
         abcdefg = list("a", "b", "c", "d", "e", "f", "g");
@@ -111,24 +108,6 @@ public final class ConceptTest {
 
         assertEquals(S.extent(), bits(0));
         assertEquals(S.intent(), bits(0, 1, 3, 5));
-    }
-
-    @Test
-    public void testDecode() {
-        assertEquals(Concept.decode(bits(), abcdefg), list());
-        assertEquals(Concept.decode(bits(0), abcdefg), list("a"));
-        assertEquals(Concept.decode(bits(1, 2), abcdefg), list("b", "c"));
-
-        exception.expect(java.lang.IndexOutOfBoundsException.class);
-        Concept.decode(bits(7), abcdefg);
-    }
-
-    @Test
-    public void testEncode() {
-        assertEquals(Concept.encode(list(), abcdefg), bits());
-        assertEquals(Concept.encode(list("a"), abcdefg), bits(0));
-        assertEquals(Concept.encode(list("b", "c"), abcdefg), bits(1, 2));
-        assertEquals(Concept.encode(list("h"), abcdefg), bits());
     }
 
     @Test

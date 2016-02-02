@@ -58,10 +58,10 @@ public interface Lattice<E extends PartiallyOrdered> extends Iterable<E> {
     
     /**
      * Test if one element covers another.
-     * @param left
-     * @param right
+     * @param left element
+     * @param right element
      * @return true if left (x) is less than right (y) and there is no other
-     * element z where x < z < y.
+     * element z where x {@literal <} z {@literal <} y.
      */
     boolean covers(E left, E right);
 

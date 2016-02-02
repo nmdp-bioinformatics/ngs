@@ -66,9 +66,10 @@ public class PosetTest {
     
     @Test
     public void testIntersect() {
-        assertEquals(A.intersect(B), new Poset<>(new HashSet<String>()));
+        assertEquals(A.intersect(B), Poset.NULL);
         assertEquals(A.intersect(A), A);
         assertEquals(ABC.intersect(AD), A);
+        assertEquals(Poset.MAGIC.intersect(Poset.NULL), Poset.NULL);
     }
     
     @Test
@@ -80,15 +81,6 @@ public class PosetTest {
         assertFalse(new LessThan().apply(A, Poset.NULL));
         assertTrue(new LessThan().apply(ABC, Poset.MAGIC));
         assertFalse(new LessThan().apply(Poset.MAGIC, ABC));
-        
-        SetLattice<String> lattice = new SetLattice<>(new TinkerGraph());
-        lattice.insert(A);
-        lattice.insert(B);
-        lattice.insert(C);
-        lattice.insert(AB);
-        lattice.insert(AD);
-        lattice.insert(ABC);
-        System.out.println("SET LATTICE = " + lattice);
     }
     
     @Test

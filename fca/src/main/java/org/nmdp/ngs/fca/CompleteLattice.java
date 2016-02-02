@@ -158,9 +158,9 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     }
 
     /**
-     *
-     * @param collection
-     * @return
+     * Test if the lattice contains all elements of the given collection.
+     * @param collection of elements
+     * @return true if lattice contains all elements of the given collection
      */
     public boolean containsAll(final Collection<? extends E> collection) {
         for(E element : collection) {
@@ -224,10 +224,11 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     }
 
     /**
-     * 
+     * Add a new element dynamically to the lattice.
      * @param proposed element
      * @param generator vertex
-     * @return 
+     * @return new added vertex or generator if the proposed element already
+     * exists
      */
     protected Vertex addIntent(final E proposed, Vertex generator) {
         generator = supremum(proposed, generator);
@@ -292,19 +293,35 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
         return child;
     }
 
+    /**
+     * The lattice size.
+     * @return the number of vertexes
+     */
     public int size() {
         return size;
     }
-
+    
+    /**
+     * The lattice order.
+     * @return the number of edges
+     */
     public int order() {
         return order;
     }
 
+    /**
+     * Find the least element.
+     * @return the least lattice element.
+     */
     @Override
     public final E bottom() {
         return bottom.getProperty(LABEL);
     }
 
+    /**
+     * Find the greatest element.
+     * @return the greatest lattice element
+     */
     @Override
     public final E top() {
         return top.getProperty(LABEL);

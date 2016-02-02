@@ -142,39 +142,55 @@ public final class Context<G extends Relatable, M extends Relatable> {
         return new Context(set, set, new Equal());
     }
     
+    public static List<Long> indexes(final MutableBitSet bits) {
+        List indexes = new ArrayList();
+        
+        for (long i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
+            indexes.add(i);
+        }
+        
+        return indexes;
+    }
+    
     private static List decode(final MutableBitSet bits, final List group) {
         List members = new ArrayList();
 
-        for (long i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
-            members.add(group.get((int) i));
+        for(Long index : Context.indexes(bits)) {
+            members.add(group.get(Math.toIntExact(index)));
         }
+        
         return members;
     }
     
-    private static MutableBitSet encode(final List members, final List group) {
-        MutableBitSet bits = new MutableBitSet();
-
-        for (Object object : members) {
-            int index = group.indexOf(object);
-            if (index >= 0) {
-                bits.flip(index);
-            }
-        }
-        return bits;
-    }
-    
+    /**
+     * Get objects.
+     * @return objects
+     */
     public List<G> getObjects() {
         return objects;
     }
     
+    /**
+     * Get attributes.
+     * @return attributes
+     */
     public List<M> getAttributes() {
         return attributes;
     }
     
+    /**
+     * Get relation.
+     * @return binary relation
+     */
     public BinaryRelation getRelation() {
         return relation;
     }
     
+    /**
+     * 
+     * @param concept
+     * @return 
+     */
     public List decodeExtent(final Concept concept) {
         return decode(concept.extent(), objects);
     }

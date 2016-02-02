@@ -22,9 +22,6 @@
 */
 package org.nmdp.ngs.fca;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.base.Objects;
 
 import org.dishevelled.bitset.MutableBitSet;
@@ -37,7 +34,6 @@ public final class Concept extends PartiallyOrdered<Concept> {
 
     /**
      * Construct a concept with given objects (extent) and attributes (intent).
-     *
      * @param extent objects
      * @param intent attributes
      */
@@ -55,8 +51,7 @@ public final class Concept extends PartiallyOrdered<Concept> {
     }
 
     /**
-     * Retrieve the bitset representation of the concept's objects.
-     *
+     * Get the bitset representation of the concept's objects.
      * @return extent
      */
     public MutableBitSet extent() {
@@ -64,83 +59,12 @@ public final class Concept extends PartiallyOrdered<Concept> {
     }
 
     /**
-     * Retrieve the bitset representation of the concept's attributes.
-     *
+     * Get the bitset representation of the concept's attributes.
      * @return intent
      */
     public MutableBitSet intent() {
         return intent;
     }
-
-    /**
-     * Decode an object list from its bit membership.
-     *
-     * @param bits where each set bit represents membership in the given group
-     * @param group list of all members
-     * @return immutable list of members
-     */
-    // todo:  lists should be typed
-    public static List decode(final MutableBitSet bits, final List group) {
-        List members = new ArrayList();
-
-        for (long i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
-            members.add(group.get((int) i));
-        }
-        return members;
-    }
-
-    /**
-     * Encode bit membership from a list of objects.
-     *
-     * @param members to encode
-     * @param group list of all members
-     * @return bits where each set bit represents membership in the group
-     */
-    public static MutableBitSet encode(final List members, final List group) {
-        MutableBitSet bits = new MutableBitSet();
-
-        for (Object object : members) {
-            int index = group.indexOf(object);
-            if (index >= 0) {
-                bits.flip(index);
-            }
-        }
-        return bits;
-    }
-
-    /*
-    public static Builder builder() {
-        return new Builder();
-    }
-    */
-
-    /**
-     * Builder class for Concept.
-     
-    public static final class Builder<G extends Comparable,
-                                      M extends Comparable> {
-        private MutableBitSet extent, intent;
-
-        public Builder() {
-          extent = new MutableBitSet();
-          intent = new MutableBitSet();
-        }
-
-        public Builder withObjects(final List<G> chosen, final List<G> from) {
-            extent = encode(chosen, from);
-            return this;
-        }
-
-        public Builder withAttributes(final List<M> chosen, final List<G> from) {
-            intent = encode(chosen, from);
-            return this;
-        }
-
-        public Concept build() {
-            return new Concept(extent, intent);
-        }
-    }
-    */
     
     @Override
     public boolean isLessThan(final Concept that) {
@@ -164,7 +88,6 @@ public final class Concept extends PartiallyOrdered<Concept> {
         return that.intent.equals(this.and(that));
     }
     
-
     @Override
     public boolean equals(final Object right) {
         if (!(right instanceof Concept)) {
@@ -180,26 +103,26 @@ public final class Concept extends PartiallyOrdered<Concept> {
                concept.intent.equals(this.intent);
     }
 
+    /**
+     * Get the hash code.
+     * @return hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hashCode(extent, intent);
     }
-
+    
+    /**
+     * Get the string representation. This is the extent and intent as sets of
+     * set bits or, equivalently, indexes into corresponding context objects and
+     * attributes, respectively.
+     * @return concept as a string
+     */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("{");
-        
-        for (long i = extent.nextSetBit(0); i >= 0; i = extent.nextSetBit(i + 1)) {
-            sb.append(i).append(",");
-        }
-        
-        sb.append("}{");
-        
-        for (long i = intent.nextSetBit(0); i >= 0; i = intent.nextSetBit(i + 1)) {
-            sb.append(i).append(",");
-        }
-        
-        return sb.append("}").toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(Context.indexes(extent)).append(Context.indexes(intent));
+        return sb.toString();
     }
 
     @Override

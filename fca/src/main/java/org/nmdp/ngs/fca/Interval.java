@@ -164,26 +164,6 @@ public class Interval<C extends Comparable> extends PartiallyOrdered<Interval<C>
     }
     
     /**
-     * Get the partial order between two intervals.
-     * @param that interval
-     * @return partial order enumerated type
-     
-    @Override
-    public Partial.Order relation(final Interval<C> that) {
-        if(this.equals(that)) {
-            return Partial.Order.EQUAL;
-        }
-        if(this.equals(this.intersect(that))) {
-            return Partial.Order.LESS;
-        }
-        if(that.equals(this.intersect(that))) {
-            return Partial.Order.GREATER;
-        } 
-        return Partial.Order.NONCOMPARABLE;
-    }
-    * /
-    
-    /**
      * Find the intersection of two intervals.
      * @param that interval
      * @return intersection of this and that, which is {@link #NULL} if the two
