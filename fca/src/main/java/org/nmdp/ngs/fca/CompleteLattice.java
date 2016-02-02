@@ -243,9 +243,8 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
 
             Vertex candidate = target;
             if (!filter(target, proposed) && !filter(proposed, target)) {
-                E targetConcept = target.getProperty(LABEL);
-                // MutableBitSet meet = (MutableBitSet) new MutableBitSet().or(targetConcept.intent()).and(proposed.intent());
-                E intersect = (E) targetConcept.intersect(proposed);
+                E targetElement = target.getProperty(LABEL);
+                E intersect = (E) targetElement.intersect(proposed);
                 candidate = addIntent(intersect, candidate);
             }
 
@@ -291,8 +290,8 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     }
 
     /**
-     * The lattice size.
-     * @return the number of vertexes
+     * Lattice size.
+     * @return the number of vertices
      */
     @Override
     public int size() {
