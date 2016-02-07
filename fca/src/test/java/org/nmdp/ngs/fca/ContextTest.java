@@ -25,14 +25,21 @@ package org.nmdp.ngs.fca;
 import java.util.List;
 import java.util.Arrays;
 
-import org.dishevelled.bitset.MutableBitSet;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.rules.ExpectedException;
 
+import org.nmdp.ngs.fca.partial.Equal;
+import org.nmdp.ngs.fca.partial.LessThan;
+import org.nmdp.ngs.fca.partial.NotEqual;
+import org.nmdp.ngs.fca.partial.NotGreaterOrEqual;
+
+import org.dishevelled.bitset.MutableBitSet;
+
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -141,5 +148,10 @@ public class ContextTest {
         assertEquals(lattice.size(), 5);
         assertEquals(lattice.top(), new Concept(bits(), bits(0, 1, 2)));
         assertEquals(lattice.bottom(), new Concept(bits(0, 1, 2), bits()));
+    }
+    
+    @Test
+    public void testArbitraryBinaryRelation() {
+
     }
 }

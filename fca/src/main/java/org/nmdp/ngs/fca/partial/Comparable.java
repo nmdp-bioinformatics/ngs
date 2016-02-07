@@ -25,6 +25,10 @@ package org.nmdp.ngs.fca.partial;
 import org.nmdp.ngs.fca.BinaryRelation;
 import org.nmdp.ngs.fca.PartiallyOrdered;
 
+/**
+ * _|_
+ * @param <T> type
+ */
 public class Comparable<T extends PartiallyOrdered> extends BinaryRelation<T> {
     
     @Override  

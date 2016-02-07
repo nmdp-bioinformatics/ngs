@@ -20,17 +20,24 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-package org.nmdp.ngs.fca;
+package org.nmdp.ngs.fca.partial;
 
-public class Equal<T extends Relatable> extends BinaryRelation<T> {
-    
+import org.nmdp.ngs.fca.Relatable;
+import org.nmdp.ngs.fca.BinaryRelation;
+
+/**
+ * {@literal !>=}
+ * @param <T> type
+ */
+public class NotGreaterOrEqual<T extends Relatable> extends BinaryRelation<T> {
+
     @Override  
     public boolean apply(final T left, final T right) {
-        return left.equals(right);
+        return !left.isGreaterOrEqualTo(right);
     }
     
     @Override
     public String toString() {
-        return "Equals";
+        return "NotGreaterOrEqual";
     }
 }

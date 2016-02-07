@@ -73,16 +73,45 @@ public interface Lattice<E extends PartiallyOrdered> extends Iterable<E> {
      */
     boolean covers(E left, E right);
     
+    /**
+     * Find an element or its closest approximation in the lattice.
+     * @param element to find
+     * @return the supremum of element and top
+     */
     E find(E element);
     
+    /**
+     * Test if the lattice contains a specified element.
+     * @param element to test
+     * @return true if the lattice contains the equivalent element
+     */
     boolean contains(E element);
     
+    /**
+     * Test if the lattice contains all specified elements in a collection.
+     * @param collection of elements
+     * @return true if the lattice contains all the equialent elements
+     */
     boolean containsAll(Collection<? extends E> collection);
     
+    /**
+     * Test if the lattice is empty.
+     * @return true if the lattice contains only its top element
+     */
     boolean isEmpty();
     
+    /**
+     * Convert the lattice to an array.
+     * @return array of objects.
+     */
     Object[] toArray();
     
+    /**
+     * Convert the lattice to an array.
+     * @param <E> element type
+     * @param elements empty array to fill
+     * @return array of partially-ordered elements
+     */
     <E> E[] toArray(E[] elements);
 
     /**

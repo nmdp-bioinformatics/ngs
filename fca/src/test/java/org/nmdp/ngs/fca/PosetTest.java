@@ -36,6 +36,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,6 +48,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
+//import static org.nmdp.ngs.fca.Poset.cartesianProduct;
+import org.nmdp.ngs.fca.partial.LessThan;
 
 public class PosetTest {
     private Poset<String> A, B, C, AB, AD, ABC;
@@ -56,12 +59,12 @@ public class PosetTest {
     
     @Before
     public void SetUp() {
-        A = new Poset<>(new HashSet<>(Arrays.asList("a")));
-        B = new Poset<>(new HashSet<>(Arrays.asList("b")));
-        C = new Poset<>(new HashSet<>(Arrays.asList("c")));
-        AB = new Poset<>(new HashSet<>(Arrays.asList("a", "b")));
-        AD = new Poset<>(new HashSet<>(Arrays.asList("a", "d")));
-        ABC = new Poset<>(new HashSet<>(Arrays.asList("a", "b", "c")));
+        A = new Poset<>(new ArrayList<>(Arrays.asList("a")));
+        B = new Poset<>(new ArrayList<>(Arrays.asList("b")));
+        C = new Poset<>(new ArrayList<>(Arrays.asList("c")));
+        AB = new Poset<>(new ArrayList<>(Arrays.asList("a", "b")));
+        AD = new Poset<>(new ArrayList<>(Arrays.asList("a", "d")));
+        ABC = new Poset<>(new ArrayList<>(Arrays.asList("a", "b", "c")));
     }
     
     @Test
@@ -114,4 +117,15 @@ public class PosetTest {
         exception.expect(java.lang.IllegalArgumentException.class);
         strings = Poset.singletons(Arrays.asList("a", "a"));
     }
+    
+    @Test
+    public void testCartesianProduct() {
+        Poset<String> one23 = new Poset<>(new ArrayList<>(Arrays.asList("1", "2", "3")));
+        List<Poset<String>> product = Poset.cartesianProduct(ABC, one23);
+        assertEquals(product.size(), 9);
+        assertEquals(product.get(0), new Poset(new ArrayList<>(Arrays.asList("a", "1"))));
+        assertEquals(product.get(8), new Poset(new ArrayList<>(Arrays.asList("c", "3"))));        
+    }
+    
+    
 }

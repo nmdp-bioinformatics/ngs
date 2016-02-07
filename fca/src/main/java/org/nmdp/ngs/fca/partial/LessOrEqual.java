@@ -20,20 +20,24 @@
     > http://www.gnu.org/licenses/lgpl.html
 
 */
-package org.nmdp.ngs.fca;
+package org.nmdp.ngs.fca.partial;
 
-public class LessThan<T extends Relatable> extends BinaryRelation<T> {
-    public LessThan() {
-        super();
-    }
-    
+import org.nmdp.ngs.fca.Relatable;
+import org.nmdp.ngs.fca.BinaryRelation;
+
+/**
+ * {@literal <=}
+ * @param <T> type
+ */
+public class LessOrEqual<T extends Relatable> extends BinaryRelation<T> {
+
     @Override  
     public boolean apply(final T left, final T right) {
-        return left.isLessThan(right);
+        return left.isLessOrEqualTo(right);
     }
     
     @Override
     public String toString() {
-        return "LessThan";
+        return "LessOrEqual";
     }
 }

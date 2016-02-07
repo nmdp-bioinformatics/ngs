@@ -31,19 +31,27 @@ import org.dishevelled.bitset.MutableBitSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.Range;
+import com.tinkerpop.blueprints.Graph;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import org.dishevelled.bitset.AbstractBitSet;
 
 /**
  * CrossTable.
  * @param <G> object type
  * @param <M> attribute type
  */
-public final class CrossTable<G extends Relatable,
-                              M extends Relatable> implements Iterable<CrossTable.Row> {
-    private final List<Row> table;
+public final class CrossTable implements Iterable<CrossTable.Row> {
+    private long nrow, ncol;
+    private List<Row> table;
+
+
     
     public final static class Row {
-        public int index;
-        public MutableBitSet intent;
+        public final long index;
+        public final MutableBitSet intent;
         
         public Row(int index, final MutableBitSet intent) {
             checkNotNull(index, intent);
@@ -67,30 +75,182 @@ public final class CrossTable<G extends Relatable,
             return this.asConcept().toString();
         }
     }
-    
-    public CrossTable(final List<G> objects,
-                      final List<M> attributes,
-                      final BinaryRelation relation) {
-        checkNotNull(objects, attributes);
-        checkNotNull(relation);
         
+    public final static class Decomposition implements Map.Entry<CrossTable, CrossTable> {
+        CrossTable key, value;
+
+        @Override
+        public CrossTable getKey() {
+            return key;
+        }
+
+        @Override
+        public CrossTable getValue() {
+            return value;
+        }
+
+        @Override
+        public CrossTable setValue(CrossTable value) {
+            this.value = value;
+            return this.value;
+        }
+    }
+    
+    public CrossTable() {
+        nrow = ncol = 0;
         table = new ArrayList<>();
+    }
+    
+    public CrossTable(final CrossTable that) {
+        this();
+        
+        for(long i = 0; i < that.nrow; i++) {
+            this.addRow(new MutableBitSet().or(that.getRow((int) i).intent));
+        }
+    }
+    
+    public CrossTable(final CrossTable that, long plus) {
+        this(that);
+        ncol += plus;
+    }
+    
+    public static <G extends Relatable, M extends Relatable> CrossTable fromContext(final Context<G, M> context) {
+        checkNotNull(context);
+        
+        CrossTable table = new CrossTable();
+        
+        List<G> objects = context.getObjects();
+        List<M> attributes = context.getAttributes();
+        BinaryRelation relation = context.getRelation();
 
         for(int i = 0; i < objects.size(); i++) {
             MutableBitSet bits = new MutableBitSet(attributes.size());
             for(int j = 0; j < attributes.size(); j++) {
-                if(relation.apply(objects.get(i), attributes.get(j))) {
+                if(relation.apply(objects.get((int) i), attributes.get((int) j))) {
                     bits.flip(j);
                 }
             }
-            table.add(new Row(i, bits));
+            table.addRow(bits);
         }
+        
+        return table;
+    }
+    
+    public long getNumberOfRows() {
+        return nrow;
+    }
+    
+    public long getNumberOfColumns() {
+        return ncol;
+    }
+    
+    public void addRow(final MutableBitSet bits) {
+        long n = bits.prevSetBit(bits.capacity());
+        
+        if(ncol <= n) {
+            ncol = n + 1;
+        }
+
+        table.add(new Row((int) nrow++, bits));
     }
   
     public Row getRow(int index) {
-        checkArgument(Range.greaterThan(0).contains(index));
+        checkArgument(Range.closedOpen(0, (int) nrow).contains(index));
         return table.get(index);
     }
+    
+    public static CrossTable complement(final CrossTable that) {
+        checkNotNull(that);
+        CrossTable complement = new CrossTable();
+        
+        for(int i = 0; i < that.getNumberOfRows(); i++) {
+            MutableBitSet ones = new MutableBitSet(that.ncol);
+            ones.set(0, that.ncol);
+            complement.addRow(new MutableBitSet().andNot(ones, that.getRow(i).intent));
+        }
+        
+        return complement;
+    }
+    
+    public static CrossTable horizontalSum(final CrossTable that,
+                                           final CrossTable other) {
+        checkNotNull(that, other);
+        CrossTable sum = new CrossTable(that, other.getNumberOfColumns());
+        
+        for(int i = 0; i < other.nrow; i++) {
+            MutableBitSet bits = new MutableBitSet(that.ncol + other.ncol);
+            MutableBitSet intent = other.getRow(i).intent;
+            for(long j = intent.nextSetBit(0); j >= 0;
+                     j = intent.nextSetBit(j + 1)) {
+                bits.set(that.ncol + j);
+            }
+            sum.addRow(bits);
+        }
+        
+        return sum;
+    }
+    
+    public static CrossTable verticalSum(final CrossTable that,
+                                         final CrossTable other) {
+        CrossTable sum = CrossTable.horizontalSum(that, other);
+        
+        for(int i = 0; i < that.nrow; i++) {
+            sum.getRow(i).intent.set(that.ncol, that.ncol + other.ncol);
+        }
+        
+        return sum;
+    }
+    
+    public static CrossTable directProduct(final CrossTable that,
+                                           final CrossTable other) {
+        CrossTable product = CrossTable.verticalSum(that, other);
+        //long ncol = that.ncol + other.ncol;
+        
+        /*
+        for(int i = 0; i < that.nrow; i++) {
+            MutableBitSet bits = new MutableBitSet(ncol);
+            bits.or(that.getRow(i).intent);
+            bits.set(that.ncol, ncol);
+            product.addRow(bits);
+        }
+        */
+        
+        for(long i = that.nrow; i < product.nrow; i++) {
+            //MutableBitSet bits = new MutableBitSet(ncol);
+            //MutableBitSet intent = other.getRow((int) i).intent;
+            product.getRow((int) i).intent.set(0, that.ncol);
+            /*
+            for(long j = intent.nextSetBit(0); j >= 0;
+                     j = intent.nextSetBit(j + 1)) {
+                bits.set(that.ncol + j);
+            }
+            product.addRow(bits);
+                    */
+        }
+        
+        return product;
+    }
+    
+    public Decomposition parallelDecomposition() {
+        return new Decomposition();
+    }
+    
+    public Decomposition seriesDecomposition() {
+        return new Decomposition();
+    }
+    
+    public ConceptLattice asConceptLattice(final Graph graph) {
+        ConceptLattice lattice = new ConceptLattice(graph, ncol);
+        
+        Iterator it = this.iterator();
+        while(it.hasNext()) {
+            CrossTable.Row row = (CrossTable.Row) it.next();
+            lattice.insert(row.asConcept(ncol));
+        }
+        
+        return lattice;
+    }
+
     
     @Override
     public Iterator<Row> iterator() {

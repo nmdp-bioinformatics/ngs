@@ -53,6 +53,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     /**
      * Construct a complete lattice assigned to a designated graph (backend).
      * @param graph assignment
+     * @param top element
      */
     protected CompleteLattice(final Graph graph, PartiallyOrdered top) {
         checkNotNull(graph, top);
@@ -69,7 +70,6 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     
     public class Iterator<E extends PartiallyOrdered> implements java.util.Iterator<E> {
         private final java.util.Iterator<Vertex> vertices;
-
 
         public Iterator(final Graph graph) {
             vertices = graph.getVertices().iterator();

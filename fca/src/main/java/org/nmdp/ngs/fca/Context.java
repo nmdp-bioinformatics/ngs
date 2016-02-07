@@ -29,6 +29,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.dishevelled.bitset.MutableBitSet;
+import org.nmdp.ngs.fca.partial.Equal;
+import org.nmdp.ngs.fca.partial.LessOrEqual;
+import org.nmdp.ngs.fca.partial.NotEqual;
+import org.nmdp.ngs.fca.partial.NotGreaterOrEqual;
 
 /**
  * Formal context. A context is a triple (G, M, I) of objects, attributes, and
@@ -123,12 +127,27 @@ public final class Context<G extends Relatable, M extends Relatable> {
         }
     }
     
+    /*
+    public static <G, M> Context horizontalSum(final Context left,
+                                               final Context right) {
+        List<G> objects = new ArrayList<>(left.objects);
+        objects.addAll(right.objects);
+        
+        List<M> attributes = new ArrayList<>(left.attributes);
+        attributes.addAll(right.attributes);
+        
+        
+        
+        //Context<G, M> sum = Context.builder().withAttributes()
+    }
+    */
+    
     /**
      * Get the cross table for this context.
      * @return cross table
      */
     public CrossTable asCrossTable() {
-        return new CrossTable(objects, attributes, relation);
+        return CrossTable.fromContext(this);
     }
     
     /**

@@ -23,25 +23,25 @@
 package org.nmdp.ngs.fca;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
-public final class Poset<C extends Comparable> extends PartiallyOrdered<Poset<C>> {
-    public final Collection<C> collection;
+public class Poset<C> extends PartiallyOrdered<Poset<C>> implements Iterable<C> {
+    public List<C> collection;
     
     public final static Poset NULL = new Poset<>();
     
     public final static Poset MAGIC = new Poset<>(null);
     
-    public Poset(final Collection<C> collection) {
-        this.collection = collection;
+    public Poset(final List<C> list) {
+        this.collection = list;
     }
     
     public Poset() {
-        collection = new HashSet<>();
+        collection = new ArrayList<>();
     }
     
     /**
@@ -56,7 +56,7 @@ public final class Poset<C extends Comparable> extends PartiallyOrdered<Poset<C>
         
         Poset previous = NULL;
         for(C element : collection) {
-            Set<C> set = new HashSet<>();
+            List<C> set = new ArrayList<>();
             set.add(element);
             
             Poset poset = new Poset(set);
@@ -70,6 +70,79 @@ public final class Poset<C extends Comparable> extends PartiallyOrdered<Poset<C>
         return singletons;
     }
     
+    
+    public static <C extends Comparable<?>> List<Poset<C>> cartesianProduct(Poset<C>...posets) {
+        return cartesianProduct(Arrays.asList(posets));
+    }
+
+    public static <C extends Comparable<?>> List<Poset<C>> cartesianProduct(List<Poset<C>> posets) {
+        List<Poset<C>> resultLists = new ArrayList<>();
+        
+        if(posets.isEmpty()) {
+            resultLists.add(new Poset(new ArrayList<C>()));
+            return resultLists;
+        } else {
+            Poset<C> firstPoset = posets.get(0);
+            List<Poset<C>> remainingLists = cartesianProduct(posets.subList(1, posets.size()));
+            for(C condition : firstPoset) {
+                for(Poset<C> poset : remainingLists) {
+                    ArrayList<C> resultList = new ArrayList<C>();
+                    resultList.add(condition);
+                    resultList.addAll(poset.collection);
+                    resultLists.add(new Poset(resultList));
+                }
+            }
+        }
+        return resultLists;
+    }
+    
+    /*
+    public static <T> List<List<T>> cartesianProduct(List<List<T>> lists) {
+        List<List<T>> resultLists = new ArrayList<List<T>>();
+        if (lists.size() == 0) {
+            resultLists.add(new ArrayList<T>());
+            return resultLists;
+        } else {
+            List<T> firstList = lists.get(0);
+            List<List<T>> remainingLists = cartesianProduct(lists.subList(1, lists.size()));
+            for (T condition : firstList) {
+                for (List<T> remainingList : remainingLists) {
+                    ArrayList<T> resultList = new ArrayList<T>();
+                    resultList.add(condition);
+                    resultList.addAll(remainingList);
+                    resultLists.add(resultList);
+                }
+            }
+        }
+        return resultLists;
+    }
+    */
+    
+    /*
+    public Poset<C> multiply(final Poset<C> right) {
+        List<Poset<C>> singletons = Poset.singletons(this.collection);
+        List<List<C>> result = new ArrayList<List<C>>();
+        for(Poset<C> i : singletons) {
+            System.out.println("singleton = " + i);
+            
+            //List<C> list = new ArrayList(i.collection);
+            
+            
+            for(Poset<C> j : Poset.singletons(right.collection)) {
+                List<C> product = new ArrayList(i.collection);
+                product.addAll(j.collection);
+                System.out.println("product = " + product);
+                result.add(product);
+            }
+            
+            
+            
+        }
+        
+        return new Poset(result);
+    }
+    */
+    
 
     @Override
     public Poset<C> intersect(final Poset<C> that) {
@@ -82,7 +155,7 @@ public final class Poset<C extends Comparable> extends PartiallyOrdered<Poset<C>
         if(that == MAGIC) {
             return new Poset(collection);
         }
-        Set<C> intersection = new HashSet<>(collection);
+        List<C> intersection = new ArrayList<>(collection);
         intersection.retainAll(that.collection);
         return new Poset(intersection);
     }
@@ -93,7 +166,7 @@ public final class Poset<C extends Comparable> extends PartiallyOrdered<Poset<C>
     }
 
     public Poset<C> coalesce(final Poset<C> that) {
-        Set<C> union = new HashSet<>(collection);
+        List<C> union = new ArrayList<>(collection);
         union.addAll(that.collection);
         return new Poset(union);
     }
@@ -133,6 +206,11 @@ public final class Poset<C extends Comparable> extends PartiallyOrdered<Poset<C>
     @Override
     public int hashCode() {
         return Objects.hashCode(this.collection);
+    }
+
+    @Override
+    public Iterator<C> iterator() {
+        return collection.iterator();
     }
 
 }
