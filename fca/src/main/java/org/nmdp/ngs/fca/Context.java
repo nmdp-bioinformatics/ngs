@@ -229,7 +229,7 @@ public final class Context<G extends Relatable, M extends Relatable> {
         List members = new ArrayList();
 
         for(Long index : Context.indexes(bits)) {
-            members.add(group.get(Math.toIntExact(index)));
+            members.add(group.get(index.intValue()));
         }
         
         return members;
