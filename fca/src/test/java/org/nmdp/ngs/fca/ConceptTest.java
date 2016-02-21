@@ -55,9 +55,6 @@ public final class ConceptTest {
     
     private List objects, attributes;
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     @Before
     public void setUp() {
         abcdefg = list("a", "b", "c", "d", "e", "f", "g");
@@ -92,36 +89,20 @@ public final class ConceptTest {
         v = new ImmutableList.Builder<String>().add("V").build();
         w = new ImmutableList.Builder<String>().add("W").build();
         x = new ImmutableList.Builder<String>().add("X").build();
+        
+        S = new Concept(bits(0), bits(0, 1, 3, 5));
+        T = new Concept(bits(1), bits(0, 1, 3, 4));
+        U = new Concept(bits(2), bits(0, 1, 3, 4, 5, 6));
+        V = new Concept(bits(3), bits(0, 2, 4, 5));
+        W = new Concept(bits(4), bits(1, 3));
+        X = new Concept(bits(5), bits(0, 5));
 
-        S = Concept.builder().withObjects(s, objects)
-                             .withAttributes(abdf, attributes)
-                             .build();
-
-        T = Concept.builder().withObjects(t, objects)
-                             .withAttributes(abde, attributes)
-                             .build();
-
-        U = Concept.builder().withObjects(u, objects)
-                             .withAttributes(abdefg, attributes)
-                             .build();
-
-        V = Concept.builder().withObjects(v, objects)
-                             .withAttributes(acef, attributes)
-                             .build();
-
-        W = Concept.builder().withObjects(w, objects)
-                             .withAttributes(bd, attributes)
-                             .build();
-
-        X = Concept.builder().withObjects(x, objects)
-                             .withAttributes(af, attributes)
-                             .build();
     }
 
     @Test
-    public void testBuilder() {
+    public void testConstructor() {
         //System.out.println("assertEquals(" + Concept.decode(S.extent(), objects) + ", flip(" + Concept.decode(flip(new MutableBitSet(), 0), objects) + ")");
-        Concept empty = Concept.builder().build();
+        Concept empty = new Concept(bits(), bits());
         assertEquals(empty.extent(), bits());
         assertEquals(empty.intent(), bits());
 
@@ -130,59 +111,34 @@ public final class ConceptTest {
     }
 
     @Test
-    public void testDecode() {
-        assertEquals(Concept.decode(bits(), abcdefg), list());
-        assertEquals(Concept.decode(bits(0), abcdefg), list("a"));
-        assertEquals(Concept.decode(bits(1, 2), abcdefg), list("b", "c"));
-
-        exception.expect(java.lang.IndexOutOfBoundsException.class);
-        Concept.decode(bits(7), abcdefg);
+    public void testLessThan() {
+        assertTrue(X.isLessThan(S));
     }
 
     @Test
-    public void testEncode() {
-        assertEquals(Concept.encode(list(), abcdefg), bits());
-        assertEquals(Concept.encode(list("a"), abcdefg), bits(0));
-        assertEquals(Concept.encode(list("b", "c"), abcdefg), bits(1, 2));
-        assertEquals(Concept.encode(list("h"), abcdefg), bits());
+    public void testGreaterThan() {
+        assertTrue(S.isGreaterThan(X));
     }
 
     @Test
-    public void testEqual() {
-        assertEquals(X.relation(X), Partial.Order.EQUAL);
+    public void testNoncomparableTo() {
+        assertTrue(W.isNonComparableTo(X));
     }
 
     @Test
-    public void testLess() {
-        assertEquals(X.relation(S), Partial.Order.LESS);
-        assertTrue(X.relation(S).less());
+    public void testGreaterOrEqualTo() {
+        assertTrue(X.isGreaterOrEqualTo(X));
+        assertFalse(X.isGreaterOrEqualTo(S));
+        assertTrue(S.isGreaterOrEqualTo(X));
+        assertFalse(W.isGreaterOrEqualTo(X));
     }
 
     @Test
-    public void testGreater() {
-        assertEquals(S.relation(X), Partial.Order.GREATER);
-        assertTrue(S.relation(X).greater());
-    }
-
-    @Test
-    public void testNoncomparable() {
-        assertEquals(W.relation(X), Partial.Order.NONCOMPARABLE);
-    }
-
-    @Test
-    public void testGreaterOrEqual() {
-        assertTrue(X.relation(X).greaterOrEqual());
-        assertFalse(X.relation(S).greaterOrEqual());
-        assertTrue(S.relation(X).greaterOrEqual());
-        assertFalse(W.relation(X).greaterOrEqual());
-    }
-
-    @Test
-    public void testLessOrEqual() {
-        assertTrue(X.relation(X).lessOrEqual());
-        assertTrue(X.relation(S).lessOrEqual());
-        assertFalse(S.relation(X).lessOrEqual());
-        assertFalse(W.relation(X).lessOrEqual());
+    public void testLessOrEqualTo() {
+        assertTrue(X.isLessOrEqualTo(X));
+        assertTrue(X.isLessOrEqualTo(S));
+        assertFalse(S.isLessOrEqualTo(X));
+        assertFalse(W.isLessOrEqualTo(X));
     }
 
     @Test

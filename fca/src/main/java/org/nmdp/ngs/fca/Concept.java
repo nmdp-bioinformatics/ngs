@@ -22,23 +22,19 @@
 */
 package org.nmdp.ngs.fca;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.base.Objects;
 
 import org.dishevelled.bitset.MutableBitSet;
 
 /**
- * Formal concept.
+ * A formal concept is a pair (A, B) of sets corresponding to objects (A) and
+ * their associated attributes (B).
  */
-public final class Concept implements Partial<Concept> {
-    private final MutableBitSet extent;
-    private final MutableBitSet intent;
+public final class Concept extends PartiallyOrdered<Concept> {
+    private final MutableBitSet intent, extent;
 
     /**
      * Construct a concept with given objects (extent) and attributes (intent).
-     *
      * @param extent objects
      * @param intent attributes
      */
@@ -46,10 +42,17 @@ public final class Concept implements Partial<Concept> {
         this.extent = extent;
         this.intent = intent;
     }
+    
+    private MutableBitSet and(final Concept that) {
+        return new MutableBitSet().or(this.intent).and(that.intent);
+    }
+    
+    private MutableBitSet or(final Concept that) {
+        return new MutableBitSet().or(this.extent).or(that.extent);
+    }
 
     /**
-     * Retrieve the bitset representation of the concept's objects.
-     *
+     * Get the bitset representation of the concept's objects.
      * @return extent
      */
     public MutableBitSet extent() {
@@ -57,138 +60,106 @@ public final class Concept implements Partial<Concept> {
     }
 
     /**
-     * Retrieve the bitset representation of the concept's attributes.
-     *
+     * Get the bitset representation of the concept's attributes.
      * @return intent
      */
     public MutableBitSet intent() {
         return intent;
     }
-
-    /**
-     * Decode an object list from its bit membership.
-     *
-     * @param bits where each set bit represents membership in the given group
-     * @param group list of all members
-     * @return immutable list of members
-     */
-    // todo:  lists should be typed
-    public static List decode(final MutableBitSet bits, final List group) {
-        List members = new ArrayList();
-
-        for (long i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
-            members.add(group.get((int) i));
-        }
-        return members;
+    
+    @Override
+    public boolean apply(final Concept that) {
+        return this.intent.equals(this.intersect(that).intent);
+    } 
+    
+    @Override
+    public boolean isLessThan(final Concept that) {
+        return super.isLessThan(that);
     }
-
-    /**
-     * Encode bit membership from a list of objects.
-     *
-     * @param members to encode
-     * @param group list of all members
-     * @return bits where each set bit represents membership in the group
-     */
-    public static MutableBitSet encode(final List members, final List group) {
-        MutableBitSet bits = new MutableBitSet();
-
-        for (Object object : members) {
-            int index = group.indexOf(object);
-            if (index >= 0) {
-                bits.flip(index);
-            }
-        }
-        return bits;
+    
+    @Override
+    public boolean isLessOrEqualTo(final Concept that) {
+        return this.intent.equals(this.and(that));
     }
-
-    public static Builder builder() {
-        return new Builder();
+    
+    @Override
+    public boolean isGreaterThan(final Concept that) {
+        return this.isGreaterOrEqualTo(that) && !this.equals(that);
     }
-
-    /**
-     * Builder class for Concept.
-     */
-    public static final class Builder<G extends Comparable, M extends Comparable> {
-        private MutableBitSet extent, intent;
-
-        public Builder() {
-          extent = new MutableBitSet();
-          intent = new MutableBitSet();
-        }
-
-        public Builder withObjects(final List<G> chosen, final List<G> from) {
-            extent = encode(chosen, from);
-            return this;
-        }
-
-        public Builder withAttributes(final List<M> chosen, final List<G> from) {
-            intent = encode(chosen, from);
-            return this;
-        }
-
-        public Concept build() {
-            return new Concept(extent, intent);
-        }
+    
+    @Override
+    public boolean isGreaterOrEqualTo(final Concept that) {
+        return that.intent.equals(this.and(that));
     }
-
+    
     /**
-     * Define the partial ordering of two concepts.
-     *
-     * @param that that concept
-     * @return partial ordering of this and that concept
+     * Test if this object equals another.
+     * @param that object
+     * @return true if two concepts have equivalent extents and intents
      */
     @Override
-    public Order relation(final Concept that) {
-        MutableBitSet meet = (MutableBitSet) new MutableBitSet().or(this.intent).and(that.intent);
-
-        if (this.intent.equals(that.intent)) {
-            return Partial.Order.EQUAL;
-        }
-        if (this.intent.equals(meet)) {
-            return Partial.Order.LESS;
-        }
-        if (that.intent.equals(meet)) {
-            return Partial.Order.GREATER;
-        }
-        return Partial.Order.NONCOMPARABLE;
-    }
-
-    @Override
-    public boolean equals(final Object right) {
-        if (!(right instanceof Concept)) {
+    public boolean equals(final Object that) {
+        if (!(that instanceof Concept)) {
             return false;
         }
 
-        if (right == this) {
+        if (that == this) {
            return true;
         }
 
-        Concept concept = (Concept) right;
-        return concept.extent == this.extent && concept.intent == this.intent;
+        Concept concept = (Concept) that;
+        return concept.extent.equals(this.extent) &&
+               concept.intent.equals(this.intent);
     }
 
+    /**
+     * Get the hash code.
+     * @return hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hashCode(extent, intent);
     }
-
+    
+    /**
+     * Get the string representation. This is the extent and intent as sets of
+     * set bits or, equivalently, indexes into corresponding context objects and
+     * attributes, respectively.
+     * @return concept as a string
+     */
     @Override
     public String toString() {
-        return intent.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(Context.indexes(extent)).append(Context.indexes(intent));
+        return sb.toString();
     }
 
+    /**
+     * Find the intersection of two concepts
+     * @param that concept
+     * @return a concept with empty extent and intent corresponding to the
+     * intersection of this and that intent
+     */
     @Override
     public Concept intersect(final Concept that) {
-        MutableBitSet and = (MutableBitSet) new MutableBitSet().or(this.intent).and(that.intent);
-        return new Concept(new MutableBitSet(), and);
+        return new Concept(new MutableBitSet(), this.and(that));
     }
 
+    /**
+     * Find the union of two concepts.
+     * @param that concept
+     * @return a concept with extent corresponding to the union of this and that
+     * extent and this intent
+     */
     @Override
     public Concept union(final Concept that) {
-        MutableBitSet or = (MutableBitSet) new MutableBitSet().or(this.extent).or(that.extent);
-        return new Concept(or, this.intent());
+        return new Concept(this.or(that), this.intent());
     }
 
+    /**
+     * Find the concept measure.
+     * @return the extent cardinality
+     */
     @Override
     public double measure() {
         return extent.cardinality();

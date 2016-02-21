@@ -25,63 +25,46 @@ package org.nmdp.ngs.fca;
 import java.util.List;
 import java.util.ArrayList;
 
-import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.Direction;
 
 import org.dishevelled.bitset.MutableBitSet;
 
 /**
  * Concept lattice.
- *
- * @param <G> object type
- * @param <M> attribute type
  */
-public class ConceptLattice<G, M> extends AbstractLattice<Concept> {
-    protected List<G> objects;
-    protected List<M> attributes;
-
-    public ConceptLattice(final Graph lattice, final List<M> attributes) {
-        super(lattice);
-        objects = new ArrayList<>();
-        this.attributes = attributes;
-        MutableBitSet ones = new MutableBitSet(this.attributes.size());
-        ones.set(0, this.attributes.size());
-        top = lattice.addVertex(null);
-        top.setProperty("label", new Concept(new MutableBitSet(), ones));
-        top.setProperty("color", color);
-        direction = Partial.Order.Direction.FORWARD;
-        size = 1;
-        order = 0;
-        bottom = top;
+public class ConceptLattice extends CompleteLattice<Concept> {
+    
+    private static MutableBitSet ones(long numBits) {
+        MutableBitSet ones = new MutableBitSet(numBits);
+        ones.set(0, numBits);
+        return ones;
     }
-
-    public Concept insert(final G object, final List<M> attributes) {
-        objects.add(object);
-        MutableBitSet intent = Concept.encode(attributes, this.attributes);
-        Concept proposed = new Concept(new MutableBitSet(), intent);
-        Vertex added = super.addIntent(proposed, top);
-
-        List<G> list = new ArrayList<G>();
-        list.add(object);
-        MutableBitSet extent = Concept.encode(list, objects);
+    
+    public ConceptLattice(final Graph graph, long numBits) {
+        super(graph, new Concept(new MutableBitSet(), ones(numBits)));
+    }
+    
+    public Concept insert(final Concept concept) {
+        Vertex added = super.addIntent(concept, top);
 
         List queue = new ArrayList();
-        added.setProperty("color", ++color);
+        added.setProperty(COLOR, ++color);
         queue.add(added);
 
         while (!queue.isEmpty()) {
             Vertex visiting = (Vertex) queue.remove(0);
             Concept visitingConcept = visiting.getProperty(LABEL);
-            visitingConcept.extent().or(extent);
+            visitingConcept.extent().or(concept.extent());
 
             for (Edge edge : visiting.getEdges(Direction.BOTH)) {
                 Vertex target = edge.getVertex(Direction.OUT);
 
-                if ((int) target.getProperty("color") != color) {
+                if ((int) target.getProperty(COLOR) != color) {
                     if (filter(visiting, target)) {
-                        target.setProperty("color", color);
+                        target.setProperty(COLOR, color);
                         queue.add(target);
                     }
                 }
@@ -89,43 +72,11 @@ public class ConceptLattice<G, M> extends AbstractLattice<Concept> {
         }
         return added.getProperty(LABEL);
     }
-
-    public final List<G> getObjects() {
-        return objects;
-    }
-
-    public List<M> getAttributes() {
-        return attributes;
-    }
-
+    
     @Override
     public final Concept join(final Concept left, final Concept right) {
         MutableBitSet bits = (MutableBitSet) new MutableBitSet().or(left.intent()).or(right.intent());
         Concept query = new Concept(new MutableBitSet(), bits);
         return supremum(query, top).getProperty(LABEL);
-    }
-
-    public Concept greatestLowerBound(final List query) {
-        // todo:  support this method
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("digraph {\n");
-        for (Vertex vertex : lattice.getVertices()) {
-            for (Edge edge : vertex.getEdges(Direction.BOTH)) {
-                Vertex target = edge.getVertex(Direction.OUT);
-                if (!vertex.getProperty("label").equals(target.getProperty("label"))) {
-                    Concept vertexConcept = vertex.getProperty("label");
-                    Concept targetConcept = target.getProperty("label");
-                    if (!filter(vertex, target)) {
-                        sb.append("  \"" + Concept.decode(vertexConcept.extent(), objects) + Concept.decode(vertexConcept.intent(), attributes) + "\" -> \"" + Concept.decode(targetConcept.extent(), objects) + Concept.decode(targetConcept.intent(), attributes) + "\"[label=\"" + edge.getLabel() + "\"]\n");
-                    }
-                }
-            }
-        }
-        sb.append("}");
-        return sb.toString();
     }
 }

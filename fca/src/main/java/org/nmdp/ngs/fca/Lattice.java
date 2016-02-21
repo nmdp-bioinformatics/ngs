@@ -22,51 +22,103 @@
 */
 package org.nmdp.ngs.fca;
 
+import java.util.Collection;
+
 /**
- * Finite lattice.
- *
- * @param <T> type of partially ordered objects
+ * Lattice. An iterable set of partially ordered elements.
+ * @param <E> element type
  */
-public interface Lattice<T extends Partial> {
+public interface Lattice<E extends PartiallyOrdered> extends Iterable<E> {
 
     /**
-     * Return the least lattice element.
-     *
+     * Find the least element.
      * @return the least lattice element
      */
-    T bottom();
+    E bottom();
 
     /**
-     * Return the greatest lattice element.
-     *
+     * Find the greatest element.
      * @return the greatest lattice element
      */
-    T top();
+    E top();
+    
+    /**
+     * Lattice size.
+     * @return the number of vertices
+     */
+    int size();
 
     /**
-     * Return the least upper bound (also supremum).
-     *
+     * Find the least upper bound of two elements (supremum).
      * @param left element
      * @param right element
      * @return the join of left and right
      */
-    T join(T left, T right);
+    E join(E left, E right);
 
     /**
-     * Return the greatest lower bound (also infimum).
-     *
+     * Find the greatest lower bound of two elements (infimum).
      * @param left element
      * @param right element
      * @return the meet of left and right
      */
-    T meet(T left, T right);
-
+    E meet(E left, E right);
+    
     /**
-     * Return the countable measure of left and right.
-     *
+     * Test if one element covers another.
      * @param left element
      * @param right element
-     * @return the countable measure of left and right
+     * @return true if left (x) is less than right (y) and there is no other
+     * element z where x {@literal <} z {@literal <} y.
      */
-    double measure(T left, T right);
+    boolean covers(E left, E right);
+    
+    /**
+     * Find an element or its closest approximation in the lattice.
+     * @param element to find
+     * @return the supremum of element and top
+     */
+    E find(E element);
+    
+    /**
+     * Test if the lattice contains a specified element.
+     * @param element to test
+     * @return true if the lattice contains the equivalent element
+     */
+    boolean contains(E element);
+    
+    /**
+     * Test if the lattice contains all specified elements in a collection.
+     * @param collection of elements
+     * @return true if the lattice contains all the equialent elements
+     */
+    boolean containsAll(Collection<? extends E> collection);
+    
+    /**
+     * Test if the lattice is empty.
+     * @return true if the lattice contains only its top element
+     */
+    boolean isEmpty();
+    
+    /**
+     * Convert the lattice to an array.
+     * @return array of objects.
+     */
+    Object[] toArray();
+    
+    /**
+     * Convert the lattice to an array.
+     * @param <E> element type
+     * @param elements empty array to fill
+     * @return array of partially-ordered elements
+     */
+    <E> E[] toArray(E[] elements);
+
+    /**
+     * Calculate the measure of two elements.
+     * @param left element
+     * @param right element
+     * @return the measure of left and right
+     */
+    double measure(E left, E right);
 }
