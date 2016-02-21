@@ -22,6 +22,7 @@
 */
 package org.nmdp.ngs.fca;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,7 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-public class Poset<C> extends PartiallyOrdered<Poset<C>> implements Iterable<C> {
+public final class Poset<C> extends PartiallyOrdered<Poset<C>> implements Iterable<C> {
     public List<C> collection;
     
     public final static Poset NULL = new Poset<>();
@@ -37,11 +38,35 @@ public class Poset<C> extends PartiallyOrdered<Poset<C>> implements Iterable<C> 
     public final static Poset MAGIC = new Poset<>(null);
     
     public Poset(final List<C> list) {
-        this.collection = list;
+        if(list == null) {
+            this.collection = null;
+        } else {
+           this.collection = ImmutableList.copyOf(list); 
+        }
     }
     
     public Poset() {
         collection = new ArrayList<>();
+    }
+    
+    @Override
+    public boolean isLessOrEqualTo(final Poset that) {
+        return super.apply(that);
+    }  
+    
+    @Override
+    public boolean isLessThan(final Poset that) {
+        return isLessOrEqualTo(that) && !this.equals(that);
+    }
+    
+    @Override
+    public boolean isGreaterThan(final Poset that) {
+        return isGreaterOrEqualTo(that) && !this.equals(that);
+    }
+    
+    @Override
+    public boolean isGreaterOrEqualTo(final Poset that) {
+        return that.equals(this.intersect(that));
     }
     
     /**

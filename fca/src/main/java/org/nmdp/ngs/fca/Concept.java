@@ -27,7 +27,8 @@ import com.google.common.base.Objects;
 import org.dishevelled.bitset.MutableBitSet;
 
 /**
- * Formal concept.
+ * A formal concept is a pair (A, B) of sets corresponding to objects (A) and
+ * their associated attributes (B).
  */
 public final class Concept extends PartiallyOrdered<Concept> {
     private final MutableBitSet intent, extent;
@@ -67,6 +68,11 @@ public final class Concept extends PartiallyOrdered<Concept> {
     }
     
     @Override
+    public boolean apply(final Concept that) {
+        return this.intent.equals(this.intersect(that).intent);
+    } 
+    
+    @Override
     public boolean isLessThan(final Concept that) {
         return super.isLessThan(that);
     }
@@ -76,29 +82,32 @@ public final class Concept extends PartiallyOrdered<Concept> {
         return this.intent.equals(this.and(that));
     }
     
-    
     @Override
     public boolean isGreaterThan(final Concept that) {
         return this.isGreaterOrEqualTo(that) && !this.equals(that);
     }
-    
     
     @Override
     public boolean isGreaterOrEqualTo(final Concept that) {
         return that.intent.equals(this.and(that));
     }
     
+    /**
+     * Test if this object equals another.
+     * @param that object
+     * @return true if two concepts have equivalent extents and intents
+     */
     @Override
-    public boolean equals(final Object right) {
-        if (!(right instanceof Concept)) {
+    public boolean equals(final Object that) {
+        if (!(that instanceof Concept)) {
             return false;
         }
 
-        if (right == this) {
+        if (that == this) {
            return true;
         }
 
-        Concept concept = (Concept) right;
+        Concept concept = (Concept) that;
         return concept.extent.equals(this.extent) &&
                concept.intent.equals(this.intent);
     }
@@ -125,16 +134,32 @@ public final class Concept extends PartiallyOrdered<Concept> {
         return sb.toString();
     }
 
+    /**
+     * Find the intersection of two concepts
+     * @param that concept
+     * @return a concept with empty extent and intent corresponding to the
+     * intersection of this and that intent
+     */
     @Override
     public Concept intersect(final Concept that) {
         return new Concept(new MutableBitSet(), this.and(that));
     }
 
+    /**
+     * Find the union of two concepts.
+     * @param that concept
+     * @return a concept with extent corresponding to the union of this and that
+     * extent and this intent
+     */
     @Override
     public Concept union(final Concept that) {
         return new Concept(this.or(that), this.intent());
     }
 
+    /**
+     * Find the concept measure.
+     * @return the extent cardinality
+     */
     @Override
     public double measure() {
         return extent.cardinality();

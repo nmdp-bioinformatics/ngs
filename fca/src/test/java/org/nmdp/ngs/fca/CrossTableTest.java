@@ -26,6 +26,8 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import static org.nmdp.ngs.fca.TestUtil.bits;
 import org.dishevelled.bitset.MutableBitSet;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -95,6 +97,7 @@ public class CrossTableTest {
         assertEquals(complement.getNumberOfRows(), 3);
         assertEquals(complement.getNumberOfColumns(), 3);
         assertEquals(complement.getRow(0).intent, bits(0));
+        assertEquals(CrossTable.complement(complement).getRow(0).intent, bits(1, 2));
     }
     
     @Test
@@ -134,5 +137,16 @@ public class CrossTableTest {
         
         assertEquals(table.getNumberOfRows(), 3);
         assertEquals(table.getRow(0).intent, bits(1, 2));
+    }
+    
+    @Test
+    public void testEquals() {
+        CrossTable that = new CrossTable();
+        that.addRow(bits(1, 2));
+        that.addRow(bits(2));
+        that.addRow(bits(1));
+        
+        assertTrue(table.equals(that));
+        assertFalse(table.equals(other));
     }
 }

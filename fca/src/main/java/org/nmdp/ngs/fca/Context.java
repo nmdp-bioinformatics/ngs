@@ -23,6 +23,7 @@
 package org.nmdp.ngs.fca;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.collect.ImmutableList;
 import com.tinkerpop.blueprints.Graph;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,8 +62,8 @@ public final class Context<G extends Relatable, M extends Relatable> {
                     final List<M> attributes,
                     final BinaryRelation relation) {
         
-        this.objects = objects;
-        this.attributes = attributes;
+        this.objects = ImmutableList.copyOf(objects);
+        this.attributes = ImmutableList.copyOf(attributes);
         this.relation = relation;
     }
     
@@ -216,7 +217,7 @@ public final class Context<G extends Relatable, M extends Relatable> {
      * @return list of set bits
      */
     public static List<Long> indexes(final MutableBitSet bits) {
-        List indexes = new ArrayList();
+        List<Long> indexes = new ArrayList<>((int) bits.cardinality());
         
         for (long i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
             indexes.add(i);

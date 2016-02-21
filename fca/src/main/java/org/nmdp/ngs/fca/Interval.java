@@ -36,7 +36,7 @@ import com.google.common.collect.ImmutableRangeSet;
 /**
  * For spatial or temporal intervals defined by lower and upper comparable
  * endpoints. This class wraps com.google.common.collect.Range and is endowed
- * with a dimension to support programmatic frameworks for intervals in
+ * with a dimension to support programmatic frameworks of intervals in
  * multidimensional space or time.
  * @param <C> comparable endpoint type
  */
@@ -103,14 +103,26 @@ public class Interval<C extends Comparable> extends PartiallyOrdered<Interval<C>
             ranges = builder.build();
         }
         
+        /**
+         * Get the difference dimension
+         * @return the dimension
+         */
         public int getDimension() {
             return dimension;
         }
         
+        /**
+         * Get the dimensionless rangeset
+         * @return ranges
+         */
         public ImmutableRangeSet<C> getRanges() {
             return ranges;
         }
         
+        /**
+         * Get the string representation
+         * @return difference as string
+         */
         @Override
         public String toString() {
             return dimension + ":" + ranges.toString();
@@ -162,6 +174,28 @@ public class Interval<C extends Comparable> extends PartiallyOrdered<Interval<C>
         return this.range.upperBoundType() == BoundType.OPEN ? BoundType.CLOSED
                                                              : BoundType.OPEN;
     }
+    
+    /*
+    @Override
+    public boolean isLessOrEqualTo(final Interval<C> that) {
+        return super.apply(that);
+    }  
+    
+    @Override
+    public boolean isLessThan(final Interval<C> that) {
+        return isLessOrEqualTo(that) && !this.equals(that);
+    }
+    
+    @Override
+    public boolean isGreaterThan(final Interval<C> that) {
+        return isGreaterOrEqualTo(that) && !this.equals(that);
+    }
+    
+    @Override
+    public boolean isGreaterOrEqualTo(final Interval<C> that) {
+        return that.equals(this.intersect(that));
+    }
+    */
     
     /**
      * Find the intersection of two intervals.
@@ -230,6 +264,12 @@ public class Interval<C extends Comparable> extends PartiallyOrdered<Interval<C>
         return 0; //range.lowerEndpoint() - range.upperEndpoint();
     }
     
+    /**
+     * Test if two intervals are connected
+     * @param that interval
+     * @return true if the two intervals are connected
+     * @see Range#isConnected(com.google.common.collect.Range)
+     */
     public boolean isConnected(final Interval<C> that) {
         if(this.hasNone() || that.hasNone()) {
             return false; 
@@ -361,7 +401,7 @@ public class Interval<C extends Comparable> extends PartiallyOrdered<Interval<C>
     }
     
     /**
-     * Test if an interval is before another.
+     * Test if an interval precedes another.
      * @param that interval
      * @return true if this interval (upper endpoint) is before that (lower
      * endpoint)

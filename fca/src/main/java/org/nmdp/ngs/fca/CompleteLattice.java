@@ -121,7 +121,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
      * @param generator element
      * @return supremum vertex
      */
-    protected Vertex supremum(final E proposed, Vertex generator) {
+    protected final Vertex supremum(final E proposed, Vertex generator) {
         boolean max = true;
         while (max) {
             max = false;
@@ -144,12 +144,12 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     }
     
     @Override
-    public E find(final E element) {
+    public final E find(final E element) {
         return this.meet(element, this.top());
     }
 
     @Override
-    public boolean contains(final E element) {
+    public final boolean contains(final E element) {
         return this.find(element).equals(element);
     }
 
@@ -159,7 +159,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
      * @return true if lattice contains all elements of the given collection
      */
     @Override
-    public boolean containsAll(final Collection<? extends E> collection) {
+    public final boolean containsAll(final Collection<? extends E> collection) {
         for(E element : collection) {
             if(!this.contains(element)) {
                 return false;
@@ -169,7 +169,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     }
     
     @Override
-    public boolean covers(final E left, final E right) {
+    public final boolean covers(final E left, final E right) {
         Vertex found = this.supremum(left, top);
 
         if(found != bottom) {
@@ -186,7 +186,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     }
     
     @Override
-    public Iterator iterator() {
+    public final Iterator iterator() {
         return new Iterator(graph);
     }
 
@@ -227,7 +227,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
      * @return new added vertex or generator if the proposed element already
      * exists
      */
-    protected Vertex addIntent(final E proposed, Vertex generator) {
+    protected final Vertex addIntent(final E proposed, Vertex generator) {
         generator = supremum(proposed, generator);
 
         if (filter(generator, proposed) && filter(proposed, generator)) {
@@ -294,7 +294,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
      * @return the number of vertices
      */
     @Override
-    public int size() {
+    public final int size() {
         return size;
     }
     
@@ -302,7 +302,7 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
      * The lattice order.
      * @return the number of edges
      */
-    public int order() {
+    public final int order() {
         return order;
     }
 
@@ -336,10 +336,8 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
 
     @Override
     public double measure(final E left, final E right) {
-        //Concept concept = leastUpperBound(right);
-        //Concept meet = left.meet(leastUpperBound(left), concept);
-        // T meet = this.meet(left, right);
-        return (double) join(left, right).measure() / meet(right, top()).measure();
+        return (double) join(left, right).measure() /
+                        meet(right, top()).measure();
     }
     
     @Override
@@ -355,9 +353,13 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
                 
                 if (!sourceElement.equals(targetElement)) {
                     if (!filter(sourceElement, targetElement)) {
-                        sb.append(" \"" + sourceElement);
-                        sb.append("\" -> \"" + targetElement);
-                        sb.append("\"[label=\"" + edge.getLabel() + "\"]\n");
+                        sb.append(" \"")
+                          .append(sourceElement)
+                          .append("\" -> \"")
+                          .append(targetElement)
+                          .append("\"[label=\"")
+                          .append(edge.getLabel())
+                          .append("\"]\n");
                     }
                 }
             }
@@ -367,17 +369,17 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     }
     
     @Override
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return bottom == top;
     }
     
     @Override
-    public Object[] toArray() {
+    public final Object[] toArray() {
         return this.toArray(new Object[size]);
     }
     
     @Override
-    public <E> E[] toArray(E[] elements) {
+    public final <E> E[] toArray(E[] elements) {
         int i = 0;
         for(Object element : this) {
             elements[i++] = (E) element;

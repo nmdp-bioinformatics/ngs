@@ -22,7 +22,7 @@
 */
 package org.nmdp.ngs.fca;
 
-public abstract class TotallyOrdered<T extends TotallyOrdered> extends Binary<T> implements Comparable<T> {
+public final class TotallyOrdered<T extends TotallyOrdered> extends Binary<T> implements Comparable<T> {
     
     @Override
     public boolean apply(final T that) {
@@ -47,5 +47,10 @@ public abstract class TotallyOrdered<T extends TotallyOrdered> extends Binary<T>
     @Override
     public boolean isGreaterThan(final T that) {
         return this.compareTo(that) == 1;
+    }
+
+    @Override
+    public int compareTo(final T that) {
+        return this.compareTo(that);
     }
 }

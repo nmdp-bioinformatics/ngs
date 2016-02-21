@@ -29,10 +29,11 @@ public abstract class PartiallyOrdered<T extends PartiallyOrdered> extends Binar
         return this.equals(this.intersect(that));
     }
     
+    
     @Override
     public boolean isLessOrEqualTo(final T that) {
         return this.apply(that);
-    }
+    }  
     
     @Override
     public boolean isLessThan(final T that) {
@@ -40,20 +41,21 @@ public abstract class PartiallyOrdered<T extends PartiallyOrdered> extends Binar
     }
     
     @Override
+    public boolean isGreaterThan(final T that) {
+        return isGreaterOrEqualTo(that) && !this.equals(that);
+    }
+    
+    @Override
     public boolean isGreaterOrEqualTo(final T that) {
         return that.equals(this.intersect(that));
     }
     
-    @Override
-    public boolean isGreaterThan(final T that) {
-        return isGreaterOrEqualTo(that) && !this.equals(that);
-    }
 
-    public boolean isNonComparableTo(final T that) {
+    public final boolean isNonComparableTo(final T that) {
         return !this.apply(that) && !that.apply(this);
     }
     
-    public boolean isComparableTo(final T that) {
+    public final boolean isComparableTo(final T that) {
         return !isNonComparableTo(that);
     }
    

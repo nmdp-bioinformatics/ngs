@@ -22,8 +22,6 @@
 */
 package org.nmdp.ngs.fca;
 
-import java.util.Comparator;
-
 /**
  * 
  * @param <T> type

@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.dishevelled.bitset.AbstractBitSet;
+import static org.nmdp.ngs.fca.Poset.MAGIC;
 
 /**
  * CrossTable.
@@ -73,6 +74,21 @@ public final class CrossTable implements Iterable<CrossTable.Row> {
         @Override
         public String toString() {
             return this.asConcept().toString();
+        }
+        
+        @Override
+        public boolean equals(final Object right) {
+            if (!(right instanceof Row)) {
+                return false;
+            }
+
+            if (right == this) {
+               return true;
+            }
+
+            Row row = (Row) right;
+            return this.index == row.index &&
+                   this.intent.equals(row.intent);
         }
     }
         
@@ -204,28 +220,9 @@ public final class CrossTable implements Iterable<CrossTable.Row> {
     public static CrossTable directProduct(final CrossTable that,
                                            final CrossTable other) {
         CrossTable product = CrossTable.verticalSum(that, other);
-        //long ncol = that.ncol + other.ncol;
-        
-        /*
-        for(int i = 0; i < that.nrow; i++) {
-            MutableBitSet bits = new MutableBitSet(ncol);
-            bits.or(that.getRow(i).intent);
-            bits.set(that.ncol, ncol);
-            product.addRow(bits);
-        }
-        */
-        
+
         for(long i = that.nrow; i < product.nrow; i++) {
-            //MutableBitSet bits = new MutableBitSet(ncol);
-            //MutableBitSet intent = other.getRow((int) i).intent;
             product.getRow((int) i).intent.set(0, that.ncol);
-            /*
-            for(long j = intent.nextSetBit(0); j >= 0;
-                     j = intent.nextSetBit(j + 1)) {
-                bits.set(that.ncol + j);
-            }
-            product.addRow(bits);
-                    */
         }
         
         return product;
@@ -266,5 +263,21 @@ public final class CrossTable implements Iterable<CrossTable.Row> {
         }
         
         return sb.toString();
+    }
+    
+    @Override
+    public boolean equals(final Object right) {
+        if (!(right instanceof CrossTable)) {
+            return false;
+        }
+
+        if (right == this) {
+           return true;
+        }
+
+        CrossTable table = (CrossTable) right;
+        return this.nrow == table.nrow &&
+               this.ncol == table.ncol &&
+               this.table.equals(table.table);
     }
 }
