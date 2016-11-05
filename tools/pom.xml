@@ -147,11 +147,6 @@
       <artifactId>ngs-variant</artifactId>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>com.github.samtools</groupId>
-      <artifactId>htsjdk</artifactId>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
