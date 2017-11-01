@@ -1,7 +1,7 @@
 /*
 
     ngs-hml  Mapping for HML XSDs.
-    Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2014-2017 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -55,7 +55,7 @@ public final class HmlWriterTest {
     @Before
     public void setUp() throws Exception {
         data = new Hml();
-        data.setVersion("1.0.1");
+        data.setVersion("1.0.2");
         data.setProjectName("LAB");
 
         ReportingCenter reportingCenter = new ReportingCenter();

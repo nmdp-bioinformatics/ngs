@@ -1,7 +1,7 @@
 /*
 
     ngs-hml  Mapping for HML XSDs.
-    Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2014-2017 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -75,7 +75,7 @@ public final class HmlWriter {
             JAXBContext context = JAXBContext.newInstance(Hml.class);
             Marshaller marshaller = context.createMarshaller();
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-1.0.1.xsd");
+            URL schemaURL = HmlReader.class.getResource("/org/nmdp/ngs/hml/xsd/hml-1.0.2.xsd");
             Schema schema = schemaFactory.newSchema(schemaURL);
             marshaller.setSchema(schema);
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
