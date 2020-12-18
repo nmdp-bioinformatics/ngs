@@ -2,7 +2,7 @@
 <!--
 
     ngs-hml  Mapping for HML XSDs.
-    Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2014-2017 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -89,8 +89,8 @@
             <configuration>
               <xsdOptions>
                 <xsdOption>
-                  <xsd>src/main/xsd/hml-1.0.1.xsd</xsd>
-                  <bindingFile>src/main/xsd/hml-1.0.1.xjb</bindingFile>
+                  <xsd>src/main/xsd/hml-1.0.2.xsd</xsd>
+                  <bindingFile>src/main/xsd/hml-1.0.2.xjb</bindingFile>
                   <extension>true</extension>
                 </xsdOption>
               </xsdOptions>

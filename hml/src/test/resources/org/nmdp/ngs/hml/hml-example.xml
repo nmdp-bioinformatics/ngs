@@ -24,12 +24,12 @@
 
 <!-- NOTE: This is a brief example of a DRAFT version of HML in action. It is not intended to be an accurate genotyping result. -->
 
-<hml xmlns="http://schemas.nmdp.org/spec/hml/1.0.1" 
-     xmlns:hml="http://schemas.nmdp.org/spec/hml/1.0.1" 
+<hml xmlns="http://schemas.nmdp.org/spec/hml/1.0" 
+     xmlns:hml="http://schemas.nmdp.org/spec/hml/1.0" 
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-     xsi:schemaLocation="http://schemas.nmdp.org/spec/hml/1.0.1 http://schemas.nmdp.org/spec/hml/1.0.1/hml-1.0.1.xsd"
+     xsi:schemaLocation="http://schemas.nmdp.org/spec/hml/1.0 http://schemas.nmdp.org/spec/hml/1.0.2/hml-1.0.2.xsd"
      project-name="LAB"
-     version="1.0.1">
+     version="1.0.2">
   <reporting-center reporting-center-id="789" reporting-center-context="NMDP" />
   <sample center-code="321" id="123456789">
     <collection-method>buccal swab</collection-method>

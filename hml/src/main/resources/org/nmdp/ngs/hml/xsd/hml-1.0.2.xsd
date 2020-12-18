@@ -22,12 +22,12 @@
 
 -->
 <xs:schema 
-  xmlns="http://schemas.nmdp.org/spec/hml/1.0.1"
-  xmlns:hmlns="http://schemas.nmdp.org/spec/hml/1.0.1" 
+  xmlns="http://schemas.nmdp.org/spec/hml/1.0"
+  xmlns:hmlns="http://schemas.nmdp.org/spec/hml/1.0" 
   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
   elementFormDefault="qualified" attributeFormDefault="unqualified" 
-  targetNamespace="http://schemas.nmdp.org/spec/hml/1.0.1"
-  version="1.0.1">
+  targetNamespace="http://schemas.nmdp.org/spec/hml/1.0"
+  version="1.0.2">
 
   <!-- HML document root -->
   <xs:element name="hml" id="hml" nillable="false">
@@ -59,7 +59,8 @@
       </xs:sequence>
       <xs:attribute name="version" use="required">
         <xs:annotation><xs:documentation>
-          Expected to be '1.0.1' to use this version of the HML schema.
+          Expected to be a '1.0.x' version like '1.0.2' to use this version of the HML schema.
+          HML 1.0.2 released March 2016.
         </xs:documentation></xs:annotation>
         <xs:simpleType id="version">
           <xs:restriction base="xs:string">
@@ -77,6 +78,76 @@
       </xs:attribute>      
     </xs:complexType>
   </xs:element>
+
+
+  <!-- HMLID -->
+  <xs:complexType name="hmlid">
+    <xs:annotation><xs:documentation>
+      Specifies a unique identifier for this HML document.  This id follows 
+      the HL7 standard for uniqueness using a two-part key.  'root' is the 
+      unique organization identifier publicly registered for your organization.  
+      'extension' is the unique document id managed internally for your 
+      organization, but must be unique and identify this specific HML document.
+      Together root and extension guarantee global uniqueness.  
+      
+      http://www.oid-info.com/faq.htm
+      http://www.hl7.org/oid/index.cfm
+
+        Attributes:
+        -----------
+         - root:        Unique publicly registered identifier for the HML 
+                        creator's organization.  
+                        Examples: 
+
+                          HL7: NMDP HL7 id is "2.16.840.1.113883.3.1470"
+                          <hmlid root="2.16.840.1.113883.3.1470" extension="20160316-testrun001" />
+                          
+                          UUID:
+                          <hmlid root="b044f879-f10b-4942-b8e6-e00e42d57fbe" />
+                           
+                        Root format is expected to be a string of digits with 
+                        dot or dash delimiters.  (required)
+         - extension:   A unique document identifier managed internally by the 
+                        organization specified in 'root'. Can be any alpha-numeric 
+                        format desired by the organization. (ex: "hml-0.9.7-123456789.23a")
+                        (optional and must be at least 1 non-whitespace character 
+                        long)
+                        NOTE - If extension is NOT included, the unique document 
+                        identifier is expected to be appended at the end of the root
+                        identifier above in accordance with HL7 practices.  
+    </xs:documentation></xs:annotation>
+    <xs:attribute name="root" type="hmlns:root" id="root" use="required" />
+    <xs:attribute name="extension" type="hmlns:extension" id="extension" use="optional" />
+  </xs:complexType>
+
+
+  <!-- HMLID : ROOT -->
+  <xs:simpleType name="root">
+    <xs:annotation><xs:documentation>
+      Unique publicly registered identifier for the HML creator's organization.  
+      This can be an HL7 compliant field (ex: NMDP is "2.16.840.1.113883.3.1470")
+      The format can also be a UUID like "5177ec14-495b-4fea-a8fc-de1311f241cd".
+      Format is expected to be a string of digits and dot or hyphen delimiters. (required)
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([0-9a-zA-Z\.\-])+" />    
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <!-- HMLID : EXTENSION -->
+  <xs:simpleType name="extension">
+    <xs:annotation><xs:documentation>
+      A unique document identifier managed internally by the 
+      organization specified in 'root'. Can be any alpha-numeric 
+      format desired by the organization. (ex: "hml-0.9.7-123456789.23a")
+      (required and must be at least 1 non-whitespace character long and 
+      guarantee uniqueness)
+    </xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+    </xs:restriction>
+  </xs:simpleType>
 
 
   <!-- REPORTING-CENTER -->
@@ -113,68 +184,6 @@
       </xs:attribute>
     </xs:complexType>
   </xs:element>
-
-
-  <!-- HMLID -->
-  <xs:complexType name="hmlid">
-    <xs:annotation><xs:documentation>
-      Specifies a unique identifier for this HML document.  This id follows 
-      the HL7 standard for uniqueness using a two-part key.  'root' is the 
-      unique organization identifier publicly registered for your organization.  
-      'extension' is the unique document id managed internally for your 
-      organization, but must be unique and identify this specific HML document.
-      Together root and extension guarantee global uniqueness.  
-      
-      http://www.oid-info.com/faq.htm
-      http://www.hl7.org/oid/index.cfm
-
-        Attributes:
-        -----------
-         - root:        Unique publicly registered identifier for the HML 
-                        creator's organization.  
-                        (ex: NMDP HL7 id is "2.16.840.1.113883.3.1470")
-                        Format is expected to be a string of digits and dot 
-                        delimiters.  (required)
-         - extension:   A unique document identifier managed internally by the 
-                        organization specified in 'root'. Can be any alpha-numeric 
-                        format desired by the organization. (ex: "hml-0.9.7-123456789.23a")
-                        (optional and must be at least 1 non-whitespace character 
-                        long)
-                        NOTE - If extension is NOT included, the unique document 
-                        identifier is expected to be appended at the end of the root
-                        identifier above in accordance with HL7 practices.  
-    </xs:documentation></xs:annotation>
-    <xs:attribute name="root" type="hmlns:root" id="root" use="required" />
-    <xs:attribute name="extension" type="hmlns:extension" id="extension" use="optional" />
-  </xs:complexType>
-
-
-  <!-- HMLID : ROOT -->
-  <xs:simpleType name="root">
-    <xs:annotation><xs:documentation>
-      Unique publicly registered identifier for the HML creator's organization.  
-      This can be an HL7 compliant field (ex: NMDP is "2.16.840.1.113883.3.1470")
-      Format is expected to be a string of digits and dot delimiters. (required)
-    </xs:documentation></xs:annotation>
-    <xs:restriction base="xs:string">
-      <xs:pattern value="([0-9\.])+" />    
-    </xs:restriction>
-  </xs:simpleType>
-
-
-  <!-- HMLID : EXTENSION -->
-  <xs:simpleType name="extension">
-    <xs:annotation><xs:documentation>
-      A unique document identifier managed internally by the 
-      organization specified in 'root'. Can be any alpha-numeric 
-      format desired by the organization. (ex: "hml-0.9.7-123456789.23a")
-      (required and must be at least 1 non-whitespace character long and 
-      guarantee uniqueness)
-    </xs:documentation></xs:annotation>
-    <xs:restriction base="xs:string">
-      <xs:minLength value="1" />
-    </xs:restriction>
-  </xs:simpleType>
 
 
   <!-- TYPING-TEST-NAMES -->
@@ -245,7 +254,7 @@
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <!-- Extensible letting a property have special-use child elements -->
-      <xs:any minOccurs="0" maxOccurs="unbounded" />
+      <xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>    
     <xs:attribute name="name" use="required">
       <xs:simpleType>
@@ -754,7 +763,7 @@
 
         Children:
         ---------
-        - amplification     (required, qty: 1)
+        - amplification     (not required, qty: 0 or 1)
         - sub-amplification (not required, qty: 0 or more)
         - gssp              (not required, qty: 0 or more)
 
@@ -783,7 +792,7 @@
     </xs:documentation></xs:annotation>
     <xs:sequence>
       <xs:element name="property"          type="hmlns:property" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element name="amplification"     type="hmlns:amplification" minOccurs="1" maxOccurs="1" />
+      <xs:element name="amplification"     type="hmlns:amplification" minOccurs="0" maxOccurs="1" />
       <xs:element name="sub-amplification" type="hmlns:sub-amplification" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="gssp"              type="hmlns:gssp" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>
@@ -833,9 +842,7 @@
       <xs:restriction base="hmlns:sequence">
         <xs:attribute name="registered-name" use="required">
           <xs:simpleType>
-            <xs:restriction base="xs:string">
-              <xs:minLength value="1" />
-            </xs:restriction>
+            <xs:restriction base="xs:string"></xs:restriction>
           </xs:simpleType>
         </xs:attribute>
       </xs:restriction>
@@ -1313,7 +1320,7 @@
             <!-- 
             Genome Reference Consortium:
               <reference-database ... >
-                  <reference-sequence id="1"
+                  <reference-sequence id="ref1"
                                   name="HSCHR6_MHC_MCF_CTG1" 
                                   start="0"
                                   end="4827813"
@@ -1324,7 +1331,7 @@
 
             IMGT/HLA:
               <reference-database ... >
-                  <reference-sequence id="3"
+                  <reference-sequence id="ref3"
                                   name="HLA-A*01:01:01:01"
                                   start="0"
                                   end="3053"
@@ -1335,7 +1342,7 @@
 
             No database reference:
               <reference-database availability="none">
-                  <reference-sequence id="0"/>
+                  <reference-sequence id="ref0"/>
               </reference-database>
             -->
 
@@ -1564,8 +1571,8 @@
         - paired: true/false (default) (required)
         - pooled: true/false (default) (required)
         - availability: public|private|permission (optional)
-        - adapterTrimmed: true/false (default) (required)
-        - qualityTrimmed: true/false (default) (required)
+        - adapter-trimmed: true/false (default) (required)
+        - quality-trimmed: true/false (default) (required)
     </xs:documentation></xs:annotation>
     <xs:attribute name="uri" use="required">
       <xs:simpleType>

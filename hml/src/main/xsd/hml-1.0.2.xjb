@@ -2,7 +2,7 @@
 <!--
 
     ngs-hml  Mapping for HML XSDs.
-    Copyright (c) 2014-2015 National Marrow Donor Program (NMDP)
+    Copyright (c) 2014-2017 National Marrow Donor Program (NMDP)
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published
@@ -24,7 +24,7 @@
 <jxb:bindings version="1.0" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
               xmlns:xjc= "http://java.sun.com/xml/ns/jaxb/xjc"
               jxb:extensionBindingPrefixes="xjc" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <jxb:bindings schemaLocation="hml-1.0.1.xsd" node="/xs:schema">
+  <jxb:bindings schemaLocation="hml-1.0.2.xsd" node="/xs:schema">
     <jxb:schemaBindings>
       <jxb:package name="org.nmdp.ngs.hml.jaxb"/>
     </jxb:schemaBindings>
