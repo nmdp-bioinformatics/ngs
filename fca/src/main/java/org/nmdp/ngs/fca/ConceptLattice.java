@@ -47,6 +47,10 @@ public class ConceptLattice extends CompleteLattice<Concept> {
         super(graph, new Concept(new MutableBitSet(), ones(numBits)));
     }
     
+    public ConceptLattice(long numBits) {
+        super(new Concept(new MutableBitSet(), ones(numBits)));
+    }
+    
     public Concept insert(final Concept concept) {
         Vertex added = super.addIntent(concept, top);
 

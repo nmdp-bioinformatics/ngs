@@ -68,6 +68,15 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
         size = 1;
     }
     
+    /**
+     * Create a CompleteLattice with a TinkerGraph instance. This is an experiment
+     * meant to avoid a fatal error in JPype implementation.
+     * @param top 
+     */
+    protected CompleteLattice(PartiallyOrdered top) {
+        this(new TinkerGraph(), top);
+    }
+    
     public class Iterator<E extends PartiallyOrdered> implements java.util.Iterator<E> {
         private final java.util.Iterator<Vertex> vertices;
 

@@ -22,6 +22,7 @@
 */
 package org.nmdp.ngs.fca;
 
+import com.google.common.collect.ImmutableList;
 import static org.junit.Assert.assertEquals;
 
 import static org.nmdp.ngs.fca.TestUtil.list;
@@ -30,6 +31,7 @@ import static org.nmdp.ngs.fca.TestUtil.bits;
 import java.util.List;
 
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+import org.dishevelled.bitset.MutableBitSet;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
