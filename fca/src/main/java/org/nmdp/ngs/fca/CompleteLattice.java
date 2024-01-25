@@ -100,10 +100,22 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
         }
     }
 
-    protected boolean filter(final Vertex source, final Vertex target) {
+    public boolean filter(final Vertex source, final Vertex target) {
         E sourceConcept = source.getProperty(LABEL);
         E targetConcept = target.getProperty(LABEL);
         return filter(sourceConcept, targetConcept);
+    }
+
+    public boolean up(final Vertex source, final Vertex target) {
+        E sourceLabel = source.getProperty(LABEL);
+        E targetLabel = target.getProperty(LABEL);
+        return sourceLabel.isLessOrEqualTo(targetLabel);
+    }
+
+    public boolean down(final Vertex source, final Vertex target) {
+        E sourceLabel = source.getProperty(LABEL);
+        E targetLabel = target.getProperty(LABEL);
+        return sourceLabel.isGreaterOrEqualTo(targetLabel);
     }
 
     private boolean filter(final Vertex source, final E right) {
@@ -151,10 +163,26 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
         }
         return generator;
     }
+
+    public final Graph getGraph() {
+        return graph;
+    }
+
+    public final int getColor() {
+        return color;
+    }
+
+    public final void setColor(final int color) {
+        this.color = color;
+    }
     
     @Override
     public final E find(final E element) {
         return this.meet(element, this.top());
+    }
+
+    public final Vertex findVertex(final E element) {
+        return this.meetVertex(element, this.top());
     }
 
     @Override
@@ -324,6 +352,10 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
         return bottom.getProperty(LABEL);
     }
 
+    public final Vertex bottomVertex() {
+        return bottom;
+    }
+
     /**
      * Find the greatest element.
      * @return the greatest lattice element
@@ -331,6 +363,10 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     @Override
     public final E top() {
         return top.getProperty(LABEL);
+    }
+
+    public final Vertex topVertex() {
+        return top;
     }
 
     @Override
@@ -341,6 +377,10 @@ public abstract class CompleteLattice<E extends PartiallyOrdered> implements Lat
     @Override
     public E meet(final E left, final E right) {
         return supremum((E) left.intersect(right), top).getProperty(LABEL);
+    }
+
+    public Vertex meetVertex(final E left, final E right) {
+        return supremum((E) left.union(right), top);
     }
 
     @Override
