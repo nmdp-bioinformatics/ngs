@@ -23,11 +23,16 @@
 package org.nmdp.ngs.fca;
 
 import com.tinkerpop.blueprints.Graph;
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 public class IntervalLattice<C extends Comparable<?>> extends CompleteLattice<Interval<C>> {
     
     public IntervalLattice(final Graph graph) {
         super(graph, Interval.MAGIC);
+    }
+
+    public IntervalLattice() {
+        super(new TinkerGraph(), Interval.MAGIC);
     }
     
     public Interval<C> insert(final Interval<C> interval) {
